@@ -1,7 +1,8 @@
 # KAKSHYA - A Web Application 
 
 ### Tools Used 
-    - Django    
+    - Django 
+    - Vscode
 
 ### Contributors
-    - Anjal Bam (THA075BEI006)
+    - Anjal Bam(THA075BEI006) 
