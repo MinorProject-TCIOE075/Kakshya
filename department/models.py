@@ -13,7 +13,7 @@ class Department(models.Model):
 
 
 class Program(models.Model):
-    Department      = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department      = models.ForeignKey(Department, on_delete=models.CASCADE)
     pr_code         = models.CharField(max_length=4, unique=True, verbose_name="Program Code")
     pr_name         = models.CharField(max_length=250, null=True, blank=True, verbose_name="Program")
     created_on      = models.DateTimeField(null=True, blank=True)
