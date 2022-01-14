@@ -27,7 +27,15 @@ class User(AbstractUser):
     email       = models.EmailField(_('email address'), blank=True, unique=True)
     user_role   = models.CharField(max_length=2, choices=USER_ROLES, default=None)
 
+    """
+        To query teachers only use => User.users.teachers()
+        Syntax: <model_name>.<manager_name>.<manager_method>
+
+        To query students only use => User.users.students()
+        To query all users use User.objects.all() or User.users.all()
+    """
     users = UserManager()
+
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", ]
