@@ -1,8 +1,7 @@
-from email.policy import default
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-
+from django.utils import timezone
 from .managers import UserManager
 from department.models import Department, Program
 
@@ -24,8 +23,14 @@ class User(AbstractUser):
         staff = "Staff"
         super_admin = 'SuperAdmin'
 
-    email       = models.EmailField(_('email address'), blank=True, unique=True)
-    user_role   = models.CharField(max_length=2, choices=USER_ROLES, default=None)
+    email           = models.EmailField(_('email address'), blank=True, unique=True)
+    user_role       = models.CharField(max_length=2, choices=USER_ROLES, default=None, null=True, blank=True)
+    phone_num       = models.CharField(max_length=14, blank=True, null=True)
+    date_of_birth   = models.DateField(null=True, blank=True, verbose_name="Date of Birth")
+    blood_group     = models.CharField(max_length=4, blank=True, null=True, verbose_name="Blood Group")
+    citizenship_num = models.CharField(max_length=20, unique=True, null=True, blank=True, verbose_name="Citizenship Number")     
+    add_email       = models.EmailField(_("Additional Email"), blank=True, null=True)
+    add_phone_num   = models.CharField(max_length=14, null=True, blank=True)
 
     """
         To query teachers only use => User.users.teachers()
@@ -60,6 +65,7 @@ class Student(models.Model):
     def __str__(self):
         return f'{self.user.username}'
 
+    @property
     def enrolledYear(self):
         return self.year_joined.strftime("%Y")
 
@@ -75,3 +81,17 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f'{self.user.username}'
+
+
+class Address(models.Model):
+    user            = models.ForeignKey(User, on_delete=models.CASCADE) 
+    is_permanent    = models.BooleanField(default=True)
+    address         = models.CharField(max_length=150, null=True, blank=True)
+    created_on      = models.DateTimeField(default=timezone.now)
+    modified_on     = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.user.email} {self.address}"
+
+

@@ -1,5 +1,7 @@
 from pathlib import Path
 from decouple import config
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # User defined apps
     'authentication',
-    'department.apps.DepartmentConfig'
+    'department.apps.DepartmentConfig',
+    # Tool for multi-step user registration form
+    'formtools'
 ]
 
 MIDDLEWARE = [
@@ -46,7 +50,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,5 +120,20 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Authentication
+LOGIN_REDIRECT_URL = '/home/'
+LOGIN_URL = '/login/'
+# LOGOUT_REDIRECT_URL = '/auth/home/'
+
 # Custom Auth Class
 AUTH_USER_MODEL = 'authentication.User'
+
+
+# CONFIGURING THE SMTP EMAIL SERVICE
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'authentication.app'
+# EMAIL_HOST_PASSWORD = 'mysecretEmailPassword'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'Kakshya Team <noreply@example.com>'

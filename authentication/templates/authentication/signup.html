@@ -1,0 +1,28 @@
+{% load i18n %}
+<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+<form action="" method="post">
+  {% csrf_token %}
+  <table>
+  {{ wizard.management_form }} <!-- this is used to activate the functionality of the django-formtools in the template -->
+  {% if wizard.form.forms %}   
+<!-- Since we are using session wizards the normal form.as_p won't be working here instead 
+    to access the form wizard.form is to be used
+
+    we have multiple forms so that we have to iterate through the forms using wizard.form.forms 
+-->
+    {{ wizard.form.management_form }}
+    {% for form in wizard.form.forms %}
+      {{ form }}
+    {% endfor %}
+  {% else %}
+    {{ wizard.form }}
+    <!-- If there is only one form we can use wizard.form to access that particular form -->
+  {% endif %}
+  </table>
+  
+  {% if wizard.steps.prev %}
+  <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+  <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+  {% endif %}
+  <input type="submit" value="{% trans 'submit' %}"/>
+</form>

@@ -1,4 +1,6 @@
 from django.db.models import Manager, QuerySet
+from django.contrib.auth.base_user import BaseUserManager
+from django.utils.translation import gettext_lazy as _
 
 """
     UserQuerySet class inherits the Queryset from db.models.
@@ -31,13 +33,35 @@ class UserQuerySet(QuerySet):
     Similar is the case with other user types methods.
 """
 
-class UserManager(Manager):
+class UserManager(BaseUserManager):
+
+    def create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError(_("Email is required"))
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+        return self.create_user(email, password, **extra_fields)
+
 
     def get_queryset(self):
         return UserQuerySet(self.model, using=self._db)
         # Overrides the get_queryset() of the UserQueryset class.
         # self.model means the current model we are working with in the instance.
-        # using=self._db means use the current table in the database 
+        # using=self._db means use the current database which has been used 
 
     def teachers(self):
         return self.get_queryset().teachers()
