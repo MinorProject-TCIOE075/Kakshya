@@ -65,7 +65,47 @@ $ python -m virtualenv venv # if above command doesnot work
 # Use python or python3 as per your system
 ```
 
+###### Step 4
+Now, it's time we activate the virtual environment
+ - On Windows
+```shell
+$ .\venv\Scripts\activate 
+```
+ - On Linux/MacOS
+```shell
+$ source venv/bin/activate
+```
 
+###### Step 5
+Now we should install all the dependencies for our project. Follow the command below:
+```shell
+$ pip install -r requirements.txt
+```
+
+> Make sure you are now on the file level where you see both folder `venv` and `manage.py` when you list all the files.
+>
+
+###### Step 6
+Now the environment variables need to be created. Just copy the `env.example` file and change the content with the credentials as you need and save the copy file as `.env`.
+
+- On Windows powershell or on *nix OS you can use the following command to copy the file.
+```shell
+$ cp env.example .env
+```
+> The above command will copy the file and rename it as `.env` in the same working  directory.
+
+###### Step 7
+Time to migrate the databases. Use the following command to migrate database.
+```shell
+$ python manage.py migrate
+```
+
+###### Step 8
+Now everything is set up, so, we shall be ready to start the server. Enter the following command in your command line.
+```shell
+$ python manage.py runserver 
+```
+> Now the server should be up and will be running on port `8000`, or hit [https://127.0.0.1:8000](https://127.0.0.1:8000)
 ### Contributors
 
     - Anjal Bam(THA075BEI006) 
