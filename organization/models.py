@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 
 USER = get_user_model()
 
@@ -23,7 +23,8 @@ class Program(models.Model):
     code = models.CharField(max_length=4)
     year = models.CharField(max_length=4)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(USER, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.code}-{self.year}'
+        return f'{self.code}-{self.year} -- {self.department}'
 
