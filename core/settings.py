@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # User defined apps
-    'authentication',
+    'authentication.apps.AuthenticationConfig',
     'department.apps.DepartmentConfig',
     # Tool for multi-step user registration form
     'formtools'

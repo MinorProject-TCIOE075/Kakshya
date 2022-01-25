@@ -23,8 +23,8 @@ class User(AbstractUser):
         staff = "Staff"
         super_admin = 'SuperAdmin'
 
-    email           = models.EmailField(_('email address'), blank=True, unique=True)
-    user_role       = models.CharField(max_length=2, choices=USER_ROLES, default=None, null=True, blank=True)
+    email           = models.EmailField(_('email address'), unique=True, null=True, blank=True)
+    user_role       = models.CharField(max_length=2, choices=USER_ROLES, default='S')
     phone_num       = models.CharField(max_length=14, blank=True, null=True)
     date_of_birth   = models.DateField(null=True, blank=True, verbose_name="Date of Birth")
     blood_group     = models.CharField(max_length=4, blank=True, null=True, verbose_name="Blood Group")
@@ -54,12 +54,12 @@ class User(AbstractUser):
 
 
 class Student(models.Model):
-    user        =   models.ForeignKey(User, on_delete=models.CASCADE)
+    user        =   models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'student' )
     year_joined =   models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     roll_number =   models.CharField(max_length=12, unique=True, null=True, blank=True)
     classrooms  =   models.IntegerField(null=True, blank=True)
-    faculty     =   models.ForeignKey(Program, on_delete=models.CASCADE)
-    department  =   models.ForeignKey(Department, on_delete=models.CASCADE)
+    faculty     =   models.ForeignKey(Program, on_delete=models.CASCADE, null=True)
+    department  =   models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
 
 
     def __str__(self):
@@ -72,11 +72,11 @@ class Student(models.Model):
 
 
 class Teacher(models.Model):
-    user        =   models.ForeignKey(User, on_delete=models.CASCADE)
+    user        =   models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher')
     designation =   models.CharField(null=True, blank=True, max_length=100)
     year_joined =   models.DateField(auto_now_add=False, auto_now=False, null=True, blank=True)
     classrooms  =   models.IntegerField(null=True, blank=True)
-    departments =   models.ForeignKey(Department, on_delete=models.CASCADE)
+    departments =   models.ForeignKey(Department, on_delete=models.CASCADE, null=True)
 
 
     def __str__(self):

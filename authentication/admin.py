@@ -34,12 +34,14 @@ class StudentAdmin(admin.ModelAdmin):
 
 class TeacherAdmin(admin.ModelAdmin):
     model = Teacher
-    list_display = ('user', 'designation', 'get_department')
+    list_display = ('user', 'designation', )
     list_filter = ('designation', )
 
-    def get_department(self, obj):
-        return obj.departments.dep_name
-
+    # def get_department(self, obj):
+    #     if obj:
+    #         return obj.departments.dep_name
+    #     else:
+    #         pass
 
     search_fields = ('year_joined', 'designation')
     ordering = ('-year_joined', )
