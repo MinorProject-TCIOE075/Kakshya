@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import User
+from .models import Student, Teacher, User
 
 USER = get_user_model()
 
@@ -31,3 +31,24 @@ class SignUpFormTwo(forms.ModelForm):
     class Meta:
         model = User
         fields = [ 'phone_num', 'date_of_birth', 'blood_group', 'citizenship_num']
+
+
+class UserUpdateForm(forms.ModelForm):
+    
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'phone_num', 'date_of_birth',
+                    'blood_group', 'citizenship_num', 'add_email', 'add_phone_num'
+        ]
+
+
+class TeacherInfoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['designation', 'year_joined', 'classrooms', 'departments']
+
+
+class StudentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['roll_number', 'classrooms', 'faculty', 'department']

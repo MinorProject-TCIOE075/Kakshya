@@ -1,8 +1,10 @@
+from django.template import context
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib.auth.views import ( 
     PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView,
@@ -30,7 +32,6 @@ class LoginView(View):
 
             user = authenticate(username=email, password=password)
             print(user)
-            print(f"{user.username} is authenticated")
             if user:
                 login(request, user)
                 print("logged in")
@@ -108,3 +109,57 @@ def home(request):
     return HttpResponse(
         """<h1>Hello</h1>"""
         )
+
+#  Teacher Update Info
+@login_required
+def UpdateTeacherProfile(request):
+    if request.method == "POST":
+        user_form = UserUpdateForm(request.POST or None, instance=request.user)
+        
+        profile_form = TeacherInfoUpdateForm(request.POST, instance=request.user.teacher)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            return redirect("auth:home")
+    else:
+        user_form = UserUpdateForm()
+        profile_form = TeacherInfoUpdateForm()
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+
+    return render(request, 'authentication/update_teacher_info.html', context)
+
+
+# @login_required
+# def StudentProfileUpdate(request):
+#     if request.method == "POST":
+#         user_form = UserUpdateForm(request.POST or None, instance=request.user)
+        
+#         form = StudentUpdateForm(request.POST, instance=request.user.student)
+
+#         if user_form.is_valid() and form.is_valid():
+#             user = user_form.save(commit=False)
+#             user.save()
+#             form.save()
+
+#             student = Student()
+#             student.user = user
+
+#             return redirect("auth:home")
+#     else:
+#         user_form = UserUpdateForm()
+#         form = StudentUpdateForm()
+
+#     context = {
+#         'user_form': user_form,
+#         'form': form
+#     }
+
+#     return render(request, 'authentication/student_update.html', context)
+
+

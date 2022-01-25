@@ -1,0 +1,16 @@
+<div>
+    {% if user.is_authenticated %}
+        <div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{user_form.as_p}}
+                <br>
+                <hr>
+                {{form.as_p}}
+
+                <button type="submit">Save Changes</button>
+                <button type="reset">Reset all</button>
+            </form>
+        </div>
+    {% endif %}
+</div>

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from .models import Teacher, Student
+from .models import Teacher, Student, Address
 
 # Custom User model 
 User = get_user_model()
@@ -46,8 +46,15 @@ class TeacherAdmin(admin.ModelAdmin):
     search_fields = ('year_joined', 'designation')
     ordering = ('-year_joined', )
 
+class AddressInline(admin.StackedInline):
+    model = Address
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    inlines = [AddressInline]
+
 # Register your models here.
-admin.site.register(User)
+# admin.site.register(User)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.site_header = 'Kakshya'

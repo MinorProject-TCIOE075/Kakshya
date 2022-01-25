@@ -42,4 +42,8 @@ urlpatterns = [
     # 
 
     path('signup/', signup_form, name='signup'),
+
+    # update urls
+    path('teacher-update/', views.UpdateTeacherProfile, name='teacher-profile-update'),
+    # path('student-update/', views.StudentProfileUpdate, name = 'student-update')
 ]
