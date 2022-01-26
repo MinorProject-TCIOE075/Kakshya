@@ -11,7 +11,7 @@ from .forms import *
 """
 named_signup_forms = (
     ('Email and more', SignUpFormOne),
-    ('Personal Information', SignUpFormTwo),
+    ('Personal Information', SignUpFormTwo)
 )
 
 """
@@ -28,6 +28,7 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('', views.home, name='home'),
     path('logout/', views.user_logout, name='logout'),
+    path('user/<int:pk>/', views.UserDetailView.as_view(), name='user_detail'),
 
     # These following 4 paths are for the password reset functionality although it is not ready yet.
 

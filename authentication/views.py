@@ -2,7 +2,7 @@ from django.template import context
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import *
@@ -97,18 +97,18 @@ class FormWizardView(NamedUrlSessionWizardView):
         form_data = self.get_all_cleaned_data()
         instance = User.objects.create(**form_data)
         instance.save()
-        # print(form_list)
-        # print("\n")
         print(form_data)
 
         return render(self.request, 'authentication/done.html', form_data)
 
-
+# User views
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'authentication/user_detail.html'
+    context_object_name = 'user'
 
 def home(request):
-    return HttpResponse(
-        """<h1>Hello</h1>"""
-        )
+   return render(request, 'authentication/home.html', context={})
 
 #  Teacher Update Info
 @login_required

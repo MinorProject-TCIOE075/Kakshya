@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -51,6 +52,9 @@ class User(AbstractUser):
             ("assign_assignments", "can assign assignments to students")
         ]
 
+    def get_absolute_url(self):
+        return reverse("auth:user_detail", kwargs={'pk': self.pk})
+
 
 
 class Student(models.Model):
@@ -65,7 +69,7 @@ class Student(models.Model):
     def __str__(self):
         return f'{self.user.username}'
 
-    @property
+    @property #the property decorator here is used to access the method withoud parentheses ie. like obj.enrolledYear not obj.enrolledYear()
     def enrolledYear(self):
         return self.year_joined.strftime("%Y")
 
