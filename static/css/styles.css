@@ -1,6 +1,7 @@
 :root {
     --gradient1st: #4A00E0;
     --gradient2nd: #8E2DE2;
+    --warning-bg: #ffb3c1;
 }
 
 * {
@@ -68,13 +69,94 @@ div.title-wrapper {
 .title-wrapper .title {
     font-size: 2rem;
     position: relative;
+    background: -webkit-linear-gradient(var(--gradient1st), var(--gradient2nd));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .title-wrapper .title::before {
     content: "";
-    height: 0.25rem;
-    width: 50%;
+    height: 0.5rem;
+    width: 0.5rem;
     position: absolute;
     top: 100%;
-    background: ;
+    border-radius: 100rem;
+    background: var(--gradient1st); /* fallback for old browsers */
+    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
+}
+
+.title-wrapper .title::after {
+    content: "";
+    height: 0.5rem;
+    width: 2rem;
+    position: absolute;
+    top: 100%;
+    left: 0.75rem;
+    border-radius: 100rem;
+    background: var(--gradient1st); /* fallback for old browsers */
+    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
+}
+
+/*Styling buttons */
+.button {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: white;
+    border: none;
+    margin: 0.5rem 0;
+    border-radius: 5px;
+    transition: ease-in-out 0.3s;
+}
+
+.button-primary {
+    background: var(--gradient1st); /* fallback for old browsers */
+    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
+}
+
+.button:hover {
+    color: #e7e7e7;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/*Styling forms*/
+div.form form {
+    width: 100%;
+}
+
+.error-message {
+    padding: 0;
+    background: var(--warning-bg);
+    margin: 0.5rem 0;
+    border-radius: 5px;
+}
+
+.error-message ul {
+    padding: 0;
+    margin: 0;
+}
+
+.error-message li {
+    padding: 0.25rem 0.75rem;
+    display: block;
+}
+
+div.form-field {
+    width: 100%;
+}
+
+.form-field .label label {
+    color: inherit;
+    font-weight: 500;
+}
+
+.form-field .input-field input {
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    color: rgb(55, 55, 55)
 }
