@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import DailyRoutine, Course
+from .models import DailyRoutine, RoutineCourse
 
 # Register your models here.
 admin.site.register(DailyRoutine)
-admin.site.register(Course)
+admin.site.register(RoutineCourse)

@@ -1,0 +1,20 @@
+{% extends 'myadmin/base.html' %}
+
+{% block main_content %}
+    <div class="title-wrapper">
+        <h1 class="title">
+            Add Department
+        </h1>
+    </div>
+    <div class="content-wrapper">
+        <div class="form">
+            <form action="" method="post">
+                {% csrf_token %}
+                            {{ department_form.as_p }}
+                <input type="submit" value="Add">
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}
