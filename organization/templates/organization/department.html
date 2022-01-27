@@ -1,5 +1,49 @@
 {% extends 'myadmin/base.html' %}
 
 {% block main_content %}
-    {{ department }}
+    <div class="title-wrapper">
+        <h1 class="title">
+            {{ department.name }} ({{ department }})
+        </h1>
+        <div class="action-buttons d-flex">
+            <a href="{% url 'myadmin:department_edit' department.pk %}"
+               class="button button-primary me-2" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+            <a href="#"
+               class="button button-danger" title="Delete">
+                <i class="bi bi-trash-fill"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="title-wrapper">
+        <h3 class="title sub-title">
+            Programs
+        </h3>
+        <div class="action-buttons">
+            <a href="#" class="button button-primary button-small m-0">Add
+                Program</a>
+        </div>
+    </div>
+    <div class="row">
+        {% for program in programs %}
+            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+                <div class="tile">
+                    <div class="tile-header bg-primary bordered text-white text-center">
+                        <span>{{ program.code }}</span>
+                    </div>
+                    <div class="tile-content">
+                        <h3 class="tile-title tile-title-small">
+                            {{ program.code }}-{{ program.year }}
+                        </h3>
+                        <h3
+                                class="tile-title m-0">
+                            {{ program.name }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

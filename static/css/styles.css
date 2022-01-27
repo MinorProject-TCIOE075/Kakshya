@@ -113,6 +113,15 @@ div.title-wrapper {
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
+.title-wrapper .title.sub-title {
+    font-size: 1.5rem;
+}
+
+.title-wrapper .title.sub-title::before, .title-wrapper .title.sub-title::after {
+    display: none;
+}
+
+
 /*Styling buttons */
 .button {
     display: block;
@@ -138,6 +147,10 @@ div.title-wrapper {
 
 }
 
+.button-small {
+    font-size: 0.75rem;
+}
+
 .button:hover {
     color: #e7e7e7;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -145,6 +158,11 @@ div.title-wrapper {
 
 
 /*Styling forms*/
+div.form {
+    margin-top: 1rem;
+    padding: 0 12px;
+}
+
 div.form form {
     width: 100%;
 }
@@ -201,6 +219,7 @@ div.form-field {
     font-size: 2rem;
     padding: 2rem 0;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .tile-content .tile-title {
@@ -211,8 +230,14 @@ div.form-field {
     color: var(--gradient2nd);
     line-height: 1rem;
     padding-bottom: 0.5rem;
+    cursor: pointer;
 }
 
-.tile-content .tile-title:hover {
-    text-decoration: underline;
+.tile-content .tile-title.tile-title-small {
+    font-size: 0.95rem;
+    padding-bottom: 0;
 }
+
+/*.tile-content .tile-title:hover {*/
+/*    text-decoration: underline;*/
+/*}*/

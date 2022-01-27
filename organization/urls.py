@@ -10,4 +10,6 @@ urlpatterns = [
          name='add_department'),
     path('departments/d/<pk>/', views.DepartmentView.as_view(),
          name='department'),
+    path('departments/d/<pk>/edit/', views.EditDepartmentView.as_view(),
+         name='department_edit'),
 ]

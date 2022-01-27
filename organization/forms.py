@@ -16,15 +16,32 @@ class DepartmentForm(forms.Form):
             raise ValidationError("All fields must be filled properly.")
 
         if Department.objects.filter(code=code, name=name):
-            raise ValidationError(f'Department with code "{code}" and name "{name}" already exists.')
+            raise ValidationError(
+                f'Department with code "{code}" and name "{name}" already exists.')
 
         if Department.objects.filter(code=code):
-            raise ValidationError(f'Department with code "{code}" already exists.')
+            raise ValidationError(
+                f'Department with code "{code}" already exists.')
 
         if Department.objects.filter(name=name):
-            raise ValidationError(f'Department with code "{name}" already exists.')
+            raise ValidationError(
+                f'Department with code "{name}" already exists.')
 
         return super().clean()
+
+
+class EditDepartmentForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    code = forms.CharField(max_length=4)
+
+    def clean(self):
+        name = self.cleaned_data.get('name', None)
+        code = self.cleaned_data.get('code', None)
+
+        if not name or not code:
+            raise ValidationError("All fields must be filled properly.")
+
+        return super(EditDepartmentForm, self).clean()
 
 
 class ProgramForm(forms.Form):

@@ -1,0 +1,47 @@
+{% extends 'myadmin/base.html' %}
+
+{% block main_content %}
+    <div class="title-wrapper">
+        <h1 class="title">
+            Edit Department Details
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+            <div class="content-wrapper">
+                <div class="form">
+                    <form method="post" class="mb-5"
+                          enctype="multipart/form-data">
+                        {% if department_form.non_field_errors %}
+                            <div class="error-message">
+                              {{ department_form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        {% csrf_token %}
+                        {% for field in department_form %}
+                            <div class="form-field">
+
+                                <div class="label">{{ field.label_tag }}</div>
+                                {% if field.errors %}
+                                    <div class="error-message">
+                                        <p>{{ field.errors }}</p>
+                                    </div>
+                                {% endif %}
+                                <div class="input-field">{{ field }}</div>
+                                {% if field.help_text %}
+                                    <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                    {% endfor %}
+                        <input type="submit" class="button button-primary px-5"
+                               value="Submit">
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
