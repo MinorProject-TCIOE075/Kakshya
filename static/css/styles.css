@@ -37,6 +37,12 @@ a:hover {
     border-radius: 5px;
 }
 
+.color-gradient {
+    background: -webkit-linear-gradient(var(--gradient1st), var(--gradient2nd));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 /*sidebar*/
 div.sidebar {
     padding: 10px;
