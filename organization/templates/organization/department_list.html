@@ -1,13 +1,26 @@
 {% extends 'myadmin/base.html' %}
 
 {% block main_content %}
-    <h1>
-        Departments Here.
-    </h1>
+    <div class="title-wrapper">
+        <h1 class="title">
+            Departments
+        </h1>
+    </div>
 
-    <ul>
-    {% for department in departments %}
-        <li>{{ department.id }}-{{ department }}</li>
-    {% endfor %}
-    </ul>
+    <div class="row mt-3">
+        {% for department in departments %}
+            <div class="col-6 col-md-4 align-self-stretch">
+                <div class="tile">
+                    <div class="tile-header bg-primary bordered text-white text-center">
+                        <span>{{ department }}</span>
+                    </div>
+                    <div class="tile-content">
+                        <a href="#" class="tile-title">
+                            {{ department.name }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
