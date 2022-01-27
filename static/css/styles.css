@@ -75,6 +75,9 @@ div.sidebar {
 /*Admin titles*/
 div.title-wrapper {
     padding-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .title-wrapper .title {
@@ -112,6 +115,7 @@ div.title-wrapper {
 
 /*Styling buttons */
 .button {
+    display: block;
     padding: 0.5rem 1rem;
     font-weight: 600;
     color: white;
@@ -125,6 +129,13 @@ div.title-wrapper {
     background: var(--gradient1st); /* fallback for old browsers */
     background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
+}
+
+.button-danger {
+    background: #FF416C; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
 
 .button:hover {
@@ -172,9 +183,14 @@ div.form-field {
     color: rgb(55, 55, 55)
 }
 
+.form-field .input-field input:focus {
+    outline: 1px solid var(--gradient2nd);
+}
+
 /*styling tiles*/
 .tile {
     padding: 0.5rem;
+    /*margin-top: 1rem;*/
     width: 100%;
     height: 100%;
     border: 1px solid var(--gradient2nd);
