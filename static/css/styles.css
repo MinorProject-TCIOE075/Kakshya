@@ -199,7 +199,7 @@ div.form-field {
     font-weight: 500;
 }
 
-.form-field .input-field input {
+.form-field .input-field input, .form-field .input-field select {
     padding: 0.25rem 0.5rem;
     width: 100%;
     border: 1px solid rgba(0, 0, 0, 0.2);

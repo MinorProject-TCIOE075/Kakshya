@@ -65,5 +65,6 @@ class ProgramForm(forms.Form):
     def clean_year(self):
         year = self.cleaned_data.get('year', None)
         # Validate if a valid year is given
-        if year.isnumeric() and len(year) == 4:
+        if not year.isnumeric() and not len(year) == 4:
             raise ValidationError("Please enter a valid year.")
+        return year
