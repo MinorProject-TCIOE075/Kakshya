@@ -13,6 +13,13 @@ class DepartmentListView(generic_views.TemplateView):
     def get_context_data(self, **kwargs):
         departments = Department.objects.all()
         kwargs['departments'] = departments
+        is_department_deleted = self.request.GET.get('deleted_department', None)
+        message = None
+        if is_department_deleted == '1':
+            message = 'Department deleted successfully.'
+
+        kwargs['message'] = message
+
         return super().get_context_data(**kwargs)
 
 
@@ -89,7 +96,12 @@ class EditDepartmentView(views.View):
 
 
 def delete_department(request, pk, *args, **kwargs):
-    pass
+    if request.method == "POST":
+        department = get_object_or_404(Department, pk=pk)
+        department.delete()
+        return redirect(
+            reverse('myadmin:department_list') + '?deleted_department=1')
+    return redirect(reverse('myadmin:department', kwargs={'pk': pk}))
 
 
 # Add program

@@ -2,6 +2,7 @@
     --gradient1st: #4A00E0;
     --gradient2nd: #8E2DE2;
     --warning-bg: #ffb3c1;
+    --success-bg: #90e0ef;
 }
 
 * {
@@ -27,6 +28,10 @@ a:hover {
 }
 
 /*utility classes */
+.color-primary {
+    color: var(--gradient2nd);
+}
+
 .bg-primary {
     background: var(--gradient1st); /* fallback for old browsers */
     background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
@@ -41,6 +46,30 @@ a:hover {
     background: -webkit-linear-gradient(var(--gradient1st), var(--gradient2nd));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.message {
+    padding: 0.25rem 0.75rem;
+    border-radius: 5px;
+    display: block;
+}
+
+.message.success-message {
+    background: var(--success-bg);
+}
+
+.message.danger-message {
+    background: var(--warning-bg);
+
+}
+
+.font-bold {
+    font-weight: 600;
+}
+
+.overflow-scroll {
+    height: 100%;
+    overflow: scroll;
 }
 
 /*sidebar*/
@@ -153,6 +182,10 @@ div.title-wrapper {
 
 }
 
+.button-secondary {
+    background: gray;
+}
+
 .button-small {
     font-size: 0.75rem;
 }
@@ -242,6 +275,29 @@ div.form-field {
 .tile-content .tile-title.tile-title-small {
     font-size: 0.95rem;
     padding-bottom: 0;
+}
+
+.tile-menu-wrapper {
+    position: relative;
+}
+
+.tile-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+}
+
+.tile-menu ul {
+    padding: 0;
+    background: white;
+    display: block;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.tile-menu ul li {
+    padding: 0.25rem 0.75rem;
+    display: block;
 }
 
 /*.tile-content .tile-title:hover {*/
