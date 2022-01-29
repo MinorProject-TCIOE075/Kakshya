@@ -1,9 +1,9 @@
 {% extends 'myadmin/base.html' %}
 
 {% block main_content %}
-    <div class="return-bar d-flex align-items-center justifu-content-start">
+    <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
-            <a href="#" onclick="window.history.back()"> <i
+            <a href="{% url 'myadmin:department_list' %}"> <i
                     class="bi bi-arrow-left"></i> Back</a>
         </div>
 
@@ -73,6 +73,11 @@
                 Program</a>
         </div>
     </div>
+    {% if message %}
+        <div class="message danger-message">
+            {{ message }}
+        </div>
+    {% endif %}
     <div class="row">
         {% for program in programs %}
             <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
@@ -92,13 +97,67 @@
                         </div>
 
                         <div class="tile-menu-wrapper">
-                            <div class="tile-menu-icon">
+                            <div class="tile-menu-icon"
+                                 onclick="toggleMenu({{ program.pk }})">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </div>
-                            <div class="open tile-menu" id="tile-menu">
+                            <div class="close tile-menu"
+                                 id="tile-menu-{{ program.pk }}">
                                 <ul>
-                                    <li>Edit</li>
-                                    <li>Delete</li>
+                                    <li><a href="#" class="list-link">Edit</a>
+                                    </li>
+                                    <li>
+
+
+                                        <button type="button"
+                                                title="Delete"
+                                                data-bs-toggle="modal"
+                                                class="list-link"
+                                                data-bs-target="#deleteProgramModal{{ program.pk }}">
+
+                                            Delete
+                                        </button>
+
+                                        <div class="modal fade"
+                                             id="deleteProgramModal{{ program.pk }}"
+                                             tabindex="-1"
+                                             aria-labelledby="deleteProgramModal{{ program.pk }}Label"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header border-bottom-0">
+                                                        <h1 class="color-primary ">
+                                                            Delete program?
+                                                        </h1>
+                                                    </div>
+                                                    <div class="modal-content border-0 px-4">
+                                                        <p>Are you sure you
+                                                            want to
+                                                            delete
+                                                            <strong>{{ program.name }}</strong>?
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer border-0">
+                                                        <button type="button"
+                                                                class="button button-secondary me-1"
+                                                                data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <form action="{% url 'myadmin:program_delete' department.pk program.pk %}"
+                                                              method="post"> {% csrf_token %}
+                                                            <button type="submit"
+                                                                    class="button button-danger"
+                                                                    title="Delete Department">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -108,4 +167,19 @@
             </div>
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock main_content %}
+
+{% block scripts %}
+    <script>
+
+
+        const toggleMenu = (id) => {
+            const tileMenu = document.querySelector(`#tile-menu-${id}`);
+            if (tileMenu.classList.contains('close')) {
+                tileMenu.classList.remove('close');
+            } else {
+                tileMenu.classList.add('close');
+            }
+        }
+    </script>
+{% endblock scripts %}

@@ -27,6 +27,10 @@ a:hover {
     text-decoration: none;
 }
 
+button:focus {
+    outline: none;
+}
+
 /*utility classes */
 .color-primary {
     color: var(--gradient2nd);
@@ -282,9 +286,14 @@ div.form-field {
 }
 
 .tile-menu {
+    display: block;
     position: absolute;
     bottom: 100%;
     right: 0;
+}
+
+.tile-menu.close {
+    display: none;
 }
 
 .tile-menu ul {
@@ -292,14 +301,22 @@ div.form-field {
     background: white;
     display: block;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .tile-menu ul li {
-    padding: 0.25rem 0.75rem;
+    /*padding: 0.25rem 0.75rem;*/
     display: block;
 }
 
-/*.tile-content .tile-title:hover {*/
-/*    text-decoration: underline;*/
-/*}*/
+.tile-menu ul li .list-link {
+    padding: 0.25rem 0.75rem;
+    display: block;
+    border: none;
+    background: white;
+    border-radius: 5px;
+}
+
+.tile-menu ul li .list-link:hover {
+    background: rgb(225, 225 ,225);
+}

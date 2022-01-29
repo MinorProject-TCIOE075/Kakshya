@@ -31,8 +31,12 @@ class DepartmentView(views.View):
         department = get_object_or_404(Department, pk=pk)
         programs = Program.objects.filter(department=department)
         # programs = {}
+        message = None
+        is_program_deleted = request.GET.get('deleted_program')
+        if is_program_deleted:
+            message = "Program deleted successfully."
         context = {"department": department,
-                   "programs": programs}
+                   "programs": programs, 'message': message}
         return render(request, 'organization/department.html', context)
 
 
@@ -145,5 +149,11 @@ class AddProgramView(views.View):
 
 # Edit program
 # Delete program
-def delete_program(request, pk, *args, **kwargs):
-    pass
+def delete_program(request, department_pk, pk, *args, **kwargs):
+    if request.method == "POST":
+        program = get_object_or_404(Program, pk=pk)
+        program.delete()
+        return redirect(
+            reverse('myadmin:department',
+                    kwargs={"pk": department_pk}) + '?deleted_program=1')
+    return redirect(reverse('myadmin:department', kwargs={'pk': pk}))

@@ -15,4 +15,6 @@ urlpatterns = [
          name='department_delete'),
     path('departments/d/<department_pk>/p/add', views.AddProgramView.as_view(),
          name='program_add'),
+    path('departments/d/<department_pk>/p/<pk>/delete/', views.delete_program,
+         name='program_delete')
 ]

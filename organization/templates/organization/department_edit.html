@@ -1,9 +1,9 @@
 {% extends 'myadmin/base.html' %}
 
 {% block main_content %}
-    <div class="return-bar d-flex align-items-center justifu-content-start">
+    <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
-            <a href="#" onclick="window.history.back()"> <i
+            <a href="{% url 'myadmin:department_list' %}"> <i
                     class="bi bi-arrow-left"></i> Back</a>
         </div>
 
