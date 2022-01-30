@@ -68,3 +68,27 @@ class ProgramForm(forms.Form):
         if not year.isnumeric() and not len(year) == 4:
             raise ValidationError("Please enter a valid year.")
         return year
+
+
+class EditProgramForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    code = forms.CharField(max_length=4)
+    year = forms.CharField(max_length=4)
+    department = forms.ModelChoiceField(queryset=Department.objects.all())
+
+    def clean(self):
+        name = self.cleaned_data.get('name', None)
+        code = self.cleaned_data.get('code', None)
+        year = self.cleaned_data.get('year', None)
+        department = self.cleaned_data.get('department', None)
+
+        if not name or not code or not year or not department:
+            raise ValidationError("All fields must be provided.")
+        return super().clean()
+
+    def clean_year(self):
+        year = self.cleaned_data.get('year', None)
+        # Validate if a valid year is given
+        if not year.isnumeric() and not len(year) == 4:
+            raise ValidationError("Please enter a valid year.")
+        return year

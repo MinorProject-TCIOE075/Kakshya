@@ -318,5 +318,14 @@ div.form-field {
 }
 
 .tile-menu ul li .list-link:hover {
-    background: rgb(225, 225 ,225);
+    background: rgb(225, 225, 225);
+}
+
+.tile-menu-icon {
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tile-menu-icon:hover {
+    background: rgba(0, 0, 0, 0.1);
 }

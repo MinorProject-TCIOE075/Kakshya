@@ -104,7 +104,9 @@
                             <div class="close tile-menu"
                                  id="tile-menu-{{ program.pk }}">
                                 <ul>
-                                    <li><a href="#" class="list-link">Edit</a>
+                                    <li>
+                                        <a href="{% url 'myadmin:program_edit' department.pk program.pk %}"
+                                           class="list-link">Edit</a>
                                     </li>
                                     <li>
 

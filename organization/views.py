@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls.base import reverse_lazy, reverse
 from django.views import generic as generic_views
 
-from .forms import DepartmentForm, EditDepartmentForm, ProgramForm
+from .forms import DepartmentForm, EditDepartmentForm, ProgramForm, \
+    EditProgramForm
 from .models import Department, Program
 
 
@@ -13,7 +14,8 @@ class DepartmentListView(generic_views.TemplateView):
     def get_context_data(self, **kwargs):
         departments = Department.objects.all()
         kwargs['departments'] = departments
-        is_department_deleted = self.request.GET.get('deleted_department', None)
+        is_department_deleted = self.request.GET.get('deleted_department',
+                                                     None)
         message = None
         if is_department_deleted == '1':
             message = 'Department deleted successfully.'
@@ -148,6 +150,44 @@ class AddProgramView(views.View):
 
 
 # Edit program
+class EditProgramView(views.View):
+    model = Program
+    form_class = EditProgramForm
+    template_name = 'organization/program_edit.html'
+
+    def get(self, request, pk, *args, **kwargs):
+        program = get_object_or_404(self.model, pk=pk)
+
+        program_form = self.form_class(initial={
+            'name': program.name,
+            'code': program.code,
+            'year': program.year,
+            'department': program.department
+        })
+        return render(request, self.template_name, {
+            "program_form": program_form
+        })
+
+    def post(self, request, department_pk, pk, *args, **kwargs):
+        program = get_object_or_404(self.model, pk=pk)
+
+        program_form = self.form_class(request.POST)
+        if program_form.is_valid():
+            program.name = program_form.cleaned_data.get('name',
+                                                         program.name)
+            program.code = program_form.cleaned_data.get('code',
+                                                         program.code)
+            program.year = program_form.cleaned_data.get('year', program.year)
+            program.department = program_form.cleaned_data.get('department',
+                                                               program.department)
+            program.save()
+            return redirect(
+                reverse('myadmin:department', kwargs={"pk": department_pk}))
+        return render(request, self.template_name, {
+            "program_form": program_form
+        })
+
+
 # Delete program
 def delete_program(request, department_pk, pk, *args, **kwargs):
     if request.method == "POST":
