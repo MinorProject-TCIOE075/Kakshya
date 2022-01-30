@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block additional_title %}
+{% endblock additional_title %}
+
+{% block content %}
+
+    <main class="row admin ms-0">
+        <div class="d-none d-md-block col-md-3 col-lg-2 p-0 align-self-stretch">
+
+            {% include 'myadmin/sidebar.html' %}
+        </div>
+        <div class="col-12 col-md-9 col-lg-10 overflow-scroll h-100">
+{#            {% include 'myadmin/navbar.html' %}#}
+            {% block main_content %}
+            {% endblock main_content %}
+        </div>
+    </main>
+
+{% endblock content %}
+
+{% block scripts %}
+{% endblock scripts %}
