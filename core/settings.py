@@ -28,9 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication.apps.AuthenticationConfig',
     'department.apps.DepartmentConfig',
-    # Tool for multi-step user registration form
-    'formtools'
-    'authentication',
+    'formtools',
     'routine',
     'organization',
     'myadmin',
@@ -132,10 +130,10 @@ AUTH_USER_MODEL = 'authentication.User'
 # CONFIGURING THE SMTP EMAIL SERVICE
 SITE_HOST = '127.0.0.1:8000'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-# Use environment variables here
-EMAIL_HOST_USER = 'kakshya2021@gmail.com'
-EMAIL_HOST_PASSWORD = 'Minor_Project2021'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Kakshya Team <noreply@example.com>'
+
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT')
