@@ -1,10 +1,12 @@
 from django.template import context
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
+from .models import Invitation
 from .forms import *
 from django.contrib.auth.views import ( 
     PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView,
@@ -163,3 +165,32 @@ def UpdateTeacherProfile(request):
 #     return render(request, 'authentication/student_update.html', context)
 
 
+# INVITATION VIEW  
+def invite(request):
+    if request.method == "POST":
+        form = InviteForm(request.POST)
+        if form.is_valid():
+            invitation = Invitation.objects.create(
+                email = form.cleaned_data['email'],
+                # this token is a randomly generated 20 characters alpanumeric token
+                # this token will be used to check if the link is invitation link is valid
+                token = User.objects.make_random_password(20),
+                sender = request.user
+            )
+            invitation.save()
+            invitation.send()
+            return HttpResponse('<p>An invitation link is sent to your email.Please check you email.</p>')
+        
+    else:
+        form = InviteForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'authentication/invite.html', context)
+
+
+def accept_invitation(request, token):
+    invitation = get_object_or_404(Invitation, token__exact=token)
+    request.session['invitation'] = invitation.id
+    return HttpResponseRedirect("auth:signup")

@@ -43,6 +43,8 @@ urlpatterns = [
     # 
 
     path('signup/', signup_form, name='signup'),
+    path('invite/', views.invite, name='invite'),
+    path(r'^invite/accept/(w+)/$', views.accept_invitation, name='invitation_accept'),
 
     # update urls
     path('teacher-update/', views.UpdateTeacherProfile, name='teacher-profile-update'),

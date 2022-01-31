@@ -1,0 +1,6 @@
+Hello, 
+You are invited to join the online classes on Kakshya,to join please click the link below:
+
+{{link}}
+
+--Kakshya Team

@@ -24,7 +24,7 @@ class LoginForm(forms.Form):
 class SignUpFormOne(forms.ModelForm):
     class Meta:
         model   = User
-        fields  = ['email', 'password', 'user_role', 'first_name', 'last_name', 'username']
+        fields  = ['email', 'password', 'first_name', 'last_name', 'username']
     
 
 class SignUpFormTwo(forms.ModelForm):
@@ -53,3 +53,7 @@ class StudentUpdateForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ['roll_number', 'classrooms', 'faculty', 'department']
+
+
+class InviteForm(forms.Form):
+    email = forms.EmailField(label='Join Email')
