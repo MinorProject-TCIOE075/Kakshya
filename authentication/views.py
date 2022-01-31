@@ -97,7 +97,9 @@ class FormWizardView(NamedUrlSessionWizardView):
 
     def done(self, form_list, **kwargs):
         form_data = self.get_all_cleaned_data()
+        password = form_data.pop('password')
         instance = User.objects.create(**form_data)
+        instance.set_password(password)
         instance.save()
         print(form_data)
 
