@@ -4,7 +4,7 @@ from django.urls.base import reverse_lazy, reverse
 from django.views import generic as generic_views
 
 from .forms import DepartmentForm, EditDepartmentForm, ProgramForm, \
-    EditProgramForm
+    EditProgramForm, CourseForm
 from .models import Department, Program, Course
 
 
@@ -204,9 +204,40 @@ class CourseListView(generic_views.ListView):
     queryset = Course.objects.all()
     template_name = 'organization/course_list.html'
     context_object_name = 'courses'
+
+    def get_context_data(self, **kwargs):
+        message = None
+        if self.request.GET.get('course_added') == '1':
+            message = 'Course added successfully!'
+        kwargs['message'] = message
+        return super().get_context_data(**kwargs)
+
+
+# add course
+class AddCourseView(views.View):
+    model = Course
+    form_class = CourseForm
+    template_name = 'organization/course_add.html'
+
+    def get(self, request, *args, **kwargs):
+        course_form = self.form_class()
+
+        return render(request, self.template_name, context={
+            'course_form': course_form,
+        })
+
+    def post(self, request, *args, **kwargs):
+        course_form = self.form_class(request.POST)
+        if course_form.is_valid():
+            course = course_form.save(commit=False)
+            course.created_by = request.user
+            course.save()
+            return redirect(reverse('myadmin:course_list') + "?course_added=1")
+        return render(request, self.template_name, context={
+            'course_form': course_form,
+        })
+
 # View Course
-# add course 
+
 # Edit Courses
 # delete Course
-
-

@@ -5,11 +5,11 @@ courses yet {%endif%}  -->
 <div class="title-wrapper">
     <h1 class="title">Courses</h1>
     <div class="action-buttons">
-        <a href="#" class="button button-primary"> Add Course </a>
+        <a href="{% url 'myadmin:course_add' %}" class="button button-primary"> Add Course </a>
     </div>
 </div>
 {% if message %}
-<div class="message danger-message">{{ message }}</div>
+<div class="message success-message">{{ message }}</div>
 {% endif %}
 <div class="row">
     {% for course in courses %}

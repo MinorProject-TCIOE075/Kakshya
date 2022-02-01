@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Department, Program
+from .models import Department, Program, Course
 
 
 class DepartmentForm(forms.Form):
@@ -92,3 +92,18 @@ class EditProgramForm(forms.Form):
         if not year.isnumeric() and not len(year) == 4:
             raise ValidationError("Please enter a valid year.")
         return year
+
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['name', 'code']
+
+    def clean_code(self):
+        code = self.cleaned_data.get('code', None)
+        if not code:
+            raise ValidationError('Code not provided')
+
+        if Course.objects.filter(code=code).exists():
+            raise ValidationError(f'Course with code "{code}" is already added.')
+        return code
