@@ -4,17 +4,23 @@
     </div>
     <div class="sidebar-links">
         <ul>
-            <li><a href="#">
-                <i class="icon bi bi-house-door-fill"></i>Dashboard</a>
+            <li>
+                <a href="#">
+                    <i class="icon bi bi-house-door-fill"></i>Dashboard</a
+                >
             </li>
-            <li><a href="#">
-                <i class="icon bi bi-list-task"></i>Routines</a>
+            <li>
+                <a href="#"> <i class="icon bi bi-list-task"></i>Routines</a>
             </li>
-            <li><a href="#">
-                <i class="icon bi bi-journal-bookmark-fill"></i>Courses</a>
+            <li>
+                <a href="#">
+                    <i class="icon bi bi-journal-bookmark-fill"></i>Courses</a
+                >
             </li>
-            <li><a href="#">
-                <i class="icon bi bi-bookmark-star-fill"></i>Departments</a>
+            <li>
+                <a href="{% url 'myadmin:department_list' %}">
+                    <i class="icon bi bi-bookmark-star-fill"></i>Departments</a
+                >
             </li>
         </ul>
     </div>
