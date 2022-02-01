@@ -5,7 +5,7 @@ from django.views import generic as generic_views
 
 from .forms import DepartmentForm, EditDepartmentForm, ProgramForm, \
     EditProgramForm
-from .models import Department, Program
+from .models import Department, Program, Course
 
 
 class DepartmentListView(generic_views.TemplateView):
@@ -197,3 +197,16 @@ def delete_program(request, department_pk, pk, *args, **kwargs):
             reverse('myadmin:department',
                     kwargs={"pk": department_pk}) + '?deleted_program=1')
     return redirect(reverse('myadmin:department', kwargs={'pk': pk}))
+
+
+# List Courses
+class CourseListView(generic_views.ListView):
+    queryset = Course.objects.all()
+    template_name = 'organization/course_list.html'
+    context_object_name = 'courses'
+# View Course
+# add course 
+# Edit Courses
+# delete Course
+
+

@@ -1,6 +1,6 @@
 :root {
-    --gradient1st: #4A00E0;
-    --gradient2nd: #8E2DE2;
+    --gradient1st: #4a00e0;
+    --gradient2nd: #8e2de2;
     --warning-bg: #ffb3c1;
     --success-bg: #90e0ef;
 }
@@ -38,7 +38,11 @@ button:focus {
 
 .bg-primary {
     background: var(--gradient1st); /* fallback for old browsers */
-    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
@@ -48,6 +52,7 @@ button:focus {
 
 .color-gradient {
     background: -webkit-linear-gradient(var(--gradient1st), var(--gradient2nd));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -64,7 +69,13 @@ button:focus {
 
 .message.danger-message {
     background: var(--warning-bg);
+}
 
+.message.empty-message {
+    background: transparent;
+    color: var(--gradient2nd);
+    font-weight: 600;
+    text-align: center;
 }
 
 .font-bold {
@@ -80,8 +91,16 @@ button:focus {
 div.sidebar {
     padding: 10px;
     background: var(--gradient1st); /* fallback for old browsers */
-    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -webkit-linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color: white;
     min-height: 100%;
     border-radius: 0 20px 20px 0;
@@ -135,7 +154,11 @@ div.title-wrapper {
     top: 100%;
     border-radius: 100rem;
     background: var(--gradient1st); /* fallback for old browsers */
-    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
@@ -148,7 +171,11 @@ div.title-wrapper {
     left: 0.75rem;
     border-radius: 100rem;
     background: var(--gradient1st); /* fallback for old browsers */
-    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
@@ -156,10 +183,10 @@ div.title-wrapper {
     font-size: 1.5rem;
 }
 
-.title-wrapper .title.sub-title::before, .title-wrapper .title.sub-title::after {
+.title-wrapper .title.sub-title::before,
+.title-wrapper .title.sub-title::after {
     display: none;
 }
-
 
 /*Styling buttons */
 .button {
@@ -175,15 +202,26 @@ div.title-wrapper {
 
 .button-primary {
     background: var(--gradient1st); /* fallback for old browsers */
-    background: -webkit-linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd)); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(
+        -45deg,
+        var(--gradient1st),
+        var(--gradient2nd)
+    ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
 .button-danger {
-    background: #FF416C; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+    background: #ff416c; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to right,
+        #ff4b2b,
+        #ff416c
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to right,
+        #ff4b2b,
+        #ff416c
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .button-secondary {
@@ -198,7 +236,6 @@ div.title-wrapper {
     color: #e7e7e7;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
-
 
 /*Styling forms*/
 div.form {
@@ -236,12 +273,13 @@ div.form-field {
     font-weight: 500;
 }
 
-.form-field .input-field input, .form-field .input-field select {
+.form-field .input-field input,
+.form-field .input-field select {
     padding: 0.25rem 0.5rem;
     width: 100%;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    color: rgb(55, 55, 55)
+    color: rgb(55, 55, 55);
 }
 
 .form-field .input-field input:focus {

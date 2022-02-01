@@ -20,4 +20,5 @@ urlpatterns = [
     path('departments/d/<department_pk>/p/<pk>/edit/',
          views.EditProgramView.as_view(),
          name='program_edit'),
+     path('courses/', views.CourseListView.as_view(), name='course_list'),
 ]
