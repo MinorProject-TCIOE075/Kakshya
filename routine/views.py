@@ -70,3 +70,12 @@ class EditRoutineView(views.View):
         return render(request, self.template_name, {
             'routine_form': routine_form
         })
+
+
+def delete_routine(request, pk, *args, **kwargs):
+    if request.method == 'POST':
+        routine = get_object_or_404(DailyRoutine, pk=pk)
+        routine.delete()
+        return redirect(reverse('myadmin:routine_list'))
+
+    return redirect(reverse('myadmin:routine_list'))
