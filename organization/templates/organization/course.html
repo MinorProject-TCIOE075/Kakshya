@@ -13,7 +13,7 @@
             {{ course.code }} - {{ course.name }}
         </h1>
         <div class="action-buttons d-flex">
-            <a href="#"
+            <a href="{% url 'myadmin:course_edit' course.pk %}"
                class="button button-primary me-2" title="Edit">
                 <i class="bi bi-pencil-square"></i>
             </a>
