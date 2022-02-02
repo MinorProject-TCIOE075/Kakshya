@@ -1,5 +1,5 @@
 from django import views
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import generic as generic_views
 
@@ -35,3 +35,12 @@ class AddRoutineView(views.View):
         return render(request, self.template_name, {
             'routine_form': routine_form
         })
+
+
+class DetailRoutineView(views.View):
+    model = DailyRoutine
+    template_name = 'routine/routine.html'
+
+    def get(self, request, pk, *args, **kwargs):
+        routine = get_object_or_404(self.model, pk=pk)
+        return render(request, self.template_name, {'routine': routine})
