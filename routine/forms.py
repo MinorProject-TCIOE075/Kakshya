@@ -44,7 +44,14 @@ class DailyRoutineForm(forms.ModelForm):
 
 
 class CourseForm(forms.ModelForm):
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={
+        'type': 'time'
+    }))
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={
+        'type': 'time'
+    }))
+
     class Meta:
         model = RoutineCourse
-        fields = ['course', 'subject_teacher', 'start_time', 'end_time',
-                  'daily_routine']
+        fields = ['daily_routine', 'course', 'subject_teacher', 'start_time',
+                  'end_time', ]

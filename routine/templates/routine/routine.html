@@ -70,7 +70,7 @@
             Routine Courses
         </h3>
         <div class="action-buttons">
-            <a href="#"
+            <a href="{% url 'myadmin:routine_course_add' routine.pk %}"
                class="button button-primary button-small m-0">Add Subject</a>
         </div>
     </div>
@@ -80,7 +80,7 @@
         </div>
     {% endif %}
     {% if courses|length > 0 %}
-    <div class="table-responsive">
+        <div class="table-responsive">
         <table class="table">
             <thead>
             <tr>
@@ -99,8 +99,8 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ course.course.name }}
                         - {{ course.course.code }}</td>
-                    <td>{{ course.start_time }}</td>
-                    <td>{{ course.end_time }}</td>
+                    <td>{{ course.start_time|time:"h:i A" }}</td>
+                    <td>{{ course.end_time|time:"h:i A" }}</td>
                     <td>{{ course.subject_teacher.get_full_name }}</td>
                     <td>
                         {% if course.is_cancelled %}
@@ -131,18 +131,3 @@
         <div class="text-center text-muted">No courses added yet.</div>
     {% endif  %}
 {% endblock main_content %}
-
-{% block scripts %}
-    <script>
-
-
-        const toggleMenu = (id) => {
-            const tileMenu = document.querySelector(`#tile-menu-${id}`);
-            if (tileMenu.classList.contains('close')) {
-                tileMenu.classList.remove('close');
-            } else {
-                tileMenu.classList.add('close');
-            }
-        }
-    </script>
-{% endblock scripts %}

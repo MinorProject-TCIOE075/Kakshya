@@ -10,4 +10,6 @@ urlpatterns = [
          name='routine_edit'),
     path('r/<int:pk>/delete/', views.delete_routine,
          name='routine_delete'),
+    path('r/<int:pk>/course/add/', views.AddRoutineCourseView.as_view(),
+         name='routine_course_add'),
 ]

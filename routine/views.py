@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import generic as generic_views
 
-from .forms import DailyRoutineForm
-from .models import DailyRoutine
+from .forms import DailyRoutineForm, CourseForm
+from .models import DailyRoutine, RoutineCourse
 
 
 class ListRoutineView(generic_views.ListView):
@@ -82,3 +82,28 @@ def delete_routine(request, pk, *args, **kwargs):
         return redirect(reverse('myadmin:routine_list'))
 
     return redirect(reverse('myadmin:routine_list'))
+
+
+class AddRoutineCourseView(views.View):
+    form_class = CourseForm
+    template_name = 'routine/routine_course_add.html'
+    model = RoutineCourse
+
+    def get(self, request, pk, *args, **kwargs):
+        routine = get_object_or_404(DailyRoutine, pk=pk)
+        routine_course_form = self.form_class(initial={
+            'daily_routine': routine
+        })
+        return render(request, self.template_name,
+                      {'routine_course_form': routine_course_form})
+
+    def post(self, request, pk, *args, **kwargs):
+        routine_course_form = self.form_class(request.POST)
+        if routine_course_form.is_valid():
+            routine_course = routine_course_form.save()
+            return redirect(reverse('myadmin:routine', kwargs={
+                'pk': pk
+            }))
+
+        return render(request, self.template_name,
+                      {'routine_course_form': routine_course_form})
