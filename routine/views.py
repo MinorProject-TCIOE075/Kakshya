@@ -44,3 +44,29 @@ class DetailRoutineView(views.View):
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(self.model, pk=pk)
         return render(request, self.template_name, {'routine': routine})
+
+
+class EditRoutineView(views.View):
+    form_class = DailyRoutineForm
+    template_name = 'routine/routine_edit.html'
+    model = DailyRoutine
+
+    def get(self, request, pk, *args, **kwargs):
+        routine = get_object_or_404(self.model, pk=pk)
+
+        routine_form = self.form_class(instance=routine)
+        return render(request, self.template_name, {
+            'routine_form': routine_form
+        })
+
+    def post(self, request, pk, *args, **kwargs):
+        routine = get_object_or_404(self.model, pk=pk)
+        routine_form = self.form_class(data=request.POST, instance=routine)
+
+        if routine_form.is_valid():
+            routine_form.save()
+            return redirect(reverse('myadmin:routine', kwargs={"pk": pk}))
+
+        return render(request, self.template_name, {
+            'routine_form': routine_form
+        })

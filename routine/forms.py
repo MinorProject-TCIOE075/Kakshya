@@ -26,6 +26,20 @@ class DailyRoutineForm(forms.ModelForm):
                                           'program': program
                                       })
 
+        # Validate when used as an edit form
+        if self.instance.day:
+            if (self.instance.day != day) or (self.instance.program != program):
+                if DailyRoutine.objects.filter(day=day,
+                                               program=program).exists():
+                    raise ValidationError(
+                        'A routine for this day "%(day)s" and '
+                        'program"%(program)s" has already exists.',
+                        code='already_created',
+                        params={
+                            'day': day,
+                            'program': program
+                        })
+
         return super().clean()
 
 

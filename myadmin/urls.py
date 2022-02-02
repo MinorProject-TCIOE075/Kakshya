@@ -5,5 +5,5 @@ app_name = 'myadmin'
 urlpatterns = [
     path('', views.AdminDashboard.as_view(), name='dashboard'),
     path('org/', include('organization.urls')),
-    path('routine/', include('routine.urls')),
+    path('routines/', include('routine.urls')),
 ]
