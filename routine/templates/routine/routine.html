@@ -79,6 +79,7 @@
             {{ message }}
         </div>
     {% endif %}
+    {% if courses|length > 0 %}
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -121,12 +122,14 @@
                         </a>
                     </td>
                 </tr>
-            {% empty %}
-                <span class="text-muted">No Courses added to the routine yet!</span>
             {% endfor %}
             </tbody>
+
         </table>
     </div>
+        {% else %}
+        <div class="text-center text-muted">No courses added yet.</div>
+    {% endif  %}
 {% endblock main_content %}
 
 {% block scripts %}
