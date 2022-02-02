@@ -22,4 +22,6 @@ urlpatterns = [
          name='program_edit'),
     path('courses/', views.CourseListView.as_view(), name='course_list'),
     path('courses/add/', views.AddCourseView.as_view(), name='course_add'),
+    path('courses/c/<int:pk>/', views.CourseDetailView.as_view(),
+         name='course'),
 ]

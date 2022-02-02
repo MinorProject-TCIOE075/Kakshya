@@ -1,37 +1,40 @@
 {% extends 'myadmin/base.html' %} {% block main_content %}
-<!-- <h1>COurses</h1>
+    <!-- <h1>COurses</h1>
 {% for course in courses %} {{course}} {% endfor %} {% if not courses %} No
 courses yet {%endif%}  -->
-<div class="title-wrapper">
-    <h1 class="title">Courses</h1>
-    <div class="action-buttons">
-        <a href="{% url 'myadmin:course_add' %}" class="button button-primary"> Add Course </a>
+    <div class="title-wrapper">
+        <h1 class="title">Courses</h1>
+        <div class="action-buttons">
+            <a href="{% url 'myadmin:course_add' %}"
+               class="button button-primary">
+                Add Course </a>
+        </div>
     </div>
-</div>
-{% if message %}
-<div class="message success-message">{{ message }}</div>
-{% endif %}
-<div class="row">
-    {% for course in courses %}
-    <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
-        <a href="#">
-            <div class="tile">
-                <div
-                    class="tile-header bg-primary bordered text-white text-center"
-                >
-                    <span>{{ course.code }}</span>
-                </div>
-                <div class="tile-content">
-                    <h3 class="tile-title tile-title-small">
-                        {{ course.code }}
-                    </h3>
-                    <a href="#" class="tile-title"> {{ course.name }} </a>
-                </div>
+    {% if message %}
+        <div class="message success-message">{{ message }}</div>
+    {% endif %}
+    <div class="row">
+        {% for course in courses %}
+            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+                <a href="{% url 'myadmin:course' course.pk %}">
+                    <div class="tile">
+                        <div
+                                class="tile-header bg-primary bordered text-white text-center"
+                        >
+                            <span>{{ course.code }}</span>
+                        </div>
+                        <div class="tile-content">
+                            <h3 class="tile-title tile-title-small">
+                                {{ course.code }}
+                            </h3>
+                            <a href="{% url 'myadmin:course' course.pk %}"
+                               class="tile-title"> {{ course.name }} </a>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </a>
+        {% empty %}
+            <div class="message empty-message">No courses yet. Add some.</div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="message empty-message">No courses yet. Add some.</div>
-    {% endfor %}
-</div>
 {% endblock main_content %}

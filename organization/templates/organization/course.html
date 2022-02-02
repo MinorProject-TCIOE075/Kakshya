@@ -1,0 +1,64 @@
+{% extends 'myadmin/base.html' %}
+
+{% block main_content %}
+    <div class="return-bar d-flex align-items-center justify-content-start pt-2">
+        <div class="back-arr font-bold color-primary">
+            <a href="{% url 'myadmin:course_list' %}"> <i
+                    class="bi bi-arrow-left"></i> Back</a>
+        </div>
+
+    </div>
+    <div class="title-wrapper">
+        <h1 class="title">
+            {{ course.code }} - {{ course.name }}
+        </h1>
+        <div class="action-buttons d-flex">
+            <a href="#"
+               class="button button-primary me-2" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+
+
+            <!-- Button trigger modal -->
+            <button type="button" class="button button-danger" title="Delete"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteCourseModal">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteCourseModal" tabindex="-1"
+                 aria-labelledby="deleteCourseModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-0">
+                            <h1 class="color-primary ">
+                                Delete Course??
+                            </h1>
+                        </div>
+                        <div class="modal-content border-0 px-4">
+                            <p>Are you sure you want to delete this
+                                course?</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button"
+                                    class="button button-secondary me-1"
+                                    data-bs-dismiss="modal">Close
+                            </button>
+                            <form action="#"
+                                  method="post"> {% csrf_token %}
+                                <button type="submit"
+                                        class="button button-danger"
+                                        title="Delete Department">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

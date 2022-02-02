@@ -237,7 +237,15 @@ class AddCourseView(views.View):
             'course_form': course_form,
         })
 
-# View Course
 
-# Edit Courses
-# delete Course
+# View Course
+class CourseDetailView(views.View):
+    template_name = 'organization/course.html'
+    model = Course
+
+    def get(self, request, pk, *args, **kwargs):
+        course = get_object_or_404(self.model, pk=pk)
+        return render(request, self.template_name, context={'course': course})
+
+# TODO: Edit Courses
+# TODO: delete Course
