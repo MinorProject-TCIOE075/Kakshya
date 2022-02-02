@@ -46,7 +46,7 @@
                                     class="button button-secondary me-1"
                                     data-bs-dismiss="modal">Close
                             </button>
-                            <form action="#"
+                            <form action="{% url 'myadmin:course_delete' course.pk %}"
                                   method="post"> {% csrf_token %}
                                 <button type="submit"
                                         class="button button-danger"

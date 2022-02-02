@@ -103,7 +103,7 @@ class CourseForm(forms.ModelForm):
         code = self.cleaned_data.get('code', None)
         if not code:
             raise ValidationError('Code not provided')
-
-        if Course.objects.filter(code=code).exists():
-            raise ValidationError(f'Course with code "{code}" is already added.')
+        if self.instance is None:
+            if Course.objects.filter(code=code).exists():
+                raise ValidationError(f'Course with code "{code}" is already added.')
         return code

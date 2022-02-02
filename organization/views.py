@@ -247,5 +247,36 @@ class CourseDetailView(views.View):
         course = get_object_or_404(self.model, pk=pk)
         return render(request, self.template_name, context={'course': course})
 
-# TODO: Edit Courses
-# TODO: delete Course
+
+# Edit Courses
+class EditCourseView(views.View):
+    template_name = 'organization/course_edit.html'
+    form_class = CourseForm
+    model = Course
+
+    def get(self, request, pk, *args, **kwargs):
+        course = get_object_or_404(self.model, pk=pk)
+        course_form = self.form_class(instance=course)
+        return render(request, self.template_name,
+                      {"course_form": course_form})
+
+    def post(self, request, pk, *args, **kwargs):
+        course = get_object_or_404(self.model, pk=pk)
+        course_form = self.form_class(data=request.POST, instance=course)
+        if course_form.is_valid():
+            course_form.save()
+            return redirect(reverse('myadmin:course', kwargs={
+                "pk": pk
+            }))
+        return render(request, self.template_name,
+                      {"course_form": course_form})
+
+
+# Delete Course
+def delete_course(request, pk, *args, **kwargs):
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        course.delete()
+        return redirect(
+            reverse('myadmin:course_list') + '?deleted_program=1')
+    return redirect(reverse('myadmin:course_list'))
