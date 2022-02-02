@@ -43,7 +43,10 @@ class DetailRoutineView(views.View):
 
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(self.model, pk=pk)
-        return render(request, self.template_name, {'routine': routine})
+        routine_courses = routine.courses.all().order_by('start_time')
+
+        return render(request, self.template_name,
+                      {'routine': routine, 'courses': routine_courses})
 
 
 class EditRoutineView(views.View):

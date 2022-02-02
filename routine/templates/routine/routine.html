@@ -64,112 +64,69 @@
         </div>
     </div>
 
-{#    <div class="title-wrapper">#}
-{#        <h3 class="title sub-title">#}
-{#            Programs#}
-{#        </h3>#}
-{#        <div class="action-buttons">#}
-{#            <a href="{% url 'myadmin:program_add' department.pk %}"#}
-{#               class="button button-primary button-small m-0">Add#}
-{#                Program</a>#}
-{#        </div>#}
-{#    </div>#}
-{#    {% if message %}#}
-{#        <div class="message danger-message">#}
-{#            {{ message }}#}
-{#        </div>#}
-{#    {% endif %}#}
-{#    <div class="row">#}
-{#        {% for program in programs %}#}
-{#            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">#}
-{#                <div class="tile">#}
-{#                    <div class="tile-header bg-primary bordered text-white text-center">#}
-{#                        <span>{{ program.code }}</span>#}
-{#                    </div>#}
-{#                    <div class="tile-content d-flex align-items-center justify-content-between">#}
-{#                        <div>#}
-{#                            <h3 class="tile-title tile-title-small">#}
-{#                                {{ program.code }}-{{ program.year }}#}
-{#                            </h3>#}
-{#                            <h3#}
-{#                                    class="tile-title m-0">#}
-{#                                {{ program.name }}#}
-{#                            </h3>#}
-{#                        </div>#}
-{##}
-{#                        <div class="tile-menu-wrapper">#}
-{#                            <div class="tile-menu-icon"#}
-{#                                 onclick="toggleMenu({{ program.pk }})">#}
-{#                                <i class="bi bi-three-dots-vertical"></i>#}
-{#                            </div>#}
-{#                            <div class="close tile-menu"#}
-{#                                 id="tile-menu-{{ program.pk }}">#}
-{#                                <ul>#}
-{#                                    <li>#}
-{#                                        <a href="{% url 'myadmin:program_edit' department.pk program.pk %}"#}
-{#                                           class="list-link">Edit</a>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{##}
-{##}
-{#                                        <button type="button"#}
-{#                                                title="Delete"#}
-{#                                                data-bs-toggle="modal"#}
-{#                                                class="list-link"#}
-{#                                                data-bs-target="#deleteProgramModal{{ program.pk }}">#}
-{##}
-{#                                            Delete#}
-{#                                        </button>#}
-{##}
-{#                                        <div class="modal fade"#}
-{#                                             id="deleteProgramModal{{ program.pk }}"#}
-{#                                             tabindex="-1"#}
-{#                                             aria-labelledby="deleteProgramModal{{ program.pk }}Label"#}
-{#                                             aria-hidden="true">#}
-{#                                            <div class="modal-dialog">#}
-{#                                                <div class="modal-content">#}
-{#                                                    <div class="modal-header border-bottom-0">#}
-{#                                                        <h1 class="color-primary ">#}
-{#                                                            Delete program?#}
-{#                                                        </h1>#}
-{#                                                    </div>#}
-{#                                                    <div class="modal-content border-0 px-4">#}
-{#                                                        <p>Are you sure you#}
-{#                                                            want to#}
-{#                                                            delete#}
-{#                                                            <strong>{{ program.name }}</strong>?#}
-{#                                                        </p>#}
-{#                                                    </div>#}
-{#                                                    <div class="modal-footer border-0">#}
-{#                                                        <button type="button"#}
-{#                                                                class="button button-secondary me-1"#}
-{#                                                                data-bs-dismiss="modal">#}
-{#                                                            Close#}
-{#                                                        </button>#}
-{#                                                        <form action="{% url 'myadmin:program_delete' department.pk program.pk %}"#}
-{#                                                              method="post"> {% csrf_token %}#}
-{#                                                            <button type="submit"#}
-{#                                                                    class="button button-danger"#}
-{#                                                                    title="Delete Department">#}
-{#                                                                Delete#}
-{#                                                            </button>#}
-{#                                                        </form>#}
-{##}
-{#                                                    </div>#}
-{#                                                </div>#}
-{#                                            </div>#}
-{#                                        </div>#}
-{##}
-{#                                    </li>#}
-{#                                </ul>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
+
+    <div class="title-wrapper">
+        <h3 class="title sub-title">
+            Routine Courses
+        </h3>
+        <div class="action-buttons">
+            <a href="#"
+               class="button button-primary button-small m-0">Add Subject</a>
+        </div>
+    </div>
+    {% if message %}
+        <div class="message danger-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in courses %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ course.course.name }}
+                        - {{ course.course.code }}</td>
+                    <td>{{ course.start_time }}</td>
+                    <td>{{ course.end_time }}</td>
+                    <td>{{ course.subject_teacher.get_full_name }}</td>
+                    <td>
+                        {% if course.is_cancelled %}
+                            Cancelled
+                        {% else %}
+                            Not Cancelled
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="#"
+                           class="button button-primary button-small m-0 me-2 d-inline-block"
+                           title="Edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="#"
+                           class="button button-danger button-small m-0 d-inline-block"
+                           title="Edit">
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <span class="text-muted">No Courses added to the routine yet!</span>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock main_content %}
 
 {% block scripts %}
