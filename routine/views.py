@@ -44,9 +44,16 @@ class DetailRoutineView(views.View):
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(self.model, pk=pk)
         routine_courses = routine.courses.all().order_by('start_time')
+        message = None
+        is_routine_course_deleted = request.GET.get('delete_routine_course',
+                                                    None)
+
+        if is_routine_course_deleted:
+            message = "Course deleted successfully"
 
         return render(request, self.template_name,
-                      {'routine': routine, 'courses': routine_courses})
+                      {'routine': routine, 'courses': routine_courses,
+                       'message': message})
 
 
 class EditRoutineView(views.View):
@@ -139,4 +146,17 @@ class EditRoutineCourseView(views.View):
         return render(request, self.template_name,
                       {'routine_course_form': routine_course_form})
 
+
 # TODO Delete Routine Course
+def delete_routine_course(request, routine_pk, pk, *args, **kwargs):
+    if request.method == 'POST':
+        routine_course = get_object_or_404(RoutineCourse,
+                                           daily_routine__pk=routine_pk, pk=pk)
+        routine_course.delete()
+        return redirect(reverse('myadmin:routine', kwargs={
+            'pk': routine_pk
+        }) + '?delete_routine_course=1')
+
+    return redirect(reverse('myadmin:routine', kwargs={
+        'pk': routine_pk
+    }))
