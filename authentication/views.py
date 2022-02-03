@@ -1,18 +1,19 @@
-from django.template import context
+from django.core.mail import EmailMessage
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
-from .models import Invitation
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .forms import *
-from django.contrib.auth.views import ( 
-    PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView,
-    PasswordResetCompleteView
-)
-from formtools.wizard.views import NamedUrlSessionWizardView
+from .tokens import account_activation_token
+
+# from formtools.wizard.views import NamedUrlSessionWizardView
 
 
 class LoginView(View):
@@ -52,58 +53,61 @@ def user_logout(request):
     # return redirect("auth:login")
 
 
-# CUSTOM PASSWORD RESET VIEWS
-class CustomPasswordResetView(PasswordResetView):
-    email_template_name = 'authentication/password_reset_email.html'
-    template_name = 'authentication/password_reset_form.html'
-    success_url = reverse_lazy('auth:password_reset_done')
+# # CUSTOM PASSWORD RESET VIEWS
+# class CustomPasswordResetView(PasswordResetView):
+#     email_template_name = 'authentication/password_reset_email.html'
+#     template_name = 'authentication/password_reset_form.html'
+#     success_url = reverse_lazy('auth:password_reset_done')
 
-class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'authentication/password_reset_done.html'
-
-
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'authentication/password_reset_confirm.html'
+# class CustomPasswordResetDoneView(PasswordResetDoneView):
+#     template_name = 'authentication/password_reset_done.html'
 
 
-class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'authentication/password_reset_complete.html'    
+# class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+#     template_name = 'authentication/password_reset_confirm.html'
 
 
-# SIGNUP FORM VIEW
-"""
-    The FormWizardView is derived from the NamedUrlSessionWizardView which is a class of django-formtools
-    Django-formtools is a package that is used to render a django form in multiple steps.
-    The NamedUrlSessionWizard class stores the values of the fields into the session storage builtin in django
-    such that while a user submits a form and prompts to another step, the previously entered value should be stored
-    somewhere. Instead of using Sessions we can also use the browser based Cookies to store the values namely
-    NamedUrlCookiesWizardView.
-
-    form_list is a list of the form classes that the view function will render in multiple steps
-
-    the done() method is a method of NamedUrlSessionWizardView. The done() method is overridden in 
-    following class.
-    In simple terms, the done method is used to add our own logic as to what is to be done after the user 
-    submits the data.
-
-    all the validated data from the form_list is stored in the form_data variable as a dictionary.
-    After that an instance of the User model is created where all the cleaned data is passed as a dictionary.
-    After that save() method is called on the instance that saves the instance into the database. 
-"""
-class FormWizardView(NamedUrlSessionWizardView):
-    template_name = 'authentication/signup.html'
-    form_list = [SignUpFormOne, SignUpFormTwo]
+# class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+#     template_name = 'authentication/password_reset_complete.html'    
 
 
-    def done(self, form_list, **kwargs):
-        form_data = self.get_all_cleaned_data()
-        password = form_data.pop('password')
-        instance = User.objects.create(**form_data)
-        instance.set_password(password)
-        instance.save()
-        print(form_data)
+# # SIGNUP FORM VIEW
+# """
+#     The FormWizardView is derived from the NamedUrlSessionWizardView which is a class of django-formtools
+#     Django-formtools is a package that is used to render a django form in multiple steps.
+#     The NamedUrlSessionWizard class stores the values of the fields into the session storage builtin in django
+#     such that while a user submits a form and prompts to another step, the previously entered value should be stored
+#     somewhere. Instead of using Sessions we can also use the browser based Cookies to store the values namely
+#     NamedUrlCookiesWizardView.
 
-        return render(self.request, 'authentication/done.html', form_data)
+#     form_list is a list of the form classes that the view function will render in multiple steps
+
+#     the done() method is a method of NamedUrlSessionWizardView. The done() method is overridden in 
+#     following class.
+#     In simple terms, the done method is used to add our own logic as to what is to be done after the user 
+#     submits the data.
+
+#     all the validated data from the form_list is stored in the form_data variable as a dictionary.
+#     After that an instance of the User model is created where all the cleaned data is passed as a dictionary.
+#     After that save() method is called on the instance that saves the instance into the database. 
+# """
+# class FormWizardView(NamedUrlSessionWizardView):
+#     template_name = 'authentication/signup.html'
+#     form_list = [SignUpFormOne, SignUpFormTwo]
+
+
+#     def done(self, form_list, **kwargs):
+#         form_data = self.get_all_cleaned_data()
+#         password = form_data.pop('password')
+#         instance = User.objects.create(**form_data)
+#         instance.set_password(password)
+#         instance.save()
+#         print(form_data)
+
+#         return render(self.request, 'authentication/done.html', form_data)
+
+
+
 
 # User views
 class UserDetailView(DetailView):
@@ -167,32 +171,62 @@ def UpdateTeacherProfile(request):
 #     return render(request, 'authentication/student_update.html', context)
 
 
-# INVITATION VIEW  
-def invite(request):
+@user_passes_test(lambda u: u.is_superuser)
+def signup(request):
     if request.method == "POST":
-        form = InviteForm(request.POST)
-        if form.is_valid():
-            invitation = Invitation.objects.create(
-                email = form.cleaned_data['email'],
-                # this token is a randomly generated 20 characters alpanumeric token
-                # this token will be used to check if the link is invitation link is valid
-                token = User.objects.make_random_password(20),
-                sender = request.user
-            )
-            invitation.save()
-            invitation.send()
-            return HttpResponse('<p>An invitation link is sent to your email.Please check you email.</p>')
+        form = SignUpForm(request.POST)
         
+        if form.is_valid():
+            user = form.save(commit=False)
+            # user.is_active is set to false until the user activates it through the activation link
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            
+            # Mail related configuration 
+            subject = "Activation of Account"
+            message = render_to_string(
+                'authentication/acc_activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    # creates an encoded uid from user's pk that is used in confirmation link
+                    # when user clicks the link this uid is passed to the activate view and 
+                    # is decoded there to determine which user is it
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    # creates the token to use in the email confirmation link for that particular user
+                    'token': account_activation_token.make_token(user)
+                }
+            )
+            to_email = form.cleaned_data.get('email') 
+            email = EmailMessage(
+                subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse(
+                "An account activation link is send to your email address.Please check youe email"
+            )
     else:
-        form = InviteForm()
-
-    context = {
-        'form': form
-    }
-    return render(request, 'authentication/invite.html', context)
+        form = SignUpForm()
+    return render(request, 'authentication/signup.html', {'form': form})
 
 
-def accept_invitation(request, token):
-    invitation = get_object_or_404(Invitation, token__exact=token)
-    request.session['invitation'] = invitation.id
-    return HttpResponseRedirect("auth:signup")
+def activate(request, uidb64, token):
+    try:
+        # the uid that is passed throught the confirmation link is decoded here
+        uid = urlsafe_base64_decode(uidb64)
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    #  checks if the user is valid and token is actually valid fro the use
+    if user is not None and account_activation_token.check_token(user,token):
+        # if yes then the account is activated for the user and the user can log in now
+        user.is_active = True
+        user.save()
+        login(request, user)
+        print(user)
+        return redirect("auth:home")
+    else:
+        return HttpResponse("The link is either expired or invalid")
+
+

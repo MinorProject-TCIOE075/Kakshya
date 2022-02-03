@@ -11,9 +11,18 @@
 <h1>Login</h1>
 <form action="" method="post">
     {% csrf_token %}
-    {{login_form.as_p}}
-    <input type="submit" value="Login">
+    
+    {% for field in login_form %}
+        <p>
+            {{field.label_tag}}
+            {{field}}
+        </p>
+
+        {% for error in field.errors %}
+            <p style="color:red">{{error}}</p>
+        {% endfor %}
+    {% endfor %}    
+    <button type="submit">Log in</button>
 </form>
-<a href="{% url 'auth:password_reset' %}">Forgot password?</a>
 </body>
 </html>

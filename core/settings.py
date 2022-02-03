@@ -132,8 +132,7 @@ SITE_HOST = '127.0.0.1:8000'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Kakshya Team <noreply@example.com>'
-
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '0d9bee39245c3e'
+EMAIL_HOST_PASSWORD = '1956af539376a3'
+EMAIL_PORT = '2525'

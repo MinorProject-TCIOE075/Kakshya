@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from .models import Address, Student, Teacher, User
 
@@ -13,24 +14,12 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
-"""
-    The SignUpFormOne & SignUpFormTwo is a ModelForm that has the fields as below which will be rendered 
-    into the template named signup.html. 
-    The Purpose of using two ModelForms for the same Model is that the two model forms will be rendered
-    in sequence one after another such that the user won't be intimidated seeing large number of form fields in 
-    a single page.
-"""
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=200)
 
-class SignUpFormOne(forms.ModelForm):
-    class Meta:
-        model   = User
-        fields  = ['email', 'password', 'first_name', 'last_name', 'username']
-    
-
-class SignUpFormTwo(forms.ModelForm):
     class Meta:
         model = User
-        fields = [ 'phone_num', 'date_of_birth', 'blood_group', 'citizenship_num']
+        fields = ('email', 'username', 'password1', 'password2')
 
 
 

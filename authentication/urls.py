@@ -9,17 +9,17 @@ from .forms import *
     After submitting the SignUpFormOne the user is prompted to the second form namely SingUpFormTwo
     after both the form is submitted the details are recorded and saved in the database under the User model.
 """
-named_signup_forms = (
-    ('Email and more', SignUpFormOne),
-    ('Personal Information', SignUpFormTwo)
-)
+# named_signup_forms = (
+#     ('Email and more', SignUpFormOne),
+#     ('Personal Information', SignUpFormTwo)
+# )
 
 """
     signup_form is a variable created simply to simplify and make the url path cleaner.
     this variable is passed as the view for the url path named re_path('signup/(?P<step>.+)$', ...)
-"""
-signup_form = views.FormWizardView.as_view(named_signup_forms,
-    url_name='auth:signup', done_step_name='finished')
+# """
+# signup_form = views.FormWizardView.as_view(named_signup_forms,
+#     url_name='auth:signup', done_step_name='finished')
 
 
 
@@ -32,20 +32,20 @@ urlpatterns = [
 
     # These following 4 paths are for the password reset functionality although it is not ready yet.
 
-    path('password_reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password_reset/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # path('password_reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
+    # path('password_reset/done', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('reset/<uidb64>/<token>', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    # path('password_reset/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     # The following two paths arefor the signup functionality
     # The re_path checks the relative expression of the url path and if valid renders the signup_form view
-    re_path(r'^signup/(?P<step>.+)$', signup_form, name='signup'),
+    # re_path(r'^signup/(?P<step>.+)$', signup_form, name='signup'),
     # 
 
-    path('signup/', signup_form, name='signup'),
-    path('invite/', views.invite, name='invite'),
-    path(r'^invite/accept/(w+)/$', views.accept_invitation, name='invitation_accept'),
-
+    # path('signup/', signup_form, name='signup'),
+    path('signup/', views.signup, name='signup'),
+    path('activate/?P<uidb64>[0-9A-Za-z_\-]+/?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/', views.activate, name='activate'),
+    
     # update urls
     path('teacher-update/', views.UpdateTeacherProfile, name='teacher-profile-update'),
     # path('student-update/', views.StudentProfileUpdate, name = 'student-update')
