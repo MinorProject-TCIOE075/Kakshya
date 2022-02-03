@@ -360,8 +360,13 @@ div.form-field {
 }
 
 .tile-menu-icon {
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
 }
 
 .tile-menu-icon:hover {
