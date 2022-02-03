@@ -107,3 +107,36 @@ class AddRoutineCourseView(views.View):
 
         return render(request, self.template_name,
                       {'routine_course_form': routine_course_form})
+
+
+# Edit Routine Course
+class EditRoutineCourseView(views.View):
+    form_class = CourseForm
+    template_name = 'routine/routine_course_edit.html'
+    model = RoutineCourse
+
+    def get(self, request, routine_pk, pk, *args, **kwargs):
+        routine_course = get_object_or_404(self.model,
+                                           daily_routine__pk=routine_pk,
+                                           pk=pk)
+        routine_course_form = self.form_class(instance=routine_course)
+
+        return render(request, self.template_name,
+                      {'routine_course_form': routine_course_form})
+
+    def post(self, request, routine_pk, pk, *args, **kwargs):
+        routine_course = get_object_or_404(self.model,
+                                           daily_routine__pk=routine_pk, pk=pk)
+        routine_course_form = self.form_class(data=request.POST,
+                                              instance=routine_course)
+
+        if routine_course_form.is_valid():
+            routine_course_form.save()
+            return redirect(reverse('myadmin:routine', kwargs={
+                'pk': routine_pk
+            }))
+
+        return render(request, self.template_name,
+                      {'routine_course_form': routine_course_form})
+
+# TODO Delete Routine Course
