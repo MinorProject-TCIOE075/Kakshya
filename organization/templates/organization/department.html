@@ -1,5 +1,9 @@
 {% extends 'myadmin/base.html' %}
 
+{% block subtitle %}
+    | {{ department }} - {{ department.name }}
+{% endblock subtitle %}
+
 {% block main_content %}
     <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
@@ -182,6 +186,9 @@
             } else {
                 tileMenu.classList.add('close');
             }
+
         }
+
+
     </script>
 {% endblock scripts %}

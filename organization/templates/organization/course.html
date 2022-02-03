@@ -1,5 +1,9 @@
 {% extends 'myadmin/base.html' %}
 
+{% block subtitle %}
+    | {{ course.code }} - {{ course.name }}
+{% endblock %}
+
 {% block main_content %}
     <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
@@ -50,7 +54,7 @@
                                   method="post"> {% csrf_token %}
                                 <button type="submit"
                                         class="button button-danger"
-                                        title="Delete Department">
+                                        title="Delete Course">
                                     Delete
                                 </button>
                             </form>

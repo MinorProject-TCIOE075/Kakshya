@@ -1,7 +1,10 @@
-{% extends 'myadmin/base.html' %} {% block main_content %}
-    <!-- <h1>COurses</h1>
-{% for course in courses %} {{course}} {% endfor %} {% if not courses %} No
-courses yet {%endif%}  -->
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Courses
+{% endblock %}
+
+{% block main_content %}
     <div class="title-wrapper">
         <h1 class="title">Courses</h1>
         <div class="action-buttons">
