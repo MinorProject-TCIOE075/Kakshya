@@ -26,7 +26,7 @@ class Program(models.Model):
     created_by = models.ForeignKey(USER, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.code}-{self.year} -- {self.department}'
+        return f'{self.code}-{self.year}'
 
 
 class Course(models.Model):
