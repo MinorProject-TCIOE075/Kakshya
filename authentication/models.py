@@ -103,28 +103,28 @@ class Address(models.Model):
         return f"{self.user.email} {self.address}"
 
 
-class Invitation(models.Model):
-    email = models.EmailField()
-    token = models.CharField(max_length = 32)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'From {self.sender.email} to {self.email}'
-
-    def send(self):
-        subject = 'Invitation to join Kakshya'
-        link = 'http://%s/auth/signup/%s' % (
-            settings.SITE_HOST,
-            self.token
-        )
-        template = get_template('authentication/invitation_email.txt')
-        context = {
-            'link': link,
-            'sender': self.sender.email
-        }
-        message = template.render(context)
-        send_mail(
-            subject, 
-            message,
-            settings.EMAIL_HOST_USER, [self.email]
-        )
+# class Invitation(models.Model):
+#     email = models.EmailField()
+#     token = models.CharField(max_length = 32)
+#     sender = models.ForeignKey(User, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return f'From {self.sender.email} to {self.email}'
+#
+#     def send(self):
+#         subject = 'Invitation to join Kakshya'
+#         link = 'http://%s/auth/signup/%s' % (
+#             settings.SITE_HOST,
+#             self.token
+#         )
+#         template = get_template('authentication/invitation_email.txt')
+#         context = {
+#             'link': link,
+#             'sender': self.sender.email
+#         }
+#         message = template.render(context)
+#         send_mail(
+#             subject,
+#             message,
+#             settings.EMAIL_HOST_USER, [self.email]
+#         )
