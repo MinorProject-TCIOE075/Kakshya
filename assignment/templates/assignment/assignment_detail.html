@@ -1,0 +1,13 @@
+<h1>Assignment</h1>
+<hr>
+<div class="container">
+    <h2>{{object.title}}</h2>
+    <p>Due on <strong>{{object.due_date|date:"D, d M Y, h:i a"}}</strong></p>
+    <p>{{object.created_by.username}} on <small>{{object.created_on}}</small></p>
+    <p>Description</p>
+    <p>{{object.details}}</p>
+    <p><a href="{{object.file.url}}" target="_blank">Attachment File</a></p>
+    <p><strong>{{object.points}}</strong> points possible</p>
+    <button><a href="{% url 'assignment:edit_assignment' object.id %}">Edit</a></button>
+    <button><a href="{% url 'assignment:assignment_delete' object.id %}">Delete</a></button>
+</div>

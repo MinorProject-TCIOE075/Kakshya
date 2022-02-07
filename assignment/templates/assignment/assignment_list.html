@@ -1,0 +1,11 @@
+{% for assignment in assignments %}
+    <div style="border: 1px solid gray;" >
+        <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
+        <p>{{assignment.details}}</p>
+        <p>{{assignment.created_by.username}}</p>
+        <p>{{assignment.due_date}}</p>
+        <p>{{assignment.file}}</p>
+        
+    </div>
+    <br>
+{% endfor %} 

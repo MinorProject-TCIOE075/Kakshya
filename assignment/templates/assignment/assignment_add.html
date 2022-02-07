@@ -1,0 +1,16 @@
+Add an assignment
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for fields in assignment_form %}
+    <p>
+        {{fields.label_tag}}
+
+        {{fields}}  
+    </p>    
+        {% for error in fields.errors %}
+            <p style="color: red;">{{error}}</p>
+        {% endfor %}
+    {% endfor %}
+    <button type="submit">Add assignment</button>
+</form>
