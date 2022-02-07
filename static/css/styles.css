@@ -274,7 +274,8 @@ div.form-field {
 }
 
 .form-field .input-field input,
-.form-field .input-field select {
+.form-field .input-field select,
+.form-field .input-field textarea{
     padding: 0.25rem 0.5rem;
     width: 100%;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -282,7 +283,16 @@ div.form-field {
     color: rgb(55, 55, 55);
 }
 
-.form-field .input-field input:focus {
+.form-field .input-field select option {
+    padding: 0.25rem 0.5rem;
+}
+
+.form-field .help {
+    color: gray;
+    font-size: 90%;
+}
+
+.form-field .input-field input:focus, .form-field .input-field textarea:focus {
     outline: 1px solid var(--gradient2nd);
 }
 

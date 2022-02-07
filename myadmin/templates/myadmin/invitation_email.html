@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Invitation To Kakashya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --gradient1st: #4a00e0;
+            --gradient2nd: #8e2de2;
+            --warning-bg: #ffb3c1;
+            --success-bg: #90e0ef;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .bg-primary {
+            background: var(--gradient1st); /* fallback for old browsers */
+            background: -webkit-linear-gradient(
+                    -45deg,
+                    var(--gradient1st),
+                    var(--gradient2nd)
+            ); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
+        }
+        a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .styled-button {
+            padding: 0.75rem 1.25rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<h1>Kakshya</h1>
+You are invited to <strong>Kakshya</strong> by your organization.
+<br>
+<a href="#" class="styled-button bg-primary">
+    Join Invitation
+</a>
+{{ abs_url }}
+</body>
+</html>
