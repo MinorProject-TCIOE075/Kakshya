@@ -15,12 +15,37 @@ class AssignmentForm(forms.ModelForm):
         'close_date': forms.DateInput(format=('%m/%d/%Y'), attrs={'class':'form-control', 'placeholder':'Select closing date', 'type':'date'}),
         }
 
-    def clean_file(self):
+    def clean(self):
+        title = self.cleaned_data.get('title', None)
+        details = self.cleaned_data.get('details', None)
+        due_date = self.cleaned_data.get('due_date', None)
+        close_date = self.cleaned_data.get('close_date', None)
+        points = self.cleaned_data.get('points', None)
         file = self.cleaned_data.get('file', None)
-        if not file:
-            raise ValidationError('File is not selected')
+
+        msg = ""
+        if not title or not details or not file:
+            raise ValidationError("Title and details must be filled")
         
-        return file
+        if not points or not isinstance(points, int):
+            raise ValidationError("Points is not set or is not an integer")
+           
+
+        if not due_date or not close_date:
+            msg = "Due date or close date not specified"
+            self.add_error("NoneType", msg)
+
+        elif due_date < timezone.now() or close_date < timezone.now():
+            msg = "Invalid date selected"
+            self.add_error("due_date", msg)
+
+        elif due_date > close_date:
+            msg = "Due date is beyond closing date"
+            self.add_error("close_date", msg)
+        
+        else:
+            print("all good")
+        return super(AssignmentForm, self).clean()
 
 
 class EditAssignmentForm(forms.Form):
@@ -39,20 +64,25 @@ class EditAssignmentForm(forms.Form):
         points = self.cleaned_data.get('points', None)
         file = self.cleaned_data.get('file', None)
 
+        msg = ""
         if not title or not details or not file:
             raise ValidationError("Title and details must be filled")
         
+        if not points or not isinstance(points, int):
+            raise ValidationError("Points is not set or is not an integer")
+           
+
         if not due_date or not close_date:
-            print("not due_date")
-            raise ValidationError("Due date and Closing date must be set properly")
+            msg = "Due date or close date not specified"
+            self.add_error("NoneType", msg)
 
         elif due_date < timezone.now() or close_date < timezone.now():
-            print("invalid date")
-            raise ValidationError("You selected Invalid date and time")
+            msg = "Invalid date selected"
+            self.add_error("due_date", msg)
 
         elif due_date > close_date:
-            print("Due date beyond closing date")
-            raise ValidationError("Due date is beyond the closing date")
+            msg = "Due date is beyond closing date"
+            self.add_error("close_date", msg)
         
         else:
             print("all good")
