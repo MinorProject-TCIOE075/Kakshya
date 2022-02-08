@@ -1,3 +1,4 @@
+from email.policy import default
 from django.urls import reverse
 from django.db import models
 from django.conf import settings
@@ -29,11 +30,11 @@ class Assignment(models.Model):
 class AssignmentSubmission(models.Model):
     submitted_by = models.ForeignKey(User, on_delete=models.CASCADE)
     assignment_id = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50)
-    grade = models.IntegerField()
+    status = models.CharField(max_length=50, default='submitted')
+    grade = models.IntegerField(default=0)
     file = models.FileField(upload_to='submission/')
-    created_on = models.DateTimeField()
-    modified_on = models.DateTimeField()
+    created_on = models.DateTimeField(auto_now=True)
+    modified_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.submitted_by.username} on {self.created_on}"

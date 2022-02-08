@@ -4,7 +4,7 @@ from django.views import generic
 from django.urls.base import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import AssignmentForm, EditAssignmentForm
+from .forms import AssignmentForm, EditAssignmentForm, AssignmentSubmitForm
 from .models import Assignment, AssignmentSubmission
 
 
@@ -85,17 +85,73 @@ class EditAssignmentView(LoginRequiredMixin, views.View):
         })
 
 
-class AssignmentDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Assignment
-    template_name = 'assignment/assignment_detail.html'
+# class AssignmentDetailView(LoginRequiredMixin, generic.DetailView):
+#     model = Assignment
+#     template_name = 'assignment/assignment_detail.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(AssignmentDetailView, self).get_context_data(*args, **kwargs)
+#     def get_context_data(self, *args, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         return context
 
-        return context
 
 
 class AssignmentDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Assignment
     success_url = reverse_lazy("assignment:assignment_list")
     template_name = 'assignment/assignment_confirm_delete.html'
+
+
+
+# class AssignmentSubmissionView(LoginRequiredMixin, generic.View):
+#     model = AssignmentSubmission
+#     template_name = 'assignment/assignment_detail.html'
+#     form_class = AssignmentSubmitForm
+
+#     def get(self, request, *args, **kwargs):
+#         assignment_submit_form = self.form_class()
+#         context = {
+#             'assignment_submit_form': assignment_submit_form
+#         }
+
+#         return render(request, self.template_name, context)
+
+#     def post(self, request, *args, **kwargs):
+#         assignment_submit_form = self.form_class(request.POST,  request.FILES)
+#         if assignment_submit_form.is_valid():
+#             assignment_submit = assignment_submit_form.save(commit=False)
+#             assignment_submit.created_by = request.user
+#             assignment_submit.save()
+#             return redirect('assignment:assignment_list')
+        
+#         context = {
+#             'assignment_form': assignment_submit_form
+#         }
+        
+#         return render(request, self.template_name, context)
+
+
+def assignment_detail(request, pk):
+    template_name = 'assignment/assignment_detail.html'
+    assignment = get_object_or_404(Assignment, id=pk)
+    assignment_submit = assignment.assignmentsubmission_set.filter(assignment_id=assignment.id)
+    new_submit = None
+
+    if request.method == "POST":
+        submit_form = AssignmentSubmitForm(request.POST, request.FILES)
+        if submit_form.is_valid():
+            new_submit = submit_form.save(commit=False)
+            new_submit.assignment_id = assignment
+            new_submit.submitted_by = request.user
+            new_submit.save()
+
+    else:
+        submit_form = AssignmentSubmitForm()
+    
+    context = {
+        'assignment': assignment,
+        'assignment_submit': assignment_submit,
+        'new_submit': new_submit,
+        'submit_form': submit_form
+    }
+
+    return render(request, template_name, context)

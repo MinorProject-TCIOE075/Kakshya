@@ -49,3 +49,25 @@ class EditAssignmentForm(forms.Form):
         
         return super(EditAssignmentForm, self).clean()
 
+
+class AssignmentSubmitForm(forms.ModelForm):
+    class Meta:
+        model = AssignmentSubmission
+        fields = ['file',]
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file', None)
+        if not file:
+            raise ValidationError('File is not selected')
+        
+        return file
+
+
+class AssignmentReturnForm(forms.Form):
+    grade = forms.IntegerField(widget=forms.NumberInput())
+
+    def clean_grade(self):
+        grade = self.cleaned_data.get('grade', None)
+        if not grade:
+            raise ValidationError("You should assign the grade")
+        return grade

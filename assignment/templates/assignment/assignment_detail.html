@@ -1,4 +1,4 @@
-<h1>Assignment</h1>
+<!-- <h1>Assignment</h1>
 <hr>
 <div class="container">
     <h2>{{object.title}}</h2>
@@ -8,6 +8,69 @@
     <p>{{object.details}}</p>
     <p><a href="{{object.file.url}}" target="_blank">Attachment File</a></p>
     <p><strong>{{object.points}}</strong> points possible</p>
+    {% if object.created_by %}
     <button><a href="{% url 'assignment:edit_assignment' object.id %}">Edit</a></button>
     <button><a href="{% url 'assignment:assignment_delete' object.id %}">Delete</a></button>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in assignment_submit_form %}
+            <p>{{field.label_tag}} {{field}}</p>
+
+
+            {% for error in field.errors %}
+                <p style="color: red;">{{error}}</p>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit">Submit Assignment</button>
+    </form>
 </div>
+
+<div class="submit">
+
+</div> -->
+<div class="container">
+    <h2>{{assignment.title}}</h2>
+    <p>Due on <strong>{{assignment.due_date|date:"D, d M Y, h:i a"}}</strong></p>
+    <p>{{assignment.created_by.username}} on <small>{{assignment.created_on}}</small></p>
+    <p>Description</p>
+    <p>{{assignment.details}}</p>
+    <p><a href="{{assignment.file.url}}" target="_blank">Attachment File</a></p>
+    <p><strong>{{assignment.points}}</strong> points possible</p>
+    {% if assignment.created_by %}
+    <button><a href="{% url 'assignment:edit_assignment' assignment.id %}">Edit</a></button>
+    <button><a href="{% url 'assignment:assignment_delete' assignment.id %}">Delete</a></button>
+    
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in submit_form %}
+                <p>{{field.label_tag}} {{field}}</p>
+
+                {% for error in field.errors %}
+                    <p style="color:red;">{{error}}</p>
+                {% endfor %}
+            {% endfor %}
+            <button type="submit">Submit</button>
+        </form>
+    {% endif %}
+
+</div>
+<br>
+<hr>
+
+
+<div>
+    {% if assignment.created_by %}
+    <h1>Submitted Assignments</h1>
+    
+    {% for submitted in assignment_submit %}
+        <div style="border: 1px solid gray; padding: 2px;">   
+            <p>{{submitted.submitted_by}}</p>
+            <p>{{submitted.file}}</p>
+            <p></p>
+        </div>
+    {% endfor %}
+    {% endif %}
+</div> 
+
