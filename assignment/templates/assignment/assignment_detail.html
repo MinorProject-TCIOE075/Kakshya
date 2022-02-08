@@ -38,10 +38,12 @@
     <p>{{assignment.details}}</p>
     <p><a href="{{assignment.file.url}}" target="_blank">Attachment File</a></p>
     <p><strong>{{assignment.points}}</strong> points possible</p>
-    {% if assignment.created_by %}
+    {% if assignment.created_by == user %}
     <button><a href="{% url 'assignment:edit_assignment' assignment.id %}">Edit</a></button>
     <button><a href="{% url 'assignment:assignment_delete' assignment.id %}">Delete</a></button>
-    
+
+    {% else  %}
+                
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in submit_form %}
@@ -55,21 +57,23 @@
         </form>
     {% endif %}
 
+
 </div>
 <br>
 <hr>
 
 
 <div>
-    {% if assignment.created_by %}
+    {% if assignment.created_by == user %}
     <h1>Submitted Assignments</h1>
     
     {% for submitted in assignment_submit %}
         <div style="border: 1px solid gray; padding: 2px;">   
             <p>{{submitted.submitted_by}}</p>
-            <p>{{submitted.file}}</p>
+            <a href="{{submitted.get_absolute_url}}">{{submitted.file}}</a>
             <p></p>
         </div>
+        <br>
     {% endfor %}
     {% endif %}
 </div> 

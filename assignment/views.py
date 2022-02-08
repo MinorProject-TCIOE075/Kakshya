@@ -1,10 +1,12 @@
 from django import views
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
 from django.urls.base import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
-from .forms import AssignmentForm, EditAssignmentForm, AssignmentSubmitForm
+from .forms import AssignmentForm, AssignmentReturnForm, EditAssignmentForm, AssignmentSubmitForm
 from .models import Assignment, AssignmentSubmission
 
 
@@ -73,6 +75,7 @@ class EditAssignmentView(LoginRequiredMixin, views.View):
                                                                 assignment.due_date)
             assignment.close_date = assignment_form.cleaned_data.get('close_date',
                                                             assignment.close_date)
+            print(assignment.due_date == assignment.close_date)
             assignment.points = assignment_form.cleaned_data.get('points',
                                                                 assignment.points)
             assignment.file = assignment_form.cleaned_data.get('file', assignment.file)
@@ -83,16 +86,6 @@ class EditAssignmentView(LoginRequiredMixin, views.View):
         return render(request, self.template_name, {
             "assignment_form": assignment_form
         })
-
-
-# class AssignmentDetailView(LoginRequiredMixin, generic.DetailView):
-#     model = Assignment
-#     template_name = 'assignment/assignment_detail.html'
-
-#     def get_context_data(self, *args, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-
 
 
 class AssignmentDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -129,12 +122,12 @@ class AssignmentDeleteView(LoginRequiredMixin, generic.DeleteView):
         
 #         return render(request, self.template_name, context)
 
-
+@login_required
 def assignment_detail(request, pk):
     template_name = 'assignment/assignment_detail.html'
     assignment = get_object_or_404(Assignment, id=pk)
     assignment_submit = assignment.assignmentsubmission_set.filter(assignment_id=assignment.id)
-    new_submit = None
+    new_submit = None   
 
     if request.method == "POST":
         submit_form = AssignmentSubmitForm(request.POST, request.FILES)
@@ -155,3 +148,38 @@ def assignment_detail(request, pk):
     }
 
     return render(request, template_name, context)
+
+@login_required
+def submission_detail(request, pk):
+    template_name = 'assignment/submission_detail.html'
+    submission = get_object_or_404(AssignmentSubmission, id=pk)
+    
+    if submission.assignment_id.created_by == request.user:
+        if request.method == "POST":
+            return_form = AssignmentReturnForm(request.POST)
+            if return_form.is_valid():                    
+                try:
+                    submission.grade = return_form.cleaned_data.get('grade', submission.grade)
+                    submission.status = "returned"
+                    if submission.grade > submission.assignment_id.points:
+
+                        return HttpResponse(
+                            "Grade cannot be greater than initial assignment points"
+                        )
+                    else:    
+                        submission.save()
+                        return redirect("assignment:assignment_list")
+                except submission.grade > submission.assignment_id.points:
+                    raise ValueError("Grade cannot be greater than assignment points")
+        
+        else:
+            return_form = AssignmentReturnForm()
+    else:
+        return HttpResponseNotFound("Request Not Allowed")
+    context = {
+        'submission': submission,
+        'return_form': return_form
+    }
+
+    return render(request, template_name, context)
+

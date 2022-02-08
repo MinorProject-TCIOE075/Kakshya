@@ -2,13 +2,13 @@ Add an assignment
 
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% for fields in assignment_form %}
+    {% for field in assignment_form %}
     <p>
-        {{fields.label_tag}}
+        {{field.label_tag}}
 
-        {{fields}}  
+        {{field}}  
     </p>    
-        {% for error in fields.errors %}
+        {% for error in field.errors %}
             <p style="color: red;">{{error}}</p>
         {% endfor %}
     {% endfor %}

@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from .models import Assignment, AssignmentSubmission
 
@@ -42,11 +43,19 @@ class EditAssignmentForm(forms.Form):
             raise ValidationError("Title and details must be filled")
         
         if not due_date or not close_date:
+            print("not due_date")
             raise ValidationError("Due date and Closing date must be set properly")
 
-        if due_date > close_date:
+        elif due_date < timezone.now() or close_date < timezone.now():
+            print("invalid date")
+            raise ValidationError("You selected Invalid date and time")
+
+        elif due_date > close_date:
+            print("Due date beyond closing date")
             raise ValidationError("Due date is beyond the closing date")
         
+        else:
+            print("all good")
         return super(EditAssignmentForm, self).clean()
 
 

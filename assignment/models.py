@@ -38,3 +38,6 @@ class AssignmentSubmission(models.Model):
 
     def __str__(self):
         return f"{self.submitted_by.username} on {self.created_on}"
+
+    def get_absolute_url(self):
+        return reverse('assignment:submission_detail', kwargs = {'pk': self.pk})
