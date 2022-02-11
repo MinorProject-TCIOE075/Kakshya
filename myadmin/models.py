@@ -19,13 +19,14 @@ class Invitation(models.Model):
 
     def send_invitation(self, request, *args, **kwargs):
         current_site = get_current_site(request=request).domain
+        encoded_invitation_id = urlsafe_base64_encode(smart_bytes(self.email))
         relative_link = reverse(
-            'auth:signup'
+            'auth:signup', kwargs={
+                'invitation_token': encoded_invitation_id
+            }
         )
 
-        encoded_invitation_id = urlsafe_base64_encode(smart_bytes(self.email))
-
-        abs_url = 'http://' + current_site + relative_link + encoded_invitation_id
+        abs_url = 'http://' + current_site + relative_link
 
         email_body = render_to_string(
             'myadmin/invitation_email.html', {
