@@ -23,7 +23,7 @@ urlpatterns = [
          name='password_reset_complete'),
 
     # Sign Up
-    path('signup/<invitation_token>/', views.SignUpView.as_view()),
+    path('signup/<invitation_token>/', views.SignUpView.as_view(), name='signup'),
 
 
     # update urls

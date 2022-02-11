@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from department.models import Department, Program
+
 from .managers import UserManager
 
 
@@ -70,8 +70,8 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=12, unique=True, null=True,
                                    blank=True)
     classrooms = models.IntegerField(null=True, blank=True)
-    faculty = models.ForeignKey(Program, on_delete=models.CASCADE, null=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE,
+    faculty = models.ForeignKey('organization.Program', on_delete=models.CASCADE, null=True)
+    department = models.ForeignKey('organization.Department', on_delete=models.CASCADE,
                                    null=True)
 
     def __str__(self):
@@ -89,7 +89,7 @@ class Teacher(models.Model):
     year_joined = models.DateField(auto_now_add=False, auto_now=False,
                                    null=True, blank=True)
     classrooms = models.IntegerField(null=True, blank=True)
-    departments = models.ForeignKey(Department, on_delete=models.CASCADE,
+    departments = models.ForeignKey('organization.Department', on_delete=models.CASCADE,
                                     null=True)
 
     def __str__(self):

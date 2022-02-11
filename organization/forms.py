@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Department, Program, Course
+from .models import Department, Course, Program
 
 
 class DepartmentForm(forms.Form):
