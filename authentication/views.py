@@ -4,11 +4,9 @@ from django.contrib.auth.views import (
     PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView,
     PasswordResetCompleteView
 )
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, DetailView
-from formtools.wizard.views import NamedUrlSessionWizardView
 
 from .forms import *
 
@@ -71,48 +69,20 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'authentication/password_reset_complete.html'
 
 
-# SIGNUP FORM VIEW
-
-
-"""
-    The FormWizardView is derived from the NamedUrlSessionWizardView which is a class of django-formtools
-    Django-formtools is a package that is used to render a django form in multiple steps.
-    The NamedUrlSessionWizard class stores the values of the fields into the session storage builtin in django
-    such that while a user submits a form and prompts to another step, the previously entered value should be stored
-    somewhere. Instead of using Sessions we can also use the browser based Cookies to store the values namely
-    NamedUrlCookiesWizardView.
-
-    form_list is a list of the form classes that the view function will render in multiple steps
-
-    the done() method is a method of NamedUrlSessionWizardView. The done() method is overridden in 
-    following class.
-    In simple terms, the done method is used to add our own logic as to what is to be done after the user 
-    submits the data.
-
-    all the validated data from the form_list is stored in the form_data variable as a dictionary.
-    After that an instance of the User model is created where all the cleaned data is passed as a dictionary.
-    After that save() method is called on the instance that saves the instance into the database. 
-"""
-
-
-class FormWizardView(NamedUrlSessionWizardView):
+class SignUpView(View):
     template_name = 'authentication/signup.html'
-    form_list = [SignUpFormOne, SignUpFormTwo]
+    form_class = SignUpForm
 
-    def done(self, form_list, **kwargs):
-        form_data = self.get_all_cleaned_data()
-        password = form_data.pop('password')
-        instance = User.objects.create(**form_data)
-        instance.set_password(password)
-        instance.save()
-        print(form_data)
-
-        return render(self.request, 'authentication/done.html', form_data)
+    def get(self, request, invitation_token, *args, **kwargs):
+        signup_form = self.form_class()
+        return render(request, self.template_name, {
+            'signup_form': signup_form
+        })
 
 
 # User views
 class UserDetailView(DetailView):
-    model = User
+    model = USER
     template_name = 'authentication/user_detail.html'
     context_object_name = 'user'
 

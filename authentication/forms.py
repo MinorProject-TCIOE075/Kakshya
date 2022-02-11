@@ -14,31 +14,19 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
-"""
-    The SignUpFormOne & SignUpFormTwo is a ModelForm that has the fields as below which will be rendered 
-    into the template named signup.html. 
-    The Purpose of using two ModelForms for the same Model is that the two model forms will be rendered
-    in sequence one after another such that the user won't be intimidated seeing large number of form fields in 
-    a single page.
-"""
+class SignUpForm(forms.ModelForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
 
-
-class SignUpFormOne(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'password', 'first_name', 'last_name', 'username']
-
-
-class SignUpFormTwo(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['phone_num', 'date_of_birth', 'blood_group',
-                  'citizenship_num']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password',
+                  'confirm_password', 'phone_num', 'date_of_birth',
+                  'blood_group', 'citizenship_num', ]
 
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = USER
         fields = ['username', 'first_name', 'last_name', 'phone_num',
                   'date_of_birth',
                   'blood_group', 'citizenship_num', 'add_email',

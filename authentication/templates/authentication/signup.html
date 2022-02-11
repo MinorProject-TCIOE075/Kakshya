@@ -1,28 +1,59 @@
-{% load i18n %}
-<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
-<form action="" method="post">
-  {% csrf_token %}
-  <table>
-  {{ wizard.management_form }} <!-- this is used to activate the functionality of the django-formtools in the template -->
-  {% if wizard.form.forms %}   
-<!-- Since we are using session wizards the normal form.as_p won't be working here instead 
-    to access the form wizard.form is to be used
+{% extends 'base.html' %}
 
-    we have multiple forms so that we have to iterate through the forms using wizard.form.forms 
--->
-    {{ wizard.form.management_form }}
-    {% for form in wizard.form.forms %}
-      {{ form }}
-    {% endfor %}
-  {% else %}
-    {{ wizard.form }}
-    <!-- If there is only one form we can use wizard.form to access that particular form -->
-  {% endif %}
-  </table>
-  
-  {% if wizard.steps.prev %}
-  <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-  <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
-  {% endif %}
-  <input type="submit" value="{% trans 'submit' %}"/>
-</form>
+{% block title %}
+    Kakshya | SignUp
+{% endblock title %}
+
+{% block content %}
+    <div class="col-12 offset-0 col-md-8 offset-md-4 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 p-0 d-flex flex-column title-wrapper">
+        <h2 class="title default">Sign Up</h2>
+        <p class="title sub-title small">Fill out the form to join <strong>Kakshya</strong>.
+        </p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 offset-0 col-md-10 offset-md-1 col-lg-8 offset-lg-4 col-xl-6 offset-xl-3 p-0">
+                <div class="content-wrapper">
+                    <div class="form">
+                        <form method="post" class="mb-5"
+                              enctype="multipart/form-data">
+                            {% if signup_form.non_field_errors %}
+                                <div class="error-message">
+                                    {{ signup_form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            {% csrf_token %}
+                            {% for field in signup_form %}
+                                <div class="form-field">
+
+                                    <div class="label">{{ field.label_tag }}</div>
+                                    {% if field.errors %}
+                                        <div class="error-message">
+                                            <p>{{ field.errors }}</p>
+                                        </div>
+                                    {% endif %}
+                                    <div class="input-field">{{ field }}</div>
+                                    {% if field.help_text %}
+                                        <p class="help">{{ field.help_text|safe }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <input type="submit"
+                                   class="button button-primary px-5"
+                                   value="Submit">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#    <div class="row">#}
+    {#        <div class="col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">#}
+    {#            Sign Up Here.#}
+    {#            {{ signup_form.as_p }}#}
+    {#        </div>#}
+    {#    </div>#}
+{% endblock content %}

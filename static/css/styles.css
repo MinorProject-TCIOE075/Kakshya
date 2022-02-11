@@ -82,6 +82,10 @@ button:focus {
     font-weight: 600;
 }
 
+.font-small {
+    font-size: 12px;
+}
+
 .overflow-scroll {
     height: 100%;
     overflow: scroll;
@@ -162,6 +166,12 @@ div.title-wrapper {
     background: linear-gradient(-45deg, var(--gradient1st), var(--gradient2nd));
 }
 
+.title-wrapper .title.default::before,
+.title-wrapper .title.default::after {
+    display: none;
+}
+
+
 .title-wrapper .title::after {
     content: "";
     height: 0.5rem;
@@ -181,6 +191,10 @@ div.title-wrapper {
 
 .title-wrapper .title.sub-title {
     font-size: 1.5rem;
+}
+
+.title-wrapper .title.sub-title.small {
+    font-size: 1rem;
 }
 
 .title-wrapper .title.sub-title::before,

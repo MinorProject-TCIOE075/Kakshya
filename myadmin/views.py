@@ -1,6 +1,8 @@
 from django import views
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import smart_str
 
 from .forms import InvitationForm
 from .models import Invitation
@@ -20,7 +22,8 @@ class InvitationView(views.View):
     template_name = 'myadmin/invite_user.html'
     form_class = InvitationForm
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request,  *args, **kwargs):
+
         invitation_form = self.form_class()
         return render(request, self.template_name,
                       {'invitation_form': invitation_form})
