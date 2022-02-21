@@ -4,11 +4,14 @@ from django.contrib.auth.views import (
     PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView,
     PasswordResetCompleteView
 )
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views.generic import View, DetailView
+from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode
 
 from .forms import *
+from myadmin.models import Invitation
 
 
 class LoginView(View):
@@ -18,9 +21,22 @@ class LoginView(View):
         if request.user.is_authenticated:
             print("hello", request.user.username)
             return redirect("/")
+        message = None
+
+        signup_success = request.GET.get('signup_success', None)
+        already_registered = request.GET.get('already_registered', None)
+        not_invited = request.GET.get('not_invited', None)
+        if not_invited:
+            message = 'Sorry. You\'re not invited to KAKSHYA. Contact admins.'
+        if already_registered:
+            message = 'Already registered. Please login.'
+        if signup_success == '1':
+            message = 'SignUp successful. Please login.'
+        elif signup_success == '0':
+            message = 'SignUp failed please follow the link in your email.'
         login_form = LoginForm()
         return render(request, self.template_name,
-                      context={'login_form': login_form})
+                      context={'login_form': login_form, 'message': message})
 
     def post(self, request, *args, **kwargs):
         login_form = LoginForm(data=request.POST)
@@ -73,8 +89,59 @@ class SignUpView(View):
     template_name = 'authentication/signup.html'
     form_class = SignUpForm
 
+    def _get_invitation(self, invitation_token):
+        invitation_email = None
+        try:
+            invitation_email = smart_str(
+                urlsafe_base64_decode(invitation_token))
+        except DjangoUnicodeDecodeError:
+            print("Invalid token!")
+            return redirect(reverse('auth:login'))
+        # print(invitation_email)
+        if User.objects.filter(email=invitation_email).exists():
+            return redirect(reverse('auth:login') + '?already_registered=1')
+        invitation = None
+        try:
+            invitation = Invitation.objects.get(email=invitation_email)
+        except Invitation.DoesNotExist:
+            print("Does Not exist")
+            return redirect(reverse('auth:login') + '?not_invited=1')
+
+        return invitation
+
     def get(self, request, invitation_token, *args, **kwargs):
-        signup_form = self.form_class()
+        invitation = self._get_invitation(invitation_token)
+        if request.user.is_authenticated:
+            logout(request)
+
+        signup_form = self.form_class(initial={
+            'email': invitation.email,
+            'user_type': invitation.user_type,
+        })
+        return render(request, self.template_name, {
+            'signup_form': signup_form
+        })
+
+    def post(self, request, invitation_token, *args, **kwargs):
+        signup_form = self.form_class(request.POST)
+        if signup_form.is_valid():
+            user = signup_form.save(commit=False)
+            user.set_password(signup_form.cleaned_data.get('password'))
+            invitation = self._get_invitation(invitation_token)
+            user.user_type = invitation.user_type
+            user.save()
+
+            if user.user_type == USER.UserType.student:
+                student = Student()
+                student.user = user
+                student.save()
+
+            if user.user_type == USER.UserType.teacher:
+                teacher = Teacher()
+                teacher.user = user
+                teacher.save()
+
+            return redirect(reverse('auth:login') + '?signup_success=1')
         return render(request, self.template_name, {
             'signup_form': signup_form
         })

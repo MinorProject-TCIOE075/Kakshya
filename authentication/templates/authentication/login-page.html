@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Kakshya | SignUp
+    Kakshya | Log In
 {% endblock title %}
 
 {% block content %}
@@ -12,7 +12,10 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-12 offset-0 col-md-10 offset-md-1 col-lg-8 offset-lg-4 col-xl-6 offset-xl-3 p-0">
+            <div class="col-12 offset-0 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3 p-0">
+                {% if message %}
+                    <div class="message success-message">{{ message }}</div>
+                {% endif %}
                 <div class="content-wrapper">
                     <div class="form">
                         <form method="post" class="mb-5"
@@ -41,7 +44,7 @@
                             {% endfor %}
                             <input type="submit"
                                    class="button button-primary px-5"
-                                   value="Submit"
+                                   value="Login"
                             >
                         </form>
                     </div>

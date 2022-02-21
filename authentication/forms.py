@@ -29,11 +29,13 @@ class SignUpForm(forms.ModelForm):
         'placeholder': 'Doe'
     }))
     username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'cool_username'
+        'placeholder': 'cool_username',
+        'autocomplete': "off"
     }))
     email = forms.EmailField(widget=forms.EmailInput(attrs={
         'placeholder': 'mycoolemail123@example.com',
-        'type': 'email'
+        'type': 'email',
+        'readonly': True
     }))
     phone_num = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': '1234567890'
