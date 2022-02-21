@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% endblock title %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/pages_base.css' %}"/>
+    {% block add_styles %}
+    {% endblock add_styles %}
+{% endblock styles %}
+
+{% block content %}
+    {% block add_content %}
+    {% endblock add_content %}
+    {% include 'common/footer.html' %}
+{% endblock content %}
+
+{% block scripts %}
+{% endblock scripts %}
+

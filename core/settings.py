@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'routine',
     'organization',
     'myadmin',
+    'pages',
 ]
 
 MIDDLEWARE = [
