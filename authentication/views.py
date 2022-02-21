@@ -89,8 +89,7 @@ class SignUpView(View):
     template_name = 'authentication/signup.html'
     form_class = SignUpForm
 
-    def _get_invitation(self, invitation_token):
-        invitation_email = None
+    def get(self, request, invitation_token, *args, **kwargs):
         try:
             invitation_email = smart_str(
                 urlsafe_base64_decode(invitation_token))
@@ -107,10 +106,6 @@ class SignUpView(View):
             print("Does Not exist")
             return redirect(reverse('auth:login') + '?not_invited=1')
 
-        return invitation
-
-    def get(self, request, invitation_token, *args, **kwargs):
-        invitation = self._get_invitation(invitation_token)
         if request.user.is_authenticated:
             logout(request)
 
@@ -124,10 +119,23 @@ class SignUpView(View):
 
     def post(self, request, invitation_token, *args, **kwargs):
         signup_form = self.form_class(request.POST)
+        try:
+            invitation_email = smart_str(
+                urlsafe_base64_decode(invitation_token))
+        except DjangoUnicodeDecodeError:
+            print("Invalid token!")
+            return redirect(reverse('auth:login'))
+        # print(invitation_email)
+        if User.objects.filter(email=invitation_email).exists():
+            return redirect(reverse('auth:login') + '?already_registered=1')
+        try:
+            invitation = Invitation.objects.get(email=invitation_email)
+        except Invitation.DoesNotExist:
+            print("Does Not exist")
+            return redirect(reverse('auth:login') + '?not_invited=1')
         if signup_form.is_valid():
             user = signup_form.save(commit=False)
             user.set_password(signup_form.cleaned_data.get('password'))
-            invitation = self._get_invitation(invitation_token)
             user.user_type = invitation.user_type
             user.save()
 
