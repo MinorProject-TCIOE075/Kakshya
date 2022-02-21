@@ -1,0 +1,52 @@
+{% extends 'pages/base.html' %}
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+{% block add_content %}
+    {#    <img src="https://images.pexels.com/photos/10724233/pexels-photo-10724233.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="">#}
+        <div class="container-fluid cover">
+            <div class="profile-image-wrapper">
+                <img class="profile-image"
+                     src="https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=612x612&w=0&h=NGxdexflb9EyQchqjQP0m6wYucJBYLfu46KCLNMHZYM="
+                     alt="">
+            </div>
+        </div>
+        <div class="container">
+            <div class="profile-content-outer-wrapper">
+                <div class="details-wrapper text-center pt-2">
+                    <h1 class="font-bolder color-gradient">{{ user.get_full_name }}</h1>
+                    <h6 class="text-muted">{{ user.username }}</h6>
+                    <h6 class="text-muted">{{ user.email}}</h6>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-4 mt-2 border-end">
+                        <div class="details-wrapper">
+                            <h4 class="font-bolder section-title color-primary">Details</h4>
+                            <div class="details">
+                                <p><span class="font-bold">User Type: </span><span class="text-muted">{{ user.user_type }}</span></p>
+                                <p><span class="font-bold">Phone Number: </span><span class="text-muted">{{ user.phone_num }}</span></p>
+                                <p><span class="font-bold">Citizenship Number: </span><span class="text-muted">{{ user.citizenship_num }}</span></p>
+                                <p><span class="font-bold">Date Of Birth: </span><span class="text-muted">{{ user.date_of_birth }}</span></p>
+                                <p><span class="font-bold">Blood Group: </span><span class="text-muted">{{ user.blood_group }}</span></p>
+                                <p><span class="font-bold">Date Joined: </span><span class="text-muted">{{ user.date_joined|date:"D, d M, Y" }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 mt-1">
+                        <div class="section-wrapper">
+                            <h4 class="font-bolder section-title color-primary">Posts</h4>
+                            <div class="posts-wrapper">
+                                <p class="text-muted text-center"><small>
+                                    No Posts yet.
+                                </small></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+{% endblock add_content %}
