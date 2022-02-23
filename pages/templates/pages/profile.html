@@ -18,19 +18,54 @@
                 <div class="details-wrapper text-center pt-2">
                     <h1 class="font-bolder color-gradient">{{ user.get_full_name }}</h1>
                     <h6 class="text-muted">{{ user.username }}</h6>
-                    <h6 class="text-muted">{{ user.email}}</h6>
+                    <h6 class="text-muted">{{ user.email }}</h6>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12 col-md-4 mt-2 border-end">
                         <div class="details-wrapper">
-                            <h4 class="font-bolder section-title color-primary">Details</h4>
+                            <h4 class="font-bolder section-title color-primary">
+                                Details</h4>
                             <div class="details">
-                                <p><span class="font-bold">User Type: </span><span class="text-muted">{{ user.user_type }}</span></p>
-                                <p><span class="font-bold">Phone Number: </span><span class="text-muted">{{ user.phone_num }}</span></p>
-                                <p><span class="font-bold">Citizenship Number: </span><span class="text-muted">{{ user.citizenship_num }}</span></p>
-                                <p><span class="font-bold">Date Of Birth: </span><span class="text-muted">{{ user.date_of_birth }}</span></p>
-                                <p><span class="font-bold">Blood Group: </span><span class="text-muted">{{ user.blood_group }}</span></p>
-                                <p><span class="font-bold">Date Joined: </span><span class="text-muted">{{ user.date_joined|date:"D, d M, Y" }}</span></p>
+                                {% if message %}
+                                    <div class="message success-message mb-2">{{ message }}</div>
+                                {% endif %}
+                                <p><span
+                                        class="font-bold">User Type: </span><span
+                                        class="text-muted">{{ user.user_type }}</span>
+                                </p>
+                                {% if user.student %}
+                                    <p><span
+                                            class="font-bold">Roll Number: </span><span
+                                            class="text-muted">{{ user.student.roll_number }}</span>
+                                    </p>
+                                {% endif %}
+                                {% if user.teacher %}
+                                    <p><span
+                                            class="font-bold">Designation: </span><span
+                                            class="text-muted">{{ user.teacher.designation }}</span>
+                                    </p>
+                                {% endif %}
+                                <p><span
+                                        class="font-bold">Phone Number: </span><span
+                                        class="text-muted">{{ user.phone_num }}</span>
+                                </p>
+                                <p><span
+                                        class="font-bold">Citizenship Number: </span><span
+                                        class="text-muted">{{ user.citizenship_num }}</span>
+                                </p>
+                                <p><span
+                                        class="font-bold">Date Of Birth: </span><span
+                                        class="text-muted">{{ user.date_of_birth }}</span>
+                                </p>
+                                <p><span class="font-bold">Blood Group: </span><span
+                                        class="text-muted">{{ user.blood_group }}</span>
+                                </p>
+                                <p><span class="font-bold">Date Joined: </span><span
+                                        class="text-muted">{{ user.date_joined|date:"D, d M, Y" }}</span>
+                                </p>
+                                <div class="my-2">
+                                    <a href="{% url 'pages:profile_edit' user.username %}" class="button button-primary d-inline-block">Update profile</a>
+                                </div>
                             </div>
                         </div>
                     </div>
