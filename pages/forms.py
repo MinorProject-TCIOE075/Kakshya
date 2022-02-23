@@ -17,31 +17,17 @@ class ProfileEditForm(forms.Form):
         'type': 'date'
     }))
 
-    additional_email = forms.EmailField(widget=forms.DateInput(attrs={
-        'required': False
-    }))
-    additional_phone_number = forms.CharField(max_length=14,
-                                              widget=forms.DateInput(attrs={
-                                                  'required': False
-                                              }))
+    # additional_email = forms.EmailField(widget=forms.EmailInput(attrs={
+    #     'required': False
+    # }))
+    # additional_phone_number = forms.CharField(max_length=14,
+    #                                           widget=forms.TextInput(attrs={
+    #                                               'required': False
+    #                                           }))
 
 
 class StudentProfileEditForm(ProfileEditForm):
     roll_number = forms.CharField(max_length=12)
-
-    def clean_roll_number(self):
-        roll_number = self.cleaned_data.get('roll_number')
-
-        if Student.objects.filter(roll_number=roll_number).exists():
-            raise ValidationError(
-                "Roll number %(roll_number)s already exists. "
-                "Please verify its yours.",
-                code='invalid',
-                params={
-                    'roll_number': roll_number
-                }
-            )
-        return roll_number
 
 
 class TeacherProfileEditForm(ProfileEditForm):
