@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'organization',
     'myadmin',
     'pages',
+    'assignment'
 ]
 
 MIDDLEWARE = [
