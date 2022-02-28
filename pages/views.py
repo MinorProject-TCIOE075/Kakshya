@@ -136,3 +136,10 @@ class ProfileEdit(views.View):
 
         return render(request, self.template_name,
                       {'profile_edit_form': profile_edit_form})
+
+
+
+
+def home(request):
+    return render(request, 'pages/home.html', context={})
+

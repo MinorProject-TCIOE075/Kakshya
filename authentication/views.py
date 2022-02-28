@@ -50,7 +50,7 @@ class LoginView(View):
             if user:
                 login(request, user)
                 print("logged in")
-                return redirect("auth:home")
+                return redirect("pages:home")
             print("credentials_invalid", user)
 
         return render(request, self.template_name,
@@ -160,11 +160,6 @@ class UserDetailView(DetailView):
     model = USER
     template_name = 'authentication/user_detail.html'
     context_object_name = 'user'
-
-
-def home(request):
-    return render(request, 'authentication/home.html', context={})
-
 
 #  Teacher Update Info
 @login_required
