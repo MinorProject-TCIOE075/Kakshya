@@ -1,0 +1,43 @@
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Classrooms
+{% endblock %}
+
+{% block main_content %}
+    <div class="title-wrapper">
+        <h1 class="title">
+            Classrooms
+        </h1>
+        <div class="action-buttons">
+            <a href="{% url 'myadmin:routine_add' %}"
+               class="button button-primary">
+                Classrooms
+            </a>
+        </div>
+    </div>
+    {% if message %}
+        <div class="message success-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="row">
+        {% for routine in routines %}
+            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+                <a href="{% url 'myadmin:routine' routine.pk %}">
+                    <div class="tile">
+                        <div class="tile-header bg-primary bordered text-white text-center">
+                            <span>{{ routine.day }}</span>
+                        </div>
+                        <div class="tile-content">
+                            <a href="{% url 'myadmin:routine' routine.pk %}"
+                               class="tile-title">
+                                {{ routine }}
+                            </a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock main_content %}

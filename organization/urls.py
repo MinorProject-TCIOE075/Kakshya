@@ -1,5 +1,6 @@
 from django.urls import path
 
+from classroom import views as classroom_views
 from . import views
 
 urlpatterns = [
@@ -13,7 +14,10 @@ urlpatterns = [
          name='department_edit'),
     path('departments/d/<pk>/delete/', views.delete_department,
          name='department_delete'),
-    path('departments/d/<department_pk>/p/add', views.AddProgramView.as_view(),
+    path('departments/d/<department_pk>/p/<pk>/',
+         views.ProgramDetailView.as_view(), name='program'),
+    path('departments/d/<department_pk>/p/add/',
+         views.AddProgramView.as_view(),
          name='program_add'),
     path('departments/d/<department_pk>/p/<pk>/delete/', views.delete_program,
          name='program_delete'),
@@ -28,4 +32,14 @@ urlpatterns = [
          name='course_edit'),
     path('courses/c/<int:pk>/delete/', views.delete_course,
          name='course_delete'),
+
+    # Paths related to classrooms and operations in admin page
+    path('departments/d/<department_pk>/p/<program_pk>/cr/add/',
+         classroom_views.CreateClassroomView.as_view(), name='classroom_add'),
+    path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/edit/',
+         classroom_views.EditClassroomView.as_view(), name='classroom_edit'),
+    path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/archive/',
+         classroom_views.archive_classroom, name='classroom_archive'),
+    path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/delete/',
+         classroom_views.delete_classroom, name='classroom_delete'),
 ]

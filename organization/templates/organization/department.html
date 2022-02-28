@@ -91,13 +91,14 @@
                     </div>
                     <div class="tile-content d-flex align-items-center justify-content-between">
                         <div>
-                            <h3 class="tile-title tile-title-small">
-                                {{ program.code }}-{{ program.year }}
-                            </h3>
-                            <h3
-                                    class="tile-title m-0">
-                                {{ program.name }}
-                            </h3>
+                            <a href="{% url 'myadmin:program' program.department.pk program.pk %}">
+                                <h3 class="tile-title tile-title-small">
+                                    {{ program.code }}-{{ program.year }}
+                                </h3>
+                                <h3 class="tile-title m-0">
+                                    {{ program.name }}
+                                </h3>
+                            </a>
                         </div>
 
                         <div class="tile-menu-wrapper">
