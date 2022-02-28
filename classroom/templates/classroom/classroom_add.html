@@ -1,0 +1,58 @@
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Add Classroom
+{% endblock %}
+
+{% block main_content %}
+    <div class="return-bar d-flex align-items-center justify-content-start pt-2">
+        <div class="back-arr font-bold color-primary">
+            <a href="{% url 'myadmin:program' program.department.pk program.pk %}"> <i
+                    class="bi bi-arrow-left"></i> Back</a>
+        </div>
+
+    </div>
+    <div class="title-wrapper">
+        <h1 class="title">
+            Add Classroom for {{ program }}
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+            <div class="content-wrapper">
+                <div class="form">
+                    <form method="post" class="mb-5"
+                          enctype="multipart/form-data">
+                        {% if classroom_form.non_field_errors %}
+                            <div class="error-message">
+                              {{ classroom_form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        {% csrf_token %}
+                        {% for field in classroom_form %}
+                            <div class="form-field">
+
+                                <div class="label">{{ field.label_tag }}</div>
+                                {% if field.errors %}
+                                    <div class="error-message">
+                                        <p>{{ field.errors }}</p>
+                                    </div>
+                                {% endif %}
+                                <div class="input-field">{{ field }}</div>
+                                {% if field.help_text %}
+                                    <p class="help">{{ field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                    {% endfor %}
+                        <input type="submit" class="button button-primary px-5"
+                               value="Submit">
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

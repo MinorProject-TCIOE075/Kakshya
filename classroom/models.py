@@ -12,6 +12,8 @@ class Classroom(models.Model):
     program = models.ForeignKey('organization.Program',
                                 on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
+    created_by = models.ForeignKey('authentication.User',
+                                   on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.name} - {self.code}'

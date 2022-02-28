@@ -31,7 +31,7 @@
             Classrooms
         </h3>
         <div class="action-buttons">
-            <a href="#"
+            <a href="{% url 'myadmin:classroom_add' program.department.pk program.pk %}"
                class="button button-primary button-small m-0">Add
                 Classroom</a>
         </div>
@@ -65,13 +65,118 @@
                         <td>
                             {% if classroom.is_archived %}
                                 <span class="badge bg-secondary">Archived</span>
-                                {% else %}
+                            {% else %}
                                 <span class="badge bg-secondary">Active</span>
                             {% endif %}
                         </td>
-                    <td>
-                        <button class="button button-small button-primary d-inline-block m-0">Archive</button>
-                    </td>
+                        <td>
+                            <a href="{% url 'myadmin:classroom_edit' classroom.program.department.pk classroom.program.pk classroom.pk %}"
+                               class="button button-primary button-small m-0 d-inline-block"
+                               title="Edit"><i
+                                    class="bi bi-pencil-square"></i></a>
+                            <!-- Button trigger modal -->
+                            <button type="button"
+                                    class="button button-primary button-small m-0 mt-1 d-inline-block"
+                                    title="Archive"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#archiveClassroomModal{{ classroom.pk }}">
+                                <i class="bi bi-archive-fill"></i>
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade"
+                                 id="archiveClassroomModal{{ classroom.pk }}"
+                                 tabindex="-1"
+                                 aria-labelledby="archiveClassroomModal{{ classroom.pk }}Label"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-bottom-0">
+                                            <h1 class="color-primary ">
+                                                Archive Classroom??
+                                            </h1>
+                                        </div>
+                                        <div class="modal-content border-0 px-4">
+                                            <p>Are you sure you want to archive
+                                                this
+                                                Classroom?</p>
+                                            <p>
+                                                <strong>Name:</strong>{{ classroom }}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button"
+                                                    class="button button-secondary me-1"
+                                                    data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <form action="{% url 'myadmin:classroom_archive' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
+                                                  method="post"> {% csrf_token %}
+                                                <button type="submit"
+                                                        class="button {% if classroom.is_archived %}button-secondary {% else %} button-danger {% endif %}"
+                                                        {% if classroom.is_archived %}
+                                                        disabled
+                                                        {% endif %}
+                                                        title="{% if classroom.is_archived %} Already Archived {% else %} Delete Routine Course {% endif %}">
+                                                    Archive
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Button trigger modal -->
+                            <button type="button"
+                                    class="button button-danger button-small m-0 mt-1 d-inline-block"
+                                    title="Delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteClassroomModal{{ classroom.pk }}">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade"
+                                 id="deleteClassroomModal{{ classroom.pk }}"
+                                 tabindex="-1"
+                                 aria-labelledby="deleteClassroomModal{{ classroom.pk }}Label"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-bottom-0">
+                                            <h1 class="color-primary ">
+                                                Delete Classroom??
+                                            </h1>
+                                        </div>
+                                        <div class="modal-content border-0 px-4">
+                                            <p>Are you sure you want to delete
+                                                this
+                                                Classroom?</p>
+                                            <p>
+                                                <strong>Name:</strong>{{ classroom }}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button"
+                                                    class="button button-secondary me-1"
+                                                    data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <form action="{% url 'myadmin:classroom_delete' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
+                                                  method="post"> {% csrf_token %}
+                                                <button type="submit"
+                                                        class="button button-danger"
+                                                        title="Delete Routine Course">
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 {% empty %}
                     <p class="text-center text-muted"><small>No Classrooms yet.

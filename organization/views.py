@@ -119,8 +119,17 @@ class ProgramDetailView(views.View):
         program = get_object_or_404(self.model, pk=pk,
                                     department__pk=department_pk)
         classrooms = Classroom.objects.filter(program=program)
+
+        message = ''
+        is_archived = request.GET.get('archived', None)
+        is_classroom_deleted = request.GET.get('classroom_deleted', None)
+        if is_archived == '1':
+            message = "Classroom archived successfully!"
+        if is_classroom_deleted == '1':
+            message = "Classroom deleted successfully!"
         return render(request, self.template_name, {'program': program,
-                                                    'classrooms': classrooms})
+                                                    'classrooms': classrooms,
+                                                    'message': message})
 
 
 # Add program

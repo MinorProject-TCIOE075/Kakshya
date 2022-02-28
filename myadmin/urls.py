@@ -7,5 +7,4 @@ urlpatterns = [
     path('org/', include('organization.urls')),
     path('routines/', include('routine.urls')),
     path('users/', include('myadmin.user_urls')),
-    path('classrooms/', include('classroom.urls')),
 ]
