@@ -6,6 +6,7 @@ from django.views import generic as generic_views
 from .forms import DepartmentForm, EditDepartmentForm, ProgramForm, \
     EditProgramForm, CourseForm
 from .models import Department, Program, Course
+from classroom.models import Classroom
 
 
 class DepartmentListView(generic_views.TemplateView):
@@ -108,6 +109,18 @@ def delete_department(request, pk, *args, **kwargs):
         return redirect(
             reverse('myadmin:department_list') + '?deleted_department=1')
     return redirect(reverse('myadmin:department', kwargs={'pk': pk}))
+
+
+class ProgramDetailView(views.View):
+    template_name = 'organization/program.html'
+    model = Program
+
+    def get(self, request, department_pk, pk, *args, **kwargs):
+        program = get_object_or_404(self.model, pk=pk,
+                                    department__pk=department_pk)
+        classrooms = Classroom.objects.filter(program=program)
+        return render(request, self.template_name, {'program': program,
+                                                    'classrooms': classrooms})
 
 
 # Add program
