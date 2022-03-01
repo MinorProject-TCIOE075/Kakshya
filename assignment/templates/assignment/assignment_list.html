@@ -1,0 +1,54 @@
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Assignments
+{% endblock %}
+
+{% block main_content %}
+    <div class="title-wrapper">
+        <h1 class="title">Assignments</h1>
+        <div class="action-buttons">
+            <a href="{% url 'assignment:add_assignment' %}"
+               class="button button-primary">
+                Add Assignment </a>
+        </div>
+    </div>
+    {% if message %}
+        <div class="message success-message">{{ message }}</div>
+    {% endif %}
+    <div class="row">
+        {% for assignment in assignments %}
+            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+                <a href="{% url 'assignment:assignment_detail' assignment.pk %}">
+                    <div class="tile">
+                        <div
+                                class="tile-header bg-primary bordered text-white text-center"
+                        >
+                            <span>{{ assignment.course.code }}</span>
+                        </div>
+                        <div class="tile-content">
+                            <h3 class="tile-title tile-title-small">
+                                {{ assignment.course.name }}
+                            </h3>
+                            <a href="{% url 'assignment:assignment_detail' assignment.pk %}"
+                               class="tile-title"> {{ assignment.title }} </a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <div class="message empty-message">No assignments yet. Add some.</div>
+        {% endfor %}
+    </div>
+{% endblock main_content %}
+<!-- {% for assignment in assignments %}
+    <div style="border: 1px solid gray;" >
+        <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
+        <p>{{assignment.details}}</p>
+        <p>{{assignment.created_by.username}}</p>
+        <p>{{assignment.due_date|date:"D, d M Y, h:i a"}}</p>
+        <p>{{assignment.file}}</p>
+        
+    </div>
+    <br>
+{% endfor %}  -->
