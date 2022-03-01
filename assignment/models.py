@@ -9,6 +9,7 @@ User = settings.AUTH_USER_MODEL
 
 class Assignment(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    classroom  = models.ForeignKey('classroom.ClassRoom', on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     due_date = models.DateTimeField()
     title = models.CharField(max_length=100)

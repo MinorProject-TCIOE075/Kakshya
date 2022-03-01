@@ -11,7 +11,7 @@ from .forms import (
     EditAssignmentForm, AssignmentSubmitForm
 )
 from .models import Assignment, AssignmentSubmission
-
+from classroom.models import Classroom
 
 class AssignmentList(generic.ListView):
     queryset = Assignment.objects.all()
@@ -37,13 +37,15 @@ class AddAssignmentView(LoginRequiredMixin, views.View):
     def post(self, request, *args, **kwargs):
         assignment_form = self.form_class(request.POST,  request.FILES)
         if assignment_form.is_valid():
+            classroom = assignment_form.cleaned_data.get('classroom')
             assignment = assignment_form.save(commit=False)
             assignment.created_by = request.user
+            assignment.course = classroom.course
             assignment.save()
             return redirect(reverse_lazy('assignment:assignment_list'))
         
         context = {
-            'assignment_form': assignment_form
+            'assignment_form': assignment_form,
         }
         
         return render(request, self.template_name, context)
@@ -58,6 +60,7 @@ class EditAssignmentView(LoginRequiredMixin, views.View):
         assignment = get_object_or_404(self.model, pk=pk)
 
         assignment_form = self.form_class(initial={
+            'classroom': assignment.classroom,
            'title': assignment.title,
            'details': assignment.details,
            'due_date': assignment.due_date,
@@ -75,6 +78,8 @@ class EditAssignmentView(LoginRequiredMixin, views.View):
         assignment_form = self.form_class(request.POST, request.FILES)
 
         if assignment_form.is_valid():
+            assignment.classroom = assignment_form.cleaned_data.get('classroom', 
+                                                                    assignment.classroom)
             assignment.title = assignment_form.cleaned_data.get('title',
                                                                assignment.title)
             assignment.details = assignment_form.cleaned_data.get('details',

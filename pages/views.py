@@ -1,9 +1,11 @@
 from django import views
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.shortcuts import get_list_or_404, render, get_object_or_404, redirect, reverse
 
 from authentication.models import Student, Teacher
 from .forms import StudentProfileEditForm, TeacherProfileEditForm
+from classroom.models import Classroom
+from assignment.models import Assignment
 
 USER = get_user_model()
 
@@ -55,6 +57,7 @@ class ProfileEdit(views.View):
                 'additional_email': user.add_email,
                 'additional_phone_number': user.add_phone_num,
                 'roll_number': user.student.roll_number,
+                'faculty': user.student.faculty
             })
 
         if user.user_type == USER.UserType.teacher:
@@ -109,7 +112,10 @@ class ProfileEdit(views.View):
             if user.user_type == USER.UserType.student:
                 year_joined = profile_edit_form.cleaned_data.get('year_joined',
                                                                  user.student.year_joined)
+                program = profile_edit_form.cleaned_data.get('program', 
+                                                                user.student.faculty) 
                 user.student.year_joined = year_joined
+                user.student.faculty = program
                 roll_number = profile_edit_form.cleaned_data.get(
                     'roll_number', user.student.roll_number)
                 if roll_number != user.student.roll_number:
@@ -141,5 +147,21 @@ class ProfileEdit(views.View):
 
 
 def home(request):
-    return render(request, 'pages/home.html', context={})
+    user = request.user
+    classroom = Classroom.objects.filter(program=user.student.faculty.id)
+    return render(request, 'pages/home.html', context={'classroom': classroom})
 
+
+class StudentAssignmentList(views.View):
+    template_name = 'pages/student_assignment_list.html'
+
+    def get(self, request, pk, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        classroom = get_object_or_404(Classroom, id=pk)
+        assignments = Assignment.objects.filter(classroom=classroom)
+
+        context = {
+            'classroom': classroom,
+            'assignments': assignments
+        }
+        return render(request, self.template_name, context)

@@ -1,12 +1,12 @@
 {% extends 'authentication/base.html' %}
 {% block subtitle %} 
-    | Dashboard
+    | Assignments
 {% endblock subtitle %}
 
 {% block main_content %}
 <div class="title-wrapper">
     <h3 class="title sub-title">
-        Classrooms
+        Assignments
     </h3>
 </div>
 {% if message %}
@@ -15,20 +15,23 @@
     </div>
 {% endif %}
 <div class="row">
-    {% for room in classroom|slice:":4" %}
+    {% for assignment in assignments %}
         <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
             <div class="tile">
                 <div class="tile-header bg-primary bordered text-white text-center">
-                    <span>{{ room.code }}</span>
+                    <span>{{ assignment.course.code }}</span>
                 </div>
                 <div class="tile-content d-flex align-items-center justify-content-between">
                     <div>
-                        <a href="{% url 'pages:student_assignment' room.id %}">
-                            <h3 class="tile-title tile-title-small">
-                                {{ room.name }}-{{ room.code }}
+                        <a href="#">
+                            <h3 class="tile-title ">
+                                {{ assignment.title }}-{{assignment.id}}
                             </h3>
-                            <h3 class="tile-title m-0">
-                                {{ room.course.name }}
+                            <h3 class="tile-title m-0 ">
+                                {{ assignment.points }} points 
+                            </h3>
+                            <h3 class="tile-title m-0 text-danger tile-title-small">
+                               Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
                             </h3>
                         </a>
                     </div>

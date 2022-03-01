@@ -9,7 +9,7 @@ class AssignmentForm(forms.ModelForm):
     
     class Meta:
         model = Assignment
-        fields = ('course', 'title', 'due_date', 'details', 'file', 'close_date', 'points')
+        fields = ('classroom', 'title', 'due_date', 'details', 'file', 'close_date', 'points')
         widgets = {
         'due_date': forms.DateInput(format=('%m/%d/%Y'), attrs={'class':'form-control', 'placeholder':'Select due date', 'type':'date'}),
         'close_date': forms.DateInput(format=('%m/%d/%Y'), attrs={'class':'form-control', 'placeholder':'Select closing date', 'type':'date'}),
