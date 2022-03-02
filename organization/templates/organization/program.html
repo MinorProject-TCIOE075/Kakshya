@@ -17,7 +17,7 @@
             {{ program }}
         </h1>
         <div class="action-buttons d-flex">
-            <a href="#"
+            <a href="{% url 'myadmin:program_edit' program.department.pk program.pk %}"
                class="button button-primary me-2" title="Edit">
                 <i class="bi bi-pencil-square"></i>
             </a>
