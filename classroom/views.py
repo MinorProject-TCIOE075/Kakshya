@@ -37,6 +37,10 @@ class CreateClassroomView(views.View):
             classroom.program = program
             classroom.created_by = request.user
             classroom.save()
+            return redirect(reverse('myadmin:program', kwargs={
+                'department_pk': program.department.pk,
+                'pk': program.pk
+            }))
 
         return render(request, self.template_name,
                       {
