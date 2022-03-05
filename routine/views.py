@@ -1,4 +1,7 @@
 from django import views
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import generic as generic_views
@@ -7,17 +10,22 @@ from .forms import DailyRoutineForm, CourseForm
 from .models import DailyRoutine, RoutineCourse
 
 
-class ListRoutineView(generic_views.ListView):
+class ListRoutineView(LoginRequiredMixin, PermissionRequiredMixin,
+                      generic_views.ListView):
     template_name = 'routine/routine_list.html'
     model = DailyRoutine
     queryset = DailyRoutine.objects.all()
     context_object_name = 'routines'
+    permission_required = 'routine.view_routine'
+    raise_exception = True
 
 
-class AddRoutineView(views.View):
+class AddRoutineView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     form_class = DailyRoutineForm
     template_name = 'routine/routine_add.html'
     model = DailyRoutine
+    permission_required = 'routine.add_routine'
+    raise_exception = True
 
     def get(self, request, *args, **kwargs):
         routine_form = self.form_class()
@@ -37,9 +45,13 @@ class AddRoutineView(views.View):
         })
 
 
-class DetailRoutineView(views.View):
+class DetailRoutineView(LoginRequiredMixin, PermissionRequiredMixin,
+                        views.View):
     model = DailyRoutine
     template_name = 'routine/routine.html'
+    permission_required = (
+        'routine.view_routine', 'routine_course.view_routine_course')
+    raise_exception = True
 
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(self.model, pk=pk)
@@ -56,10 +68,12 @@ class DetailRoutineView(views.View):
                        'message': message})
 
 
-class EditRoutineView(views.View):
+class EditRoutineView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     form_class = DailyRoutineForm
     template_name = 'routine/routine_edit.html'
     model = DailyRoutine
+    raise_exception = True
+    permission_required = 'routine.change_routine'
 
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(self.model, pk=pk)
@@ -82,6 +96,8 @@ class EditRoutineView(views.View):
         })
 
 
+@login_required
+@permission_required('routine.delete_routine', raise_exception=True)
 def delete_routine(request, pk, *args, **kwargs):
     if request.method == 'POST':
         routine = get_object_or_404(DailyRoutine, pk=pk)
@@ -91,10 +107,13 @@ def delete_routine(request, pk, *args, **kwargs):
     return redirect(reverse('myadmin:routine_list'))
 
 
-class AddRoutineCourseView(views.View):
+class AddRoutineCourseView(LoginRequiredMixin, PermissionRequiredMixin,
+                           views.View):
     form_class = CourseForm
     template_name = 'routine/routine_course_add.html'
     model = RoutineCourse
+    permission_required = 'routine_course.add_routine_course'
+    raise_exception = True
 
     def get(self, request, pk, *args, **kwargs):
         routine = get_object_or_404(DailyRoutine, pk=pk)
@@ -117,10 +136,13 @@ class AddRoutineCourseView(views.View):
 
 
 # Edit Routine Course
-class EditRoutineCourseView(views.View):
+class EditRoutineCourseView(LoginRequiredMixin, PermissionRequiredMixin,
+                            views.View):
     form_class = CourseForm
     template_name = 'routine/routine_course_edit.html'
     model = RoutineCourse
+    permission_required = 'routine_course.change_routine_course'
+    raise_exception = True
 
     def get(self, request, routine_pk, pk, *args, **kwargs):
         routine_course = get_object_or_404(self.model,
@@ -147,7 +169,8 @@ class EditRoutineCourseView(views.View):
                       {'routine_course_form': routine_course_form})
 
 
-# TODO Delete Routine Course
+@login_required
+@permission_required('routine_course.delete_routine_course')
 def delete_routine_course(request, routine_pk, pk, *args, **kwargs):
     if request.method == 'POST':
         routine_course = get_object_or_404(RoutineCourse,
