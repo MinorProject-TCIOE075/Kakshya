@@ -35,7 +35,7 @@ class DepartmentListView(LoginRequiredMixin, PermissionRequiredMixin,
 class DepartmentView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     form_class = DepartmentForm
     raise_exception = True
-    permission_required = 'department.view_department'
+    permission_required = ('department.view_department', 'program.view_program')
 
     # this should render a new department
     def get(self, request, pk, *args, **kwargs):
@@ -129,7 +129,7 @@ def delete_department(request, pk, *args, **kwargs):
 class ProgramDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'organization/program.html'
     model = Program
-    permission_required = 'program.view_program'
+    permission_required = ('program.view_program', 'classroom.view_classroom')
     raise_exception = True
 
     def get(self, request, department_pk, pk, *args, **kwargs):
