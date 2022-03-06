@@ -1,16 +1,22 @@
 from django import views
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import (PermissionRequiredMixin,
+                                        LoginRequiredMixin)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls.base import reverse_lazy, reverse
 from django.views import generic as generic_views
 
-from .forms import DepartmentForm, EditDepartmentForm, ProgramForm, \
-    EditProgramForm, CourseForm
-from .models import Department, Program, Course
 from classroom.models import Classroom
+from .forms import (DepartmentForm, EditDepartmentForm, ProgramForm,
+                    EditProgramForm, CourseForm)
+from .models import Department, Program, Course
 
 
-class DepartmentListView(generic_views.TemplateView):
+class DepartmentListView(LoginRequiredMixin, PermissionRequiredMixin,
+                         generic_views.TemplateView):
+    permission_required = ('department.view_department',)
     template_name = 'organization/department_list.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         departments = Department.objects.all()
@@ -26,8 +32,10 @@ class DepartmentListView(generic_views.TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class DepartmentView(views.View):
+class DepartmentView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     form_class = DepartmentForm
+    raise_exception = True
+    permission_required = ('department.view_department', 'program.view_program')
 
     # this should render a new department
     def get(self, request, pk, *args, **kwargs):
@@ -43,11 +51,14 @@ class DepartmentView(views.View):
         return render(request, 'organization/department.html', context)
 
 
-class AddDepartmentView(views.View):
+class AddDepartmentView(LoginRequiredMixin, PermissionRequiredMixin,
+                        views.View):
     model = Department
     form_class = DepartmentForm
     success_url = reverse_lazy('myadmin:department_list')
     template_name = 'organization/add_department.html'
+    permission_required = ('department.add_department',)
+    raise_exception = True
 
     def get(self, request, *args, **kwargs):
         department_form = self.form_class()
@@ -70,10 +81,12 @@ class AddDepartmentView(views.View):
                       context={'department_form': department_form})
 
 
-class EditDepartmentView(views.View):
+class EditDepartmentView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     model = Department
     form_class = EditDepartmentForm
     template_name = 'organization/department_edit.html'
+    permission_required = 'department.change_department'
+    raise_exception = True
 
     def get(self, request, pk, *args, **kwargs):
         department = get_object_or_404(self.model, pk=pk)
@@ -102,6 +115,8 @@ class EditDepartmentView(views.View):
         })
 
 
+@login_required
+@permission_required('department.delete_department', raise_exception=True)
 def delete_department(request, pk, *args, **kwargs):
     if request.method == "POST":
         department = get_object_or_404(Department, pk=pk)
@@ -111,9 +126,11 @@ def delete_department(request, pk, *args, **kwargs):
     return redirect(reverse('myadmin:department', kwargs={'pk': pk}))
 
 
-class ProgramDetailView(views.View):
+class ProgramDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'organization/program.html'
     model = Program
+    permission_required = ('program.view_program', 'classroom.view_classroom')
+    raise_exception = True
 
     def get(self, request, department_pk, pk, *args, **kwargs):
         program = get_object_or_404(self.model, pk=pk,
@@ -122,9 +139,12 @@ class ProgramDetailView(views.View):
 
         message = ''
         is_archived = request.GET.get('archived', None)
+        is_restored = request.GET.get('restored', None)
         is_classroom_deleted = request.GET.get('classroom_deleted', None)
         if is_archived == '1':
             message = "Classroom archived successfully!"
+        if is_restored == "1":
+            message = "Classroom restored successfully!"
         if is_classroom_deleted == '1':
             message = "Classroom deleted successfully!"
         return render(request, self.template_name, {'program': program,
@@ -133,10 +153,12 @@ class ProgramDetailView(views.View):
 
 
 # Add program
-class AddProgramView(views.View):
+class AddProgramView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     model = Program
     form_class = ProgramForm
     template_name = 'organization/program_add.html'
+    permission_required = 'program.add_program'
+    raise_exception = True
 
     def get(self, request, department_pk, *args, **kwargs):
         department = get_object_or_404(Department, pk=department_pk)
@@ -172,10 +194,11 @@ class AddProgramView(views.View):
 
 
 # Edit program
-class EditProgramView(views.View):
+class EditProgramView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     model = Program
     form_class = EditProgramForm
     template_name = 'organization/program_edit.html'
+    permission_required = 'program.change_program'
 
     def get(self, request, pk, *args, **kwargs):
         program = get_object_or_404(self.model, pk=pk)
@@ -211,6 +234,8 @@ class EditProgramView(views.View):
 
 
 # Delete program
+@login_required
+@permission_required('program.delete_program', raise_exception=True)
 def delete_program(request, department_pk, pk, *args, **kwargs):
     if request.method == "POST":
         program = get_object_or_404(Program, pk=pk)
@@ -222,10 +247,11 @@ def delete_program(request, department_pk, pk, *args, **kwargs):
 
 
 # List Courses
-class CourseListView(generic_views.ListView):
+class CourseListView(LoginRequiredMixin, PermissionRequiredMixin, generic_views.ListView):
     queryset = Course.objects.all()
     template_name = 'organization/course_list.html'
     context_object_name = 'courses'
+    permission_required = 'course.view_course'
 
     def get_context_data(self, **kwargs):
         message = None
@@ -236,10 +262,12 @@ class CourseListView(generic_views.ListView):
 
 
 # add course
-class AddCourseView(views.View):
+class AddCourseView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     model = Course
     form_class = CourseForm
     template_name = 'organization/course_add.html'
+    permission_required = 'course.add_course'
+    raise_exception = True
 
     def get(self, request, *args, **kwargs):
         course_form = self.form_class()
@@ -261,9 +289,11 @@ class AddCourseView(views.View):
 
 
 # View Course
-class CourseDetailView(views.View):
+class CourseDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'organization/course.html'
     model = Course
+    permission_required = 'course.view_course'
+    raise_exception = True
 
     def get(self, request, pk, *args, **kwargs):
         course = get_object_or_404(self.model, pk=pk)
@@ -271,10 +301,12 @@ class CourseDetailView(views.View):
 
 
 # Edit Courses
-class EditCourseView(views.View):
+class EditCourseView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'organization/course_edit.html'
     form_class = CourseForm
     model = Course
+    permission_required = 'course.change_course'
+    raise_exception = True
 
     def get(self, request, pk, *args, **kwargs):
         course = get_object_or_404(self.model, pk=pk)
@@ -295,6 +327,8 @@ class EditCourseView(views.View):
 
 
 # Delete Course
+@login_required
+@permission_required('course.delete_course', raise_exception=True)
 def delete_course(request, pk, *args, **kwargs):
     if request.method == "POST":
         course = get_object_or_404(Course, pk=pk)
