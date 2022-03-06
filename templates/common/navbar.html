@@ -7,18 +7,23 @@
         {% if request.user.is_authenticated %}
 
             <div class="dropdown">
-            <button class="button m-0 button-primary dropdown-toggle" type="button"
-                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                {{ request.user.username }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Dashboard</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><a class="dropdown-item" href="{% url 'auth:logout' %}">Logout</a>
-                </li>
-            </ul>
-        </div>
+                <button class="button m-0 button-primary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    {{ request.user.username }}
+                </button>
+                <ul class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                    <li><a class="dropdown-item"
+                           href="{% url 'pages:profile' request.user.username %}">Profile</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                           href="{% url 'auth:logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
         {% endif %}
     </div>
 </nav>
