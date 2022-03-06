@@ -1,7 +1,24 @@
 <nav class="navbar navbar-light bg-light">
-  <div class="container-fluid d-flex align-items-center justify-content-center">
-    <a class="navbar-brand font-bold color-gradient" href="#">
-        Kakshya
-    </a>
-  </div>
+    <div class="container d-flex align-items-center justify-content-between">
+        <a class="navbar-brand font-bold color-gradient {% if not request.user.is_authenticated %}mx-auto{% endif %}"
+           href="#">
+            Kakshya
+        </a>
+        {% if request.user.is_authenticated %}
+
+            <div class="dropdown">
+            <button class="button m-0 button-primary dropdown-toggle" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                {{ request.user.username }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'auth:logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
 </nav>
