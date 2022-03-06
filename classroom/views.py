@@ -4,7 +4,7 @@ from django.views import generic as generic_views
 from assignment.models import Assignment
 
 from organization.models import Program
-from .forms import CreateClassroomForm, CreatePostForm
+from .forms import CreateClassroomForm, CreatePostForm, EditPostForm
 from .models import Classroom, Post
 
 
@@ -127,10 +127,12 @@ class ClassroomDetailView(views.View):
     def get(self, request, pk, *args, **kwargs):
         classroom = get_object_or_404(self.model, pk=pk)
         assignments = Assignment.objects.filter(classroom=classroom)
+        posts = Post.objects.filter(classroom=classroom)
 
         context={
             'classroom': classroom,
-            'assignments': assignments
+            'assignments': assignments,
+            'posts': posts
         }
         return render(request, self.template_name, context)
 
@@ -159,12 +161,11 @@ class CreatePostView(views.View):
 
     def post(self, request, classroom_pk, *args, **kwargs):
         classroom = get_object_or_404(Classroom, pk=classroom_pk)
-        create_post_form = self.form_class(request.POST)
-
+        create_post_form = self.form_class(request.POST, request.FILES)
         if create_post_form.is_valid():
             post = create_post_form.save(commit=False)
             post.classroom = classroom
-            post.created_by = request.user
+            post.user = request.user
             post.save()
 
         return render(request, self.template_name,
@@ -173,3 +174,44 @@ class CreatePostView(views.View):
                           'classroom': classroom
                       })
 
+
+
+class EditPostView(views.View):
+    model = Assignment
+    form_class = EditPostForm
+    template_name = 'classroom/post_edit.html'
+
+    def get(self, request, classroom_pk, pk, *args, **kwargs):
+        classroom = get_object_or_404(Classroom, id=classroom_pk)
+        post = get_object_or_404(self.model, pk=pk)
+
+        post_form = self.form_class(initial={
+            'classroom': post.classroom,
+           'caption': post.caption,
+           'file': post.file,
+        })
+        return render(request, self.template_name, {
+            "post_form": post_form,
+            "classroom": classroom
+        })
+
+    def post(self, request, classroom_pk, pk, *args, **kwargs):
+        classroom = get_object_or_404(Classroom, id=classroom_pk)
+        post = get_object_or_404(self.model, pk=pk)
+
+        post_form = self.form_class(request.POST, request.FILES)
+
+        if post_form.is_valid():
+            post.classroom = post_form.cleaned_data.get('classroom', 
+                                                                    post.classroom)
+            post.caption = post_form.cleaned_data.get('caption',
+                                                               post.caption)
+            post.file = post_form.cleaned_data.get('file', post.file)
+            post.created_by = request.user
+            post.save()
+            return redirect('assignment:assignment_list')
+
+        return render(request, self.template_name, {
+            "post_form": post_form,
+            'classroom': classroom
+        })

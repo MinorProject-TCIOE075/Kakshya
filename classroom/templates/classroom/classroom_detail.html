@@ -1,7 +1,7 @@
 {% extends 'myadmin/base.html' %}
 
 {% block subtitle %}
-    | Classrooms
+    | Assignments
 {% endblock %}
 
 {% block main_content %}
@@ -22,7 +22,7 @@
         </div>
     {% endif %}
 
-<div class="row">
+<div class="row mt-2">
     {% for assignment in assignments %}
         <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
             <div class="tile">
@@ -42,6 +42,36 @@
                                Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
                             </h3>
                         </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<!-- POST SECTION -->
+<div class="title-wrapper mt-5">
+    <h1 class="title">
+        Posts for {{classroom}}
+    </h1>
+    <div class="action-buttons">
+        <a href="{% url 'myadmin:post_add' classroom.id %}"
+           class="button button-primary">
+            Create Post
+        </a>
+    </div>
+</div>
+<div class="row mt-2">
+    {% for post in posts %}
+        <div class="col-12 col-md-8 col-lg-12 mt-2 align-self-stretch">
+            <div class="tile">
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="tile-title ">{{post.user}} <span class="text-muted mx-5">{{post.created_on}}</span></h3>
+                        <p >
+                            {{ post.caption }}-{{post.id}}
+                        </p>
                     </div>
 
                 </div>

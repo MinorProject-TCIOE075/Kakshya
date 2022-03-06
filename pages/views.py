@@ -229,6 +229,7 @@ def assignment_detail(request, pk):
             new_submit.assignment_id = assignment
             new_submit.submitted_by = request.user
             new_submit.save()
+            return redirect('pages:student_assignment')
 
     else:
         submit_form = AssignmentSubmitForm()

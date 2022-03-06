@@ -41,6 +41,18 @@
             </a>
         </div>
     </div>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in submit_form %}
+            <p>{{field.label_tag}} {{field}}</p>
+
+            {% for error in field.errors %}
+                <p style="color:red;">{{error}}</p>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit">Turn in</button>
+    </form>
 {% endblock main_content %}
 
 

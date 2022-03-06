@@ -13,4 +13,12 @@ class CreatePostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ["file", 'classroom']
+        fields = ["file", 'caption']
+
+
+
+class EditPostForm(forms.ModelForm):
+
+    class Meta:
+        model = Post
+        fields = ["file", 'caption',]
