@@ -23,17 +23,17 @@
                 </div>
                 <div class="tile-content d-flex align-items-center justify-content-between">
                     <div>
-                        <a href="#">
+                        <a href="{% url 'pages:assignment_detail' assignment.id %}">
                             <h3 class="tile-title ">
                                 {{ assignment.title }}-{{assignment.id}}
                             </h3>
-                            <h3 class="tile-title m-0 ">
-                                {{ assignment.points }} points 
-                            </h3>
-                            <h3 class="tile-title m-0 text-danger tile-title-small">
-                               Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
-                            </h3>
                         </a>
+                        <h3 class="tile-title m-0 ">
+                            {{ assignment.points }} points 
+                        </h3>
+                        <h3 class="tile-title m-0 text-danger tile-title-small">
+                           Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
+                        </h3>
                     </div>
 
                 </div>

@@ -1,0 +1,65 @@
+{% extends 'authentication/base.html' %}
+{% block subtitle %} 
+    | Assignments
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title sub-title">
+        Assignments
+    </h3>
+</div>
+{% if message %}
+    <div class="message danger-message">
+        {{ message }}
+    </div>
+{% endif %}
+<div class="row">
+
+    <div>
+        <div class="title-wrapper d-flex">
+            <div class="">
+                <h4 class="text-primary mt-4">{{assignment.title}}</h4>
+                <p class="due_date">Due <strong class="px-2">{{assignment.due_date|date:"D, d M Y, h:i a"}}</strong></p>
+            </div>
+            <div class="">
+                <h6 class="mt-4 text-primary">Points</h6>
+                <p>{{assignment.points}} points possible</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            {% if assignment.details %}
+            <p>Instructions:</p>
+            <p>{{assignment.details}}</p>
+            {% else %}
+            <p>No instructions</p>
+            {% endif %}
+            
+            <h6 class="mt-5">Attachments:</h6>
+            <a href="{{assignment.file.url}}" target="_blank" class="text-primary">
+                {{assignment.file}}
+            </a>
+        </div>
+    </div>
+{% endblock main_content %}
+
+
+
+
+<div>
+    {% if assignment.created_by == user %}
+    <h1>Submitted Assignments</h1>
+    
+    {% for submitted in assignment_submit %}
+        <div style="border: 1px solid gray; padding: 2px;">   
+            <p>{{submitted.submitted_by}}</p>
+            <a href="{{submitted.get_absolute_url}}">{{submitted.file}}</a>
+            <p></p>
+        </div>
+        <br>
+    {% endfor %}
+    {% endif %}
+</div> 
+
+
+</div>

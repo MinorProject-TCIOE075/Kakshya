@@ -14,7 +14,7 @@
     </div>
     <div class="title-wrapper">
         <h1 class="title">
-            {{ course.code }} - {{ course.name }}
+           Classrooms for {{ course.name }}
         </h1>
         <div class="action-buttons d-flex">
             <a href="{% url 'myadmin:course_edit' course.pk %}"
@@ -64,5 +64,30 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div class="row">
+        {% for classroom in classrooms %}
+            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+                <div class="tile">
+                    <div class="tile-header bg-primary bordered text-white text-center">
+                        <span>{{ classroom.course.code }}</span>
+                    </div>
+                    <div class="tile-content d-flex align-items-center justify-content-between">
+                        <div>
+                            <a href="{% url 'myadmin:classroom_detail' classroom.id %}">
+                                <h3 class="tile-title tile-title-small">
+                                    {{ classroom.course.code }}-{{ classroom.course.name }}
+                                </h3>
+                                <h3 class="tile-title m-0">
+                                    {{ classroom.name }}
+                                </h3>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock main_content %}

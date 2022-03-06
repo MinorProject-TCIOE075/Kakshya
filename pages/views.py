@@ -1,11 +1,14 @@
 from django import views
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, render, get_object_or_404, redirect, reverse
 
 from authentication.models import Student, Teacher
 from .forms import StudentProfileEditForm, TeacherProfileEditForm
 from classroom.models import Classroom
 from assignment.models import Assignment
+from routine.models import DailyRoutine, RoutineCourse
+from assignment.forms import AssignmentSubmitForm, AssignmentReturnForm
 
 USER = get_user_model()
 
@@ -147,13 +150,104 @@ class ProfileEdit(views.View):
 
 
 def home(request):
-    user = request.user
-    classroom = Classroom.objects.filter(program=user.student.faculty.id)
-    return render(request, 'pages/home.html', context={'classroom': classroom})
+    return HttpResponse("home")
 
 
-class StudentAssignmentList(views.View):
-    template_name = 'pages/student_assignment_list.html'
+class ClassRoom(views.View):
+    template_name = 'pages/classroom_list.html'
+    model = Classroom
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_type == USER.UserType.student:
+            user = user.student
+            classroom = Classroom.objects.filter(program=user.faculty.id)
+        
+        context = {
+            'classroom': classroom
+        }
+        return render(request, self.template_name, context)
+
+
+class DailyRoutineView(views.View):
+    template_name = 'pages/daily_routine.html'
+    model = DailyRoutine
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_type == USER.UserType.student:
+            user = user.student
+            routines = DailyRoutine.objects.filter(program=user.faculty.id)
+        
+        context = {
+            'routines': routines
+        }
+        return render(request, self.template_name, context)
+
+
+class RoutineCourseView(views.View):
+    template_name = 'pages/routine_course.html'
+    model = RoutineCourse
+
+    def get(self, request, pk, *args, **kwargs):
+        daily_routine = get_object_or_404(DailyRoutine, id=pk)
+        routine_course = RoutineCourse.objects.filter(daily_routine=daily_routine)
+
+        context = {
+            'routine_course': routine_course
+        }
+        return render(request, self.template_name, context)
+
+
+class StudentAssignment(views.View):
+    template_name = 'pages/assignment_list.html'
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.user_type == USER.UserType.student:
+            user_program = user.student.faculty.id
+            classroom = Classroom.objects.filter(program=user_program)
+            assignments = Assignment.objects.filter(classroom__in=classroom.all())
+
+            context = {
+                'assignments': assignments
+            }
+        return render(request, self.template_name, context)
+
+
+def assignment_detail(request, pk):
+    template_name = 'pages/assignment_detail.html'
+    user_program = request.user.student.faculty.id
+    assignment = get_object_or_404(Assignment, id=pk)
+    assignment_submit = assignment.assignmentsubmission_set.filter(assignment_id=assignment.id)
+    new_submit = None   
+
+    if request.method == "POST":
+        submit_form = AssignmentSubmitForm(request.POST, request.FILES)
+        if submit_form.is_valid():
+            new_submit = submit_form.save(commit=False)
+            new_submit.assignment_id = assignment
+            new_submit.submitted_by = request.user
+            new_submit.save()
+
+    else:
+        submit_form = AssignmentSubmitForm()
+    
+    context = {
+        'assignment': assignment,
+        'assignment_submit': assignment_submit,
+        'new_submit': new_submit,
+        'submit_form': submit_form
+    }
+
+    return render(request, template_name, context)
+
+
+
+
+
+class ClassRoomView(views.View):
+    template_name = 'pages/classroom_detail.html'
 
     def get(self, request, pk, *args, **kwargs):
         pk = self.kwargs.get('pk')

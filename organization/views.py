@@ -267,7 +267,10 @@ class CourseDetailView(views.View):
 
     def get(self, request, pk, *args, **kwargs):
         course = get_object_or_404(self.model, pk=pk)
-        return render(request, self.template_name, context={'course': course})
+        classrooms = Classroom.objects.filter(course=course)
+        return render(request, self.template_name, context={
+                        'course': course, 'classrooms': classrooms
+                        })
 
 
 # Edit Courses
