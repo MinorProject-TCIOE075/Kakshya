@@ -1,22 +1,27 @@
 from django import views
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views import generic as generic_views
-
+from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMixin)
+from django.contrib.auth.decorators import login_required, permission_required
 from organization.models import Program
 from .forms import CreateClassroomForm
 from .models import Classroom
 
 
-class ClassroomList(generic_views.ListView):
+class ClassroomList(LoginRequiredMixin, PermissionRequiredMixin, generic_views.ListView):
     template_name = 'classroom/classroom_list.html'
     context_object_name = 'classrooms'
     model = Classroom
+    permission_required = 'classroom.view_classroom'
+    raise_exception = True
 
 
-class CreateClassroomView(views.View):
+class CreateClassroomView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'classroom/classroom_add.html'
     model = Classroom
     form_class = CreateClassroomForm
+    permission_required = 'classroom.add_classroom'
+    raise_exception = True
 
     def get(self, request, department_pk, program_pk, *args, **kwargs):
         program = get_object_or_404(Program, pk=program_pk,
@@ -49,10 +54,12 @@ class CreateClassroomView(views.View):
                       })
 
 
-class EditClassroomView(views.View):
+class EditClassroomView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
     template_name = 'classroom/classroom_edit.html'
     model = Classroom
     form_class = CreateClassroomForm
+    permission_required = 'classroom.change_classroom'
+    raise_exception = True
 
     def get(self, request, department_pk, program_pk, pk, *args, **kwargs):
         program = get_object_or_404(Program, pk=program_pk,
@@ -89,6 +96,8 @@ class EditClassroomView(views.View):
                       })
 
 
+@login_required
+@permission_required('classroom.can_archive_classroom', raise_exception=True)
 def archive_classroom(request, department_pk, program_pk, pk, *args, **kwargs):
     classroom = get_object_or_404(Classroom, pk=pk)
     if request.method == 'POST':
@@ -99,6 +108,26 @@ def archive_classroom(request, department_pk, program_pk, pk, *args, **kwargs):
             'pk': classroom.program.pk,
             'department_pk': classroom.program.department.pk
         }) + '?archived=1')
+
+    return redirect(reverse('myadmin:program', kwargs={
+        'pk': classroom.program.pk,
+        'department_pk': classroom.program.department.pk
+    }))
+
+
+@login_required
+@permission_required('classroom.can_archive_classroom', raise_exception=True)
+def restore_classroom(request, department_pk, program_pk, pk, *args, **kwargs):
+    classroom = get_object_or_404(Classroom, pk=pk)
+    if request.method == 'POST':
+        print("classroom restored")
+        if classroom.is_archived:
+            classroom.is_archived = False
+            classroom.save()
+        return redirect(reverse('myadmin:program', kwargs={
+            'pk': classroom.program.pk,
+            'department_pk': classroom.program.department.pk
+        }) + '?restored=1')
 
     return redirect(reverse('myadmin:program', kwargs={
         'pk': classroom.program.pk,

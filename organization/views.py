@@ -139,9 +139,12 @@ class ProgramDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View)
 
         message = ''
         is_archived = request.GET.get('archived', None)
+        is_restored = request.GET.get('restored', None)
         is_classroom_deleted = request.GET.get('classroom_deleted', None)
         if is_archived == '1':
             message = "Classroom archived successfully!"
+        if is_restored == "1":
+            message = "Classroom restored successfully!"
         if is_classroom_deleted == '1':
             message = "Classroom deleted successfully!"
         return render(request, self.template_name, {'program': program,

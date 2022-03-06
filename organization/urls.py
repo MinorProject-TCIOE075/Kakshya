@@ -40,6 +40,8 @@ urlpatterns = [
          classroom_views.EditClassroomView.as_view(), name='classroom_edit'),
     path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/archive/',
          classroom_views.archive_classroom, name='classroom_archive'),
+    path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/restore/',
+         classroom_views.restore_classroom, name='classroom_restore'),
     path('departments/d/<department_pk>/p/<program_pk>/cr/<pk>/delete/',
          classroom_views.delete_classroom, name='classroom_delete'),
 ]
