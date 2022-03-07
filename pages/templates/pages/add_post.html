@@ -1,7 +1,7 @@
-{% extends 'myadmin/base.html' %}
+{% extends 'pages/index.html' %}
 
 {% block subtitle %}
-    | Add Course
+    | Add Assignment
 {% endblock %}
 
 {% block main_content %}
@@ -14,7 +14,7 @@
     </div>
     <div class="title-wrapper">
         <h1 class="title">
-            Add Course
+            Add Post
         </h1>
     </div>
     <div class="row">
@@ -23,14 +23,14 @@
                 <div class="form">
                     <form method="post" class="mb-5"
                           enctype="multipart/form-data">
-                        {% if course_form.non_field_errors %}
+                        {% if post_form.non_field_errors %}
                             <div class="error-message">
-                                {{ course_form.non_field_errors }}
+                                {{ form.non_field_errors }}
                             </div>
                         {% endif %}
 
                         {% csrf_token %}
-                        {% for field in course_form %}
+                        {% for field in post_form %}
                             <div class="form-field">
 
                                 <div class="label">{{ field.label_tag }}</div>

@@ -134,38 +134,3 @@ def assignment_detail(request, pk):
     }
 
     return render(request, template_name, context)
-
-@login_required
-def submission_detail(request, pk):
-    template_name = 'assignment/submission_detail.html'
-    submission = get_object_or_404(AssignmentSubmission, id=pk)
-    
-    if submission.assignment_id.created_by == request.user:
-        if request.method == "POST":
-            return_form = AssignmentReturnForm(request.POST)
-            if return_form.is_valid():                    
-                try:
-                    submission.grade = return_form.cleaned_data.get('grade', submission.grade)
-                    submission.status = "returned"
-                    if submission.grade > submission.assignment_id.points:
-
-                        return HttpResponse(
-                            "Grade cannot be greater than initial assignment points"
-                        )
-                    else:    
-                        submission.save()
-                        return redirect("assignment:assignment_list")
-                except submission.grade > submission.assignment_id.points:
-                    raise ValueError("Grade cannot be greater than assignment points")
-        
-        else:
-            return_form = AssignmentReturnForm()
-    else:
-        return HttpResponseNotFound("Request Not Allowed")
-    context = {
-        'submission': submission,
-        'return_form': return_form
-    }
-
-    return render(request, template_name, context)
-

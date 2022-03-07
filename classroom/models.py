@@ -39,12 +39,14 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    comment_id = models.UUIDField(unique=True)
+    comment_id = models.UUIDField(unique=True, default=uuid.uuid4())
+    commented_by = models.ForeignKey("authentication.User", 
+                                        on_delete=models.CASCADE, related_name="commentors")
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
     post = models.ForeignKey('classroom.Post', on_delete=models.CASCADE)
     caption = models.CharField(max_length=255)
-    reacts = models.IntegerField(default=0)
+    reacts = models.IntegerField(default=0, null=True, blank=True)
     reacted_by = models.ManyToManyField('authentication.User',
                                         related_name='comment_reactors')
 

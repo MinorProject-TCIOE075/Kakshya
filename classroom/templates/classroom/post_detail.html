@@ -1,0 +1,157 @@
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Post
+{% endblock %}
+
+{% block main_content %}
+<div class="title-wrapper">
+<h1 class="title">
+    Post
+</h1>
+
+<div class="action-buttons d-flex">
+    <a href="{% url 'myadmin:post_edit' post.classroom.pk post.pk %}"
+       class="button button-primary me-2" title="Edit">
+        <i class="bi bi-pencil-square"></i>
+    </a>
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="button button-danger" title="Delete"
+            data-bs-toggle="modal"
+            data-bs-target="#deletePostModal">
+        <i class="bi bi-trash-fill"></i>
+    </button>
+</div>
+</div>
+    {% if message %}
+        <div class="message success-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="row mt-2">
+        <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
+            <div class="">
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="tile-title mb-2">{{post.user}} <span class="text-muted mx-5 mb-2">{{post.created_on}}</span></h3>
+                        <a href="#" class="mt-5 mb-2">
+                            {{ post.caption }}
+                        </a>
+                    </div>
+                </div>
+            <div class="mt-2">
+                    <a href="{{post.file.url}}" class="text-primary mt-5" value="{{post.file}}">
+                        <span class="bi bi-arrow-down-circle-fill mt-2 text-success">
+                            Attachments
+                        </span>
+                    </a>
+            </div>
+    
+            </div>
+        </div>
+    </div>
+    <div class="title-wrapper mt-5">
+    <h3 class="title">
+        Comments
+    </h3>
+    </div>
+    <div class="row mt-4">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+        
+    {% for comment in comments %}
+        <div class="content-wrapper mx-2 border p-2 rounded mb-2">
+            <p>{{comment.commented_by}} <span class="mx-2 text-muted mb-2">{{comment.created_on}}</span></p>
+            <p class="text-muted">{{comment.caption}}</p>
+            <p class="text-muted">Reacts: {{comment.reacts}}</p>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+    
+    
+    
+    <div class="title-wrapper mt-5">
+    <h3 class="title">
+        Add a comment
+    </h3>
+    </div>
+    <div class="row">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+        <div class="content-wrapper">
+            <div class="form">
+                <form method="post" class="mb-5"
+                      enctype="multipart/form-data">
+                    {% if comment_form.non_field_errors %}
+                        <div class="error-message">
+                          {{ comment_form.non_field_errors }}
+                        </div>
+                    {% endif %}
+    
+                    {% csrf_token %}
+                    {% for field in comment_form %}
+                        <div class="form-field">
+    
+                            <div class="label">{{ field.label_tag }}</div>
+                            {% if field.errors %}
+                                <div class="error-message">
+                                    <p>{{ field.errors }}</p>
+                                </div>
+                            {% endif %}
+                            <div class="input-field">{{ field }}</div>
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                {% endfor %}
+                    <input type="submit" class="button button-primary px-5"
+                           value="Submit">
+                </form>
+            </div>
+    
+        </div>
+    </div>
+    </div>
+<!-- POST SECTION -->
+<div class="title-wrapper mt-2">
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="deletePostModal" tabindex="-1"
+             aria-labelledby="deletePostModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0">
+                        <h1 class="color-primary ">
+                            Delete Course??
+                        </h1>
+                    </div>
+                    <div class="modal-content border-0 px-4">
+                        <p>Are you sure you want to delete this
+                            post?</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button"
+                                class="button button-secondary me-1"
+                                data-bs-dismiss="modal">Close
+                        </button>
+                        <form action="{% url 'myadmin:post_delete' post.classroom.pk post.pk %}"
+                              method="post"> {% csrf_token %}
+                            <button type="submit"
+                                    class="button button-danger"
+                                    title="Delete Post">
+                                Delete
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock main_content %}

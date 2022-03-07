@@ -9,13 +9,6 @@ from django.utils.translation import gettext_lazy as _
 from .managers import UserManager
 
 
-# USER_ROLES = [
-#     ("T", _("Teacher")),
-#     ("S", _("Student")),
-#     ("St", _("Staff")),
-#     ("SU", _("SuperUser"))
-# ]
-
 # Create your models here.
 class User(AbstractUser):
     class UserType(models.TextChoices):
@@ -105,29 +98,3 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user.email} {self.address}"
-
-# class Invitation(models.Model):
-#     email = models.EmailField()
-#     token = models.CharField(max_length = 32)
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return f'From {self.sender.email} to {self.email}'
-#
-#     def send(self):
-#         subject = 'Invitation to join Kakshya'
-#         link = 'http://%s/auth/signup/%s' % (
-#             settings.SITE_HOST,
-#             self.token
-#         )
-#         template = get_template('authentication/invitation_email.txt')
-#         context = {
-#             'link': link,
-#             'sender': self.sender.email
-#         }
-#         message = template.render(context)
-#         send_mail(
-#             subject,
-#             message,
-#             settings.EMAIL_HOST_USER, [self.email]
-#         )

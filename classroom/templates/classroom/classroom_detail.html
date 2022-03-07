@@ -50,6 +50,7 @@
         </div>
     {% endfor %}
 </div>
+
 <!-- POST SECTION -->
 <div class="title-wrapper mt-5">
     <h1 class="title">
@@ -64,18 +65,18 @@
 </div>
 <div class="row mt-2">
     {% for post in posts %}
-        <div class="col-12 col-md-8 col-lg-12 mt-2 align-self-stretch">
+        <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
             <div class="tile">
                 <div class="tile-content d-flex align-items-center justify-content-between">
                     <div>
                         <h3 class="tile-title ">{{post.user}} <span class="text-muted mx-5">{{post.created_on}}</span></h3>
-                        <p >
-                            {{ post.caption }}-{{post.id}}
-                        </p>
+                        <a href="{% url 'myadmin:post_detail' classroom.pk post.pk %}" >
+                            {{ post.caption }}
+                        </a>
                     </div>
-
                 </div>
 
+                <a href="{{post.get_absolute_url}}" class="text-primary"><span class="bi bi-arrow-down-circle-fill p-2 "></span>{{post.file}}</a>
             </div>
         </div>
     {% endfor %}

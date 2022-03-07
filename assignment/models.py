@@ -32,7 +32,7 @@ class AssignmentSubmission(models.Model):
     assignment_id = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, default='submitted')
     grade = models.IntegerField(default=0)
-    file = models.FileField(upload_to='media/assignments/submission/')
+    file = models.FileField(upload_to='assignments/submission/')
     created_on = models.DateTimeField(auto_now=True)
     modified_on = models.DateTimeField(default=timezone.now)
 

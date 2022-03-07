@@ -1,10 +1,13 @@
+import uuid
+
 from django import views
 from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.urls import reverse_lazy
 from django.views import generic as generic_views
 from assignment.models import Assignment
 
 from organization.models import Program
-from .forms import CreateClassroomForm, CreatePostForm, EditPostForm
+from .forms import CommentForm, CreateClassroomForm, CreatePostForm, EditPostForm
 from .models import Classroom, Post
 
 
@@ -35,8 +38,10 @@ class CreateClassroomView(views.View):
         create_classroom_form = self.form_class(request.POST)
         if create_classroom_form.is_valid():
             classroom = create_classroom_form.save(commit=False)
+            members = create_classroom_form.cleaned_data.get('member', None)
             classroom.program = program
             classroom.created_by = request.user
+            classroom.member.add(members.id)
             classroom.save()
 
         return render(request, self.template_name,
@@ -128,7 +133,7 @@ class ClassroomDetailView(views.View):
         classroom = get_object_or_404(self.model, pk=pk)
         assignments = Assignment.objects.filter(classroom=classroom)
         posts = Post.objects.filter(classroom=classroom)
-
+        print(classroom)
         context={
             'classroom': classroom,
             'assignments': assignments,
@@ -167,6 +172,9 @@ class CreatePostView(views.View):
             post.classroom = classroom
             post.user = request.user
             post.save()
+            return redirect(reverse_lazy("myadmin:classroom_detail", kwargs={
+                                            'pk': classroom.pk
+            }))
 
         return render(request, self.template_name,
                       {
@@ -176,14 +184,55 @@ class CreatePostView(views.View):
 
 
 
+class PostDetail(views.View):
+    template_name = 'classroom/post_detail.html'
+    model = Post
+    form_class = CommentForm
+
+    def get(self, request, classroom_pk, post_pk, *args, **kwargs):
+        post = get_object_or_404(self.model, classroom__pk=classroom_pk, pk=post_pk)
+        comments = post.comment_set.filter(post=post)
+        comment_form = self.form_class()
+        context={
+            'post': post,
+            'comment_form': comment_form,
+            'comments': comments
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, classroom_pk, post_pk, *args, **kwargs):
+        post = get_object_or_404(self.model, classroom__pk=classroom_pk, pk=post_pk)
+        comment_form = self.form_class(request.POST)
+        comments = post.comment_set.filter(post=post)
+
+
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.commented_by = request.user 
+            comment.post = post 
+            comment.save()
+            return redirect(reverse_lazy("myadmin:post_detail", kwargs={
+                                            'post_pk': post.pk,
+                                            'classroom_pk': post.classroom.pk
+            }))
+
+        context = {
+            'post': post,
+            'comment_form': comment_form,
+            'comments': comments
+        }
+
+        return render(request, self.template_name, context)
+
+
 class EditPostView(views.View):
-    model = Assignment
+    model = Post
     form_class = EditPostForm
     template_name = 'classroom/post_edit.html'
 
-    def get(self, request, classroom_pk, pk, *args, **kwargs):
+    def get(self, request, classroom_pk, post_pk, *args, **kwargs):
         classroom = get_object_or_404(Classroom, id=classroom_pk)
-        post = get_object_or_404(self.model, pk=pk)
+        post = get_object_or_404(self.model, pk=post_pk)
 
         post_form = self.form_class(initial={
             'classroom': post.classroom,
@@ -195,9 +244,9 @@ class EditPostView(views.View):
             "classroom": classroom
         })
 
-    def post(self, request, classroom_pk, pk, *args, **kwargs):
+    def post(self, request, classroom_pk, post_pk, *args, **kwargs):
         classroom = get_object_or_404(Classroom, id=classroom_pk)
-        post = get_object_or_404(self.model, pk=pk)
+        post = get_object_or_404(self.model, pk=post_pk)
 
         post_form = self.form_class(request.POST, request.FILES)
 
@@ -209,9 +258,29 @@ class EditPostView(views.View):
             post.file = post_form.cleaned_data.get('file', post.file)
             post.created_by = request.user
             post.save()
-            return redirect('assignment:assignment_list')
+            return redirect(reverse_lazy('myadmin:post_detail', kwargs={
+                                            'post_pk': post.pk,
+                                            'classroom_pk': post.classroom.pk
+            }))
 
         return render(request, self.template_name, {
             "post_form": post_form,
             'classroom': classroom
         })
+
+
+
+def delete_post(request, classroom_pk, post_pk, *args, **kwargs):
+    post = get_object_or_404(Post, classroom__pk=classroom_pk, pk=post_pk)
+    if request.method == 'POST':
+        print("classroom deleted")
+        post.delete()            
+        return redirect(reverse_lazy('myadmin:post_detail', kwargs={
+                                            'post_pk': post.pk,
+                                            'classroom_pk': post.classroom.pk
+                                            }))
+
+    return redirect(reverse('myadmin:classroom_detail', kwargs={
+        'classroom_pk': post.classroom.pk,
+    }))
+
