@@ -1,23 +1,22 @@
 {% extends 'myadmin/base.html' %}
 
 {% block subtitle %}
-    | {{ course.code }} - {{ course.name }}
+    | {{ assignment.title }} - {{ assignment.course.name }}
 {% endblock %}
 
 {% block main_content %}
     <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
-            <a href="{% url 'myadmin:course_list' %}"> <i
+            <a href="{% url 'assignment:assignment_list' %}"> <i
                     class="bi bi-arrow-left"></i> Back</a>
         </div>
-
     </div>
     <div class="title-wrapper">
         <h1 class="title">
-           Classrooms for {{ course.name }}
+            {{ assignment.course.code }} - {{ assignment.course.name }}
         </h1>
         <div class="action-buttons d-flex">
-            <a href="{% url 'myadmin:course_edit' course.pk %}"
+            <a href="{% url 'assignment:edit_assignment' assignment.pk %}"
                class="button button-primary me-2" title="Edit">
                 <i class="bi bi-pencil-square"></i>
             </a>
@@ -26,35 +25,35 @@
             <!-- Button trigger modal -->
             <button type="button" class="button button-danger" title="Delete"
                     data-bs-toggle="modal"
-                    data-bs-target="#deleteCourseModal">
+                    data-bs-target="#deleteAssignmentModal">
                 <i class="bi bi-trash-fill"></i>
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="deleteCourseModal" tabindex="-1"
+            <div class="modal fade" id="deleteAssignmentModal" tabindex="-1"
                  aria-labelledby="deleteCourseModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header border-bottom-0">
                             <h1 class="color-primary ">
-                                Delete Course??
+                                Delete Assignment??
                             </h1>
                         </div>
                         <div class="modal-content border-0 px-4">
                             <p>Are you sure you want to delete this
-                                course?</p>
+                                assignment?</p>
                         </div>
                         <div class="modal-footer border-0">
                             <button type="button"
                                     class="button button-secondary me-1"
                                     data-bs-dismiss="modal">Close
                             </button>
-                            <form action="{% url 'myadmin:course_delete' course.pk %}"
+                            <form action="{% url 'assignment:assignment_delete' assignment.pk %}"
                                   method="post"> {% csrf_token %}
                                 <button type="submit"
                                         class="button button-danger"
-                                        title="Delete Course">
+                                        title="Delete assignment">
                                     Delete
                                 </button>
                             </form>
@@ -65,29 +64,48 @@
             </div>
         </div>
     </div>
-    
-    <div class="row">
-        {% for classroom in classrooms %}
-            <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
-                <div class="tile">
-                    <div class="tile-header bg-primary bordered text-white text-center">
-                        <span>{{ classroom.course.code }}</span>
-                    </div>
-                    <div class="tile-content d-flex align-items-center justify-content-between">
-                        <div>
-                            <a href="{% url 'myadmin:classroom_detail' classroom.id %}">
-                                <h3 class="tile-title tile-title-small">
-                                    {{ classroom.course.code }}-{{ classroom.course.name }}
-                                </h3>
-                                <h3 class="tile-title m-0">
-                                    {{ classroom.name }}
-                                </h3>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
+    <div>
+        <div class="title-wrapper d-flex">
+            <div class="">
+                <h4 class="text-primary mt-4">{{assignment.title}}</h4>
+                <p class="due_date">Due <strong class="px-2">{{assignment.due_date|date:"D, d M Y, h:i a"}}</strong></p>
             </div>
-        {% endfor %}
+            <div class="">
+                <h6 class="mt-4 text-primary">Points</h6>
+                <p>{{assignment.points}} points possible</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            {% if assignment.details %}
+            <p>Instructions:</p>
+            <p>{{assignment.details}}</p>
+            {% else %}
+            <p>No instructions</p>
+            {% endif %}
+            
+            <h6 class="mt-5">Attachments:</h6>
+            <a href="{{assignment.file.url}}" target="_blank" class="text-primary">
+                {{assignment.file}}
+            </a>
+        </div>
     </div>
 {% endblock main_content %}
+
+
+
+
+<div>
+    {% if assignment.created_by == user %}
+    <h1>Submitted Assignments</h1>
+    
+    {% for submitted in assignment_submit %}
+        <div style="border: 1px solid gray; padding: 2px;">   
+            <p>{{submitted.submitted_by}}</p>
+            <a href="{{submitted.get_absolute_url}}">{{submitted.file}}</a>
+            <p></p>
+        </div>
+        <br>
+    {% endfor %}
+    {% endif %}
+</div> 
+

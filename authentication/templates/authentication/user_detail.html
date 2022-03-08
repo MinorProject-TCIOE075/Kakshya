@@ -1,9 +1,41 @@
-<div class="profile">
-    <div class="personal-info">
+{% extends 'authentication/base.html' %}
+
+{% block subtitle %}
+    | Profile
+{% endblock subtitle %}
+
+{% block main_content %}
+
+<div class="title-wrapper">
+    <h1 class="title">My Profile</h1>
+    <div class="action-buttons">
+        <a href="#"
+           class="button button-primary">
+            Edit Profile </a>
+    </div>
+</div>
+<div class="profile d-flex mt-4">
+    <!-- <div class="personal-info">
         <h2>Personal Information</h2>
         <h3>Full Name: {{user.first_name}} {{user.last_name}}</h3>
         <h3>Username: {{user.username}}</h3>
         <p class="email">Email: {{user.email}}</p>
         
+    </div> -->
+    <div class="col-xl-3 col-sm-6 mb-5">
+        <div class="bg-white rounded shadow-sm py-5 px-4">
+            <h5 class="mb-4">General Information</h5>
+            <img src="https://bootstrapious.com/i/snippets/sn-team/teacher-4.jpg" 
+                alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm"
+            />
+            <h5 class="mb-0">{{user.username}}</h5><span class="small text-lowercase text-muted">{{user.email}}</span>
+            <!-- <ul class="social mb-0 list-inline mt-3">
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-facebook-f"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-linkedin"></i></a></li>
+            </ul> -->
+        </div>
     </div>
 </div>
+{% endblock main_content %}

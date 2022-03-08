@@ -1,6 +1,0 @@
-{% if user.is_authenticated %}
-    <h1>Hello, {{user.username}}</h1>
-    <a href="{{user.get_absolute_url}}">My Profile</a>
-{% else %}
-    <h1>Hello, anonymous user</h1>
-{% endif %}

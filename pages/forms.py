@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from authentication.models import Student
+from organization.models import Program
 
 
 class ProfileEditForm(forms.Form):
@@ -28,6 +29,7 @@ class ProfileEditForm(forms.Form):
 
 class StudentProfileEditForm(ProfileEditForm):
     roll_number = forms.CharField(max_length=12)
+    program = forms.ModelChoiceField(queryset=Program.objects.all())
 
 
 class TeacherProfileEditForm(ProfileEditForm):

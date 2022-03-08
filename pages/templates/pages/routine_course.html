@@ -1,0 +1,70 @@
+{% extends 'pages/index.html' %}
+
+{% block subtitle %}
+    | Routine 
+{% endblock subtitle %}
+
+{% block main_content %}
+    <div class="return-bar d-flex align-items-center justify-content-start pt-2">
+        <div class="back-arr font-bold color-primary">
+            <a href="{% url 'pages:daily_routine' %}"> <i
+                    class="bi bi-arrow-left"></i> Back</a>
+        </div>
+
+    </div>
+    <div class="title-wrapper">
+        <h1 class="title">
+            Routine
+
+        </h1>
+    </div>
+
+
+    <div class="title-wrapper mt-4">
+        <h3 class="title sub-title">
+            Routine Courses
+        </h3>
+    </div>
+    {% if message %}
+        <div class="message success-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    {% if routine_course|length > 0 %} 
+        <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in routine_course %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ course.course.name }}
+                        - {{ course.course.code }}</td>
+                    <td>{{ course.start_time|time:"h:i A" }}</td>
+                    <td>{{ course.end_time|time:"h:i A" }}</td>
+                    <td>{{ course.subject_teacher.get_full_name }}</td>
+                    <td>
+                        {% if course.is_cancelled %}
+                            Cancelled
+                        {% else %}
+                            Not Cancelled
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+        </div>
+    {% else %}
+    {% endif %}
+{% endblock main_content %}

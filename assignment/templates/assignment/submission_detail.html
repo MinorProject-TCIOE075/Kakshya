@@ -1,0 +1,24 @@
+<div class="container">
+    <h1>Assignment</h1>
+    <hr>
+    <div>
+        <h2>{{submission.assignment_id.title}}</h2>
+        <small>{{submission.assignment_id.created_on}}</small>
+        <p>{{submission.submitted_by.username}} on {{submission.created_on}}</p>
+        <p>Status: <strong style="color: green;">{{submission.status}}</strong></p>
+        <p>My File: <a href="{{submission.file.url}}" target="_blank">{{submission.file.url}}</a></p>
+        <p>Grade: {{submission.grade}} / {{submission.assignment_id.points}}</p>
+        
+
+    </div>
+    {% if submission.assignment_id.created_by == user %}
+    <div class="grade">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{return_form}}
+            <button type="submit">Grade</button>
+        </form>
+    </div>
+    {% endif %}
+
+</div>

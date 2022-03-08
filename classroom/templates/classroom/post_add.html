@@ -1,20 +1,20 @@
 {% extends 'myadmin/base.html' %}
 
 {% block subtitle %}
-    | Add Course
+    | Add Post
 {% endblock %}
 
 {% block main_content %}
     <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
-            <a href="#" onclick="window.history.back()"> <i
+            <a href="{% url 'myadmin:classroom_list'  classroom.pk %}"> <i
                     class="bi bi-arrow-left"></i> Back</a>
         </div>
 
     </div>
     <div class="title-wrapper">
         <h1 class="title">
-            Add Course
+            Add Post for {{ classroom }}
         </h1>
     </div>
     <div class="row">
@@ -23,14 +23,14 @@
                 <div class="form">
                     <form method="post" class="mb-5"
                           enctype="multipart/form-data">
-                        {% if course_form.non_field_errors %}
+                        {% if post_form.non_field_errors %}
                             <div class="error-message">
-                                {{ course_form.non_field_errors }}
+                              {{ post_form.non_field_errors }}
                             </div>
                         {% endif %}
 
                         {% csrf_token %}
-                        {% for field in course_form %}
+                        {% for field in post_form %}
                             <div class="form-field">
 
                                 <div class="label">{{ field.label_tag }}</div>
@@ -44,7 +44,7 @@
                                     <p class="help">{{ field.help_text|safe }}</p>
                                 {% endif %}
                             </div>
-                        {% endfor %}
+                    {% endfor %}
                         <input type="submit" class="button button-primary px-5"
                                value="Submit">
                     </form>
