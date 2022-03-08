@@ -1,5 +1,6 @@
 from django import forms
-from django.core.validators import validate_email, EmailValidator, ValidationError
+from django.contrib.auth.models import Permission
+from django.core.validators import EmailValidator, ValidationError
 
 from authentication.models import User
 
@@ -35,8 +36,16 @@ class InvitationForm(forms.Form):
 
 
 class UserEditFormMyadmin(forms.ModelForm):
-
     class Meta:
         model = User
         exclude = ['password', 'groups', 'user_permissions']
 
+
+class UserPermissionsForm(forms.ModelForm):
+    user_permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = User
+        fields = ['user_permissions', ]

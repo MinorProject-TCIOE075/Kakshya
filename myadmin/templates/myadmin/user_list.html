@@ -27,23 +27,26 @@
                     <th scope="col">Email</th>
                     <th scope="col">Name</th>
                     <th scope="col">User Type</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for user in users %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td><a href="{% url 'myadmin:user_detail' user.username %}">{{ user.username }}</a></td>
+                        <td>
+                            <a href="{% url 'myadmin:user_detail' user.username %}">{{ user.username }}</a>
+                        </td>
 
                         <td>{{ user.email }}</td>
                         <td>{{ user.get_full_name }}</td>
                         <td>{{ user.user_type }}</td>
                         <td>
-                                <button type="button"
-                                        class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash-fill"> </i> Delete
-                                </button>
+                            {% if user.is_active %}
+                                <span class="badge bg-primary">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Deactivated</span>
+                            {% endif %}
                         </td>
                     </tr>
                 {% empty %}

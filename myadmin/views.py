@@ -1,12 +1,14 @@
 from django import views
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin,
                                         PermissionDenied)
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 
-from .forms import InvitationForm, UserEditFormMyadmin
+from .decorators import staff_or_superuser_required
+from .forms import InvitationForm, UserEditFormMyadmin, UserPermissionsForm
 from .mixins import SuperuserOrStaffRequiredMixin
 from .models import Invitation
 
@@ -96,11 +98,17 @@ class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
 
     def get(self, request, *args, **kwargs):
         users = USER.objects.all()
+        message = ''
+        deleted = request.GET.get('deleted', None)
+
+        if deleted == '1':
+            message = "User deleted successfully."
         paginated_users = Paginator(users, per_page=20)
         page_number = request.GET.get('page', 1)
         users = paginated_users.get_page(page_number)
 
-        return render(request, self.template_name, {'users': users})
+        return render(request, self.template_name,
+                      {'users': users, 'message': message})
 
 
 class UserDetailView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
@@ -135,6 +143,46 @@ class UserEditView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
         if user_edit_form.is_valid():
             user_edit_form.save()
             return redirect(
-                reverse('myadmin:user_detail', kwargs={'username': username}))
+                reverse('myadmin:user_detail',
+                        kwargs={'username': username}) + '?updated=1')
         return render(request, self.template_name,
                       {'user_edit_form': user_edit_form})
+
+
+class UserPermissionUpdateView(LoginRequiredMixin,
+                               SuperuserOrStaffRequiredMixin, views.View):
+    template_name = 'myadmin/user_permissions.html'
+    form_class = UserPermissionsForm
+
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(USER, username=username)
+        update_permission_form = self.form_class(
+            instance=user)
+        return render(request, self.template_name,
+                      {'update_permission_form': update_permission_form,
+                       'user': user})
+
+    def post(self, request, username, *args, **kwargs):
+        user = get_object_or_404(USER, username=username)
+        update_permission_form = self.form_class(
+            instance=user, data=request.POST or None)
+        if update_permission_form.is_valid():
+            update_permission_form.save()
+            return redirect(
+                reverse('myadmin:user_detail',
+                        kwargs={'username': username}) + '?updated=1')
+
+        return render(request, self.template_name,
+                      {'update_permission_form': update_permission_form,
+                       'user': user})
+
+
+@login_required
+@staff_or_superuser_required
+def delete_user(request, username, *args, **kwargs):
+    if request.method == "POST":
+        user = get_object_or_404(USER, username=username)
+        user.is_active = False
+        user.save()
+        return redirect(reverse("myadmin:user_list") + "?deleted=1")
+    return redirect(reverse("myadmin:user_list"))
