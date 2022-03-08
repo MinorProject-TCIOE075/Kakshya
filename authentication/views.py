@@ -52,9 +52,10 @@ class LoginView(View):
                 print("logged in")
                 return redirect("pages:dashboard")
             print("credentials_invalid", user)
+            message = 'Invalid Credentials.'
 
         return render(request, self.template_name,
-                      context={'login_form': login_form})
+                      context={'login_form': login_form, 'message': message})
 
 
 # USER LOGOUT VIEW
