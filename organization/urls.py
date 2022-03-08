@@ -19,6 +19,8 @@ urlpatterns = [
          name='program_add'),
     path('departments/d/<department_pk>/p/<pk>/',
          views.ProgramDetailView.as_view(), name='program'),
+    path('departments/d/<department_pk>/p/<pk>/add_users',
+         views.AddUserToProgramView.as_view(), name='program_add_users'),
     path('departments/d/<department_pk>/p/<pk>/delete/', views.delete_program,
          name='program_delete'),
     path('departments/d/<department_pk>/p/<pk>/edit/',

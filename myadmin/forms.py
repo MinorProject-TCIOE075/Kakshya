@@ -10,6 +10,7 @@ class InvitationForm(forms.Form):
                              help_text="Enter emails seperated by commas.")
     user_type = forms.ChoiceField(choices=User.UserType.choices)
 
+    # noinspection DuplicatedCode
     def clean_emails(self):
         emails = self.cleaned_data['emails']
         invalid_emails = []
