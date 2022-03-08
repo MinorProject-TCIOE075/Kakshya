@@ -1,5 +1,6 @@
 from django import views
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
@@ -17,6 +18,10 @@ from .forms import StudentProfileEditForm, TeacherProfileEditForm
 USER = get_user_model()
 
 
+def home(request):
+    return redirect(reverse('pages:dashboard'))
+
+
 class ProfileView(LoginRequiredMixin, views.View):
     template_name = 'pages/profile.html'
     model = USER
@@ -31,7 +36,7 @@ class ProfileView(LoginRequiredMixin, views.View):
                       {'user': user, 'message': message})
 
 
-class ProfileEdit(views.View):
+class ProfileEdit(LoginRequiredMixin, views.View):
     template_name = 'pages/profile_edit.html'
 
     def get(self, request, username, *args, **kwargs):
@@ -155,7 +160,7 @@ class ProfileEdit(views.View):
                       {'profile_edit_form': profile_edit_form})
 
 
-class Dashboard(views.View):
+class Dashboard(LoginRequiredMixin, views.View):
     template_name = "pages/dashboard.html"
 
     def get(self, request, *args, **kwargs):
@@ -183,7 +188,7 @@ class Dashboard(views.View):
         return render(request, self.template_name, context)
 
 
-class ClassRoom(views.View):
+class ClassRoom(LoginRequiredMixin, views.View):
     template_name = 'pages/classroom_list.html'
     model = Classroom
 
@@ -206,7 +211,7 @@ class ClassRoom(views.View):
         return render(request, self.template_name, context)
 
 
-class ClassRoomView(views.View):
+class ClassRoomView(LoginRequiredMixin, views.View):
     template_name = 'pages/classroom_detail.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -235,7 +240,7 @@ class ClassRoomView(views.View):
         return render(request, self.template_name, context)
 
 
-class DailyRoutineView(views.View):
+class DailyRoutineView(LoginRequiredMixin, views.View):
     template_name = 'pages/daily_routine.html'
     model = DailyRoutine
 
@@ -243,10 +248,11 @@ class DailyRoutineView(views.View):
         user = request.user
         routines = None
         if user.user_type == USER.UserType.student:
-            user = user.student
-            if not user.faculty:
+            student = user.student
+            print(student.faculty)
+            if not student.faculty:
                 return redirect(reverse('pages:not_associated_page'))
-            routines = DailyRoutine.objects.filter(program=user.faculty.id)
+            routines = DailyRoutine.objects.filter(program=student.faculty.id)
 
         elif user.user_type == USER.UserType.teacher:
             routines = DailyRoutine.objects.all()
@@ -257,7 +263,7 @@ class DailyRoutineView(views.View):
         return render(request, self.template_name, context)
 
 
-class RoutineCourseView(views.View):
+class RoutineCourseView(LoginRequiredMixin, views.View):
     template_name = 'pages/routine_course.html'
     model = RoutineCourse
 
@@ -277,7 +283,7 @@ class RoutineCourseView(views.View):
         return render(request, self.template_name, context)
 
 
-class StudentAssignment(views.View):
+class StudentAssignment(LoginRequiredMixin, views.View):
     template_name = 'pages/assignment_list.html'
 
     def get(self, request, *args, **kwargs):
@@ -306,6 +312,7 @@ class StudentAssignment(views.View):
                 assignment = assignment_form.save(commit=False)
 
 
+@login_required
 def assignment_detail(request, pk):
     template_name = 'pages/assignment_detail.html'
     user = request.user
@@ -351,6 +358,7 @@ def assignment_detail(request, pk):
     return render(request, template_name, context)
 
 
+@login_required
 def submission_detail(request, pk):
     template_name = 'pages/submission_detail.html'
     submission = get_object_or_404(AssignmentSubmission, id=pk)
@@ -389,7 +397,7 @@ def submission_detail(request, pk):
     return render(request, template_name, context)
 
 
-class AddAssignmentView(views.View):
+class AddAssignmentView(LoginRequiredMixin, views.View):
     template_name = 'pages/add_assignment.html'
     form_class = AssignmentForm
 
@@ -435,7 +443,7 @@ class AddAssignmentView(views.View):
         return render(request, self.template_name, context)
 
 
-class AddPostView(views.View):
+class AddPostView(LoginRequiredMixin, views.View):
     template_name = "pages/add_post.html"
     model = Post
     form_class = CreatePostForm
@@ -468,7 +476,7 @@ class AddPostView(views.View):
                       })
 
 
-class PostDetail(views.View):
+class PostDetail(LoginRequiredMixin, views.View):
     template_name = 'pages/post_detail.html'
     model = Post
     form_class = CommentForm
@@ -514,7 +522,7 @@ class PostDetail(views.View):
         return render(request, self.template_name, context)
 
 
-class SharedFiles(views.View):
+class SharedFiles(LoginRequiredMixin, views.View):
     template_name = "pages/shared_files.html"
 
     def get(self, request, *args, **kwargs):

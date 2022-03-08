@@ -379,8 +379,9 @@ class AddUserToProgramView(LoginRequiredMixin, PermissionRequiredMixin,
             for email in emails:
                 try:
                     user = User.objects.get(email=email)
-                    user.program_set.add(program)
-                    success_emails.append(email)
+                    if user.user_type == User.UserType.student:
+                        user.student.faculty = program
+                        success_emails.append(email)
 
                 except User.DoesNotExist:
                     failed_emails.append(email)
