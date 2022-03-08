@@ -1,13 +1,14 @@
 from django import views
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        PermissionRequiredMixin, PermissionDenied)
-from django.shortcuts import render
+                                        PermissionRequiredMixin,
+                                        PermissionDenied)
 from django.core.paginator import Paginator
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 
-from .forms import InvitationForm
-from .models import Invitation
+from .forms import InvitationForm, UserEditFormMyadmin
 from .mixins import SuperuserOrStaffRequiredMixin
+from .models import Invitation
 
 USER = get_user_model()
 
@@ -89,7 +90,8 @@ class InvitationView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
                       {'invitation_form': invitation_form})
 
 
-class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin, views.View):
+class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
+                   views.View):
     template_name = 'myadmin/user_list.html'
 
     def get(self, request, *args, **kwargs):
@@ -99,3 +101,40 @@ class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin, views.View
         users = paginated_users.get_page(page_number)
 
         return render(request, self.template_name, {'users': users})
+
+
+class UserDetailView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
+                     views.View):
+    template_name = 'myadmin/user.html'
+
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(USER, username=username)
+        is_updated = request.GET.get('updated', None)
+        message = ''
+        if is_updated == '1':
+            message = 'Updated Successfully'
+        return render(request, self.template_name,
+                      {'user': user, 'message': message})
+
+
+class UserEditView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
+                   views.View):
+    template_name = 'myadmin/user_edit.html'
+    form_class = UserEditFormMyadmin
+
+    def get(self, request, username, *args, **kwargs):
+        user_edit_form = self.form_class(
+            instance=get_object_or_404(USER, username=username))
+        return render(request, self.template_name,
+                      {'user_edit_form': user_edit_form})
+
+    def post(self, request, username, *args, **kwargs):
+        user_edit_form = self.form_class(
+            instance=get_object_or_404(USER, username=username),
+            data=request.POST)
+        if user_edit_form.is_valid():
+            user_edit_form.save()
+            return redirect(
+                reverse('myadmin:user_detail', kwargs={'username': username}))
+        return render(request, self.template_name,
+                      {'user_edit_form': user_edit_form})

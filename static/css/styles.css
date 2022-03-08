@@ -63,6 +63,10 @@ button:focus {
     display: block;
 }
 
+.z-index-999 {
+    z-index: 999;
+}
+
 .message.success-message {
     background: var(--success-bg);
 }

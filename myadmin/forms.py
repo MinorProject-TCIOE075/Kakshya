@@ -32,3 +32,11 @@ class InvitationForm(forms.Form):
             )
 
         return list(set(emails))
+
+
+class UserEditFormMyadmin(forms.ModelForm):
+
+    class Meta:
+        model = User
+        exclude = ['password', 'groups', 'user_permissions']
+

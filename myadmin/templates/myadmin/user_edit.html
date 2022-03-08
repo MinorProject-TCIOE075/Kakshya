@@ -1,20 +1,20 @@
 {% extends 'myadmin/base.html' %}
 
 {% block subtitle %}
-    | Invite Users
+    | Edit User
 {% endblock %}
 
 {% block main_content %}
     <div class="return-bar d-flex align-items-center justify-content-start pt-2">
         <div class="back-arr font-bold color-primary">
-            <a href="#" onclick="window.history.back()"> <i
+            <a href="{% url 'myadmin:user_list' %}"> <i
                     class="bi bi-arrow-left"></i> Back</a>
         </div>
 
     </div>
     <div class="title-wrapper">
         <h1 class="title">
-            Invite Users
+            Edit User Details
         </h1>
     </div>
     <div class="row">
@@ -23,14 +23,14 @@
                 <div class="form">
                     <form method="post" class="mb-5"
                           enctype="multipart/form-data">
-                        {% if invitation_form.non_field_errors %}
+                        {% if user_edit_form.non_field_errors %}
                             <div class="error-message">
-                                {{ invitation_form.non_field_errors }}
+                              {{ user_edit_form.non_field_errors }}
                             </div>
                         {% endif %}
 
                         {% csrf_token %}
-                        {% for field in invitation_form %}
+                        {% for field in user_edit_form %}
                             <div class="form-field">
 
                                 <div class="label">{{ field.label_tag }}</div>
@@ -44,7 +44,7 @@
                                     <p class="help">{{ field.help_text|safe }}</p>
                                 {% endif %}
                             </div>
-                        {% endfor %}
+                    {% endfor %}
                         <input type="submit" class="button button-primary px-5"
                                value="Submit">
                     </form>
