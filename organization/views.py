@@ -1,4 +1,5 @@
 from django import views
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import (PermissionRequiredMixin,
                                         LoginRequiredMixin)
@@ -8,8 +9,10 @@ from django.views import generic as generic_views
 
 from classroom.models import Classroom
 from .forms import (DepartmentForm, EditDepartmentForm, ProgramForm,
-                    EditProgramForm, CourseForm)
+                    EditProgramForm, CourseForm, AddUsersToProgramForm)
 from .models import Department, Program, Course
+
+User = get_user_model()
 
 
 class DepartmentListView(LoginRequiredMixin, PermissionRequiredMixin,
@@ -339,3 +342,57 @@ def delete_course(request, pk, *args, **kwargs):
         return redirect(
             reverse('myadmin:course_list') + '?deleted_program=1')
     return redirect(reverse('myadmin:course_list'))
+
+
+class AddUserToProgramView(LoginRequiredMixin, PermissionRequiredMixin,
+                           views.View):
+    template_name = 'organization/program_add_user.html'
+    form_class = AddUsersToProgramForm
+    permission_required = 'program.change_program'
+    raise_exception = True
+
+    def get(self, request, department_pk, pk, *args, **kwargs):
+        program = get_object_or_404(Program, pk=pk, department=department_pk)
+        add_user_program_form = self.form_class(
+            initial={
+                'program': program
+            }
+        )
+        return render(request, self.template_name, {
+            'add_user_program_form': add_user_program_form
+        })
+
+    def post(self, request, department_pk, pk, *args, **kwargs):
+        program = get_object_or_404(Program, pk=pk, department=department_pk)
+        add_user_program_form = self.form_class(
+            initial={
+                'program': program
+            }, data=request.POST
+        )
+        message = ''
+        if add_user_program_form.is_valid():
+            program = add_user_program_form.cleaned_data['program']
+            emails = add_user_program_form.cleaned_data['emails']
+            failed_emails = []
+            success_emails = []
+
+            for email in emails:
+                try:
+                    user = User.objects.get(email=email)
+                    user.program_set.add(program)
+                    success_emails.append(email)
+
+                except User.DoesNotExist:
+                    failed_emails.append(email)
+                    continue
+
+            if success_emails:
+                message = f'{", ".join(success_emails)} added to {program}.'
+
+            if failed_emails:
+                message += f' {", ".join(failed_emails)} users not found.'
+
+        return render(request, self.template_name, {
+            'add_user_program_form': add_user_program_form,
+            'message': message
+        })

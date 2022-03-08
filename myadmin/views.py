@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin,
                                         PermissionDenied)
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 
 from .decorators import staff_or_superuser_required
@@ -100,6 +101,13 @@ class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin,
         users = USER.objects.all()
         message = ''
         deleted = request.GET.get('deleted', None)
+        search = request.GET.get('search', None)
+
+        if search:
+            users = USER.objects.filter(
+                Q(username__contains=search) | Q(email__contains=search) | Q(
+                    first_name__contains=search) | Q(
+                    last_name__contains=search))
 
         if deleted == '1':
             message = "User deleted successfully."
