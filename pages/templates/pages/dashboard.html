@@ -1,44 +1,56 @@
 {% extends 'pages/index.html' %}
-{% block subtitle %} 
+{% block subtitle %}
     | Dashboard
 {% endblock subtitle %}
 
 {% block main_content %}
-<div class="title-wrapper">
-    <h3 class="title sub-title">
-        Dashboard
-    </h3>
-</div>
-{% if message %}
-    <div class="message danger-message">
-        {{ message }}
+    <div class="title-wrapper">
+        <h3 class="title sub-title">
+            Dashboard
+        </h3>
     </div>
-{% endif %}
-<div class="row mt-2">
-    {% for post in posts %}
-        <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
-            <div class="tile">
-                <div class="tile-content d-flex align-items-center justify-content-between">
-                    <div>
-                        <a class="tile-title " href="{% url 'pages:post_detail' post.classroom.id post.id %}">
-                            {% if post.user.first_name and post.user.last_name %}
-                            {{post.user.first_name}} {{post.user.last_name}}
-                            {% else %}
-                            {{post.user.username}}
-                            {% endif %} 
-                            <span class="text-muted mx-5">{{post.created_on}}</span>
-                        </a>
-                        <a href='#' >
-                            {{ post.caption }}
+    {% if message %}
+        <div class="message danger-message">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="row mt-2">
+        {% for post in posts %}
+            <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
+                <div class="tile">
+                    <div class="tile-content d-flex align-items-center justify-content-between">
+                        <div>
+                            <a class="tile-title "
+                               href="{% url 'pages:post_detail' post.classroom.id post.id %}">
+                            <div class="d-flex">
+                                <p class="mb-1">
+                                    {% if post.user.first_name and post.user.last_name %}
+                                        {{ post.user.first_name }}
+                                        {{ post.user.last_name }}
+                                    {% else %}
+                                        {{ post.user.username }}
+                                    {% endif %}
+                                </p>
+                                <p class="px-1 m-0"> | </p>
+                            <p class="m-0">{{ post.classroom }}</p>
+                            </div>
+
+                                <p class="text-muted mb-2 mt-0"><small>{{ post.created_on }}</small></p>
+                            </a>
+                            <a href='#'>
+                                {{ post.caption }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+
+                        <a href="{{ post.file.url }}"
+                           class="text-primary "><span
+                                class="bi bi-arrow-down-circle-fill p-2 text-success h5"></span>{{ post.file }}
                         </a>
                     </div>
                 </div>
-                <div class="mt-4">
-                
-                    <a href="{{post.file.url}}" class="text-primary "><span class="bi bi-arrow-down-circle-fill p-2 text-success h5"></span>{{post.file}}</a>
-                </div>
             </div>
-        </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
 {% endblock %}
