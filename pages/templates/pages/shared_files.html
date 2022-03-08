@@ -1,0 +1,44 @@
+{% extends 'pages/index.html' %}
+{% block subtitle %} 
+    | Shared Files
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title sub-title">
+        Shared Files
+    </h3>
+</div>
+{% if message %}
+    <div class="message danger-message">
+        {{ message }}
+    </div>
+{% endif %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">Code</th>
+            <th scope="col">Course</th>
+            <th scope="col">Uploaded by</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in posts %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{{file.file.url}}" class="text-primary">{{ file.file }}</a></td>
+                <td>{{ file.created_on|date:"D, M d Y" }}</td>
+                <td>{{ file.classroom.course.code }}</td>
+                <td>{{file.classroom.course.name}}</td>
+                <td>{{file.user.username}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'pages/index.html' %}
+{% block subtitle %} 
+    | Assignments
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title sub-title">
+        Assignments
+    </h3>
+</div>
+{% if message %}
+    <div class="message danger-message">
+        {{ message }}
+    </div>
+{% endif %}
+<div class="row">
+
+    <div>
+        <div class="title-wrapper d-flex">
+            <div class="">
+                <h4 class="text-primary mt-4">{{assignment.title}}</h4>
+                <p class="due_date">Due <strong class="px-2">{{assignment.due_date|date:"D, d M Y, h:i a"}}</strong></p>
+            </div>
+            {% if teacher %}
+            <div class="">
+                <h6 class="mt-4 text-primary">Points</h6>
+                <p>{{assignment.points}} points possible</p>
+            </div>
+            {% endif %}
+            {% if student %}
+
+            <div class="">
+                <h6 class="mt-4 text-primary">Points</h6>
+
+                {% for submit in assignment_submit %}
+                {% if submit.grade %}
+                <p>{{submit.grade}} / {{assignment.points}}</p>
+                {% else %}
+                <p>{{assignment.points}} points possible</p>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {% if assignment.details %}
+            <p>Instructions:</p>
+            <p>{{assignment.details}}</p>
+            {% else %}
+            <p>No instructions</p>
+            {% endif %}
+            
+            <h6 class="mt-5">Attachments:</h6>
+            <a href="{{assignment.file.url}}" target="_blank" class="text-primary">
+                {{assignment.file}}
+            </a>
+        </div>
+    </div>
+
+<div>
+{% if teacher %}
+    {% if assignment.created_by == user %}
+    <div class="title-wrapper mt-5">
+    <h1 class="title">Submitted Assignments</h1>
+    </div>
+        <div class="table-responsive mt-4">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Roll number</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">File</th>
+                <th scope="col">Grade</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for submitted in assignment_submit %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                        <a href="{% url 'pages:submission_detail' submitted.id %}">{{submitted.submitted_by}}</a>    
+                    </td>
+                    <td>{{ submitted.submitted_by.student.roll_number }}</td>
+                    <td>{{ submitted.created_on|date:"D M Y" }}</td>
+                    <td>{{ submitted.created_on|time:"h:i A" }}</td>
+                    <td>
+                        <a href="{{submitted.file.url}}" target="_blank" 
+                            value="{{submitted.file}}" 
+                            class="bi bi-arrow-down-circle-fill text-success"
+                        >
+                        </a>
+                    </td>
+                    <td>
+                        {% if submitted.grade %}
+                            {{submitted.grade}} / {{submitted.assignment_id.points}}
+                        {% else %} 0 / {{submitted.assignment_id.points}}
+                        {% endif %}
+                    </td>    
+                    <td>{{submitted.status}}</td>    
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+        </div>
+    </div> 
+    {% endif %}
+{% endif %}
+{% if assignment_submit %}
+    {% if student %}
+    <p class="mt-5 font-bold">My Work:</p>
+        {% for file in assignment_submit %}
+        <a href="{{file.file.url}}" target="_blank" class="text-primary">{{file.file}}
+        </a>
+        <p class="bi bi-check2-circle text-success p-2 h5">{{file.status}}
+            <span class="h6 text-muted p-2"> {{file.created_on}}
+
+            </span>
+        </p>
+        {% endfor %}
+    {% endif %}
+    {% else %}
+        <div class="form">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in submit_form %}
+                    <div class="form-field">
+                        {{field}}
+
+                        {% for error in field.errors %}
+                            <p style="color:red;">{{error}}</p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                {% if student %}
+                <input type="submit" class="button button-primary px-5" value="Turn in">
+                {% endif %}
+            </form>
+        </div>
+    {% endif %}
+{% endblock main_content %}

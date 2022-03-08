@@ -1,0 +1,84 @@
+{% extends 'myadmin/base.html' %}
+
+{% block subtitle %}
+    | Assignments
+{% endblock %}
+
+{% block main_content %}
+    <div class="title-wrapper">
+        <h1 class="title">
+            Assignments
+        </h1>
+        <div class="action-buttons">
+            <a href="{% url 'assignment:add_assignment' classroom.pk %}"
+               class="button button-primary">
+                Create Assignment
+            </a>
+        </div>
+    </div>
+    {% if message %}
+        <div class="message success-message">
+            {{ message }}
+        </div>
+    {% endif %}
+
+<div class="row mt-2">
+    {% for assignment in assignments %}
+        <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+            <div class="tile">
+                <div class="tile-header bg-primary bordered text-white text-center">
+                    <span>{{ assignment.course.code }}</span>
+                </div>
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <a href="{% url 'assignment:assignment_detail' assignment.id %}">
+                            <h3 class="tile-title ">
+                                {{ assignment.title }}-{{assignment.id}}
+                            </h3>
+                            <h3 class="tile-title m-0 ">
+                                {{ assignment.points }} points 
+                            </h3>
+                            <h3 class="tile-title m-0 text-danger tile-title-small">
+                               Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
+                            </h3>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- POST SECTION -->
+<div class="title-wrapper mt-5">
+    <h1 class="title">
+        Posts for {{classroom}}
+    </h1>
+    <div class="action-buttons">
+        <a href="{% url 'myadmin:post_add' classroom.id %}"
+           class="button button-primary">
+            Create Post
+        </a>
+    </div>
+</div>
+<div class="row mt-2">
+    {% for post in posts %}
+        <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
+            <div class="tile">
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="tile-title ">{{post.user}} <span class="text-muted mx-5">{{post.created_on}}</span></h3>
+                        <a href="{% url 'myadmin:post_detail' classroom.pk post.pk %}" >
+                            {{ post.caption }}
+                        </a>
+                    </div>
+                </div>
+
+                <a href="{{post.get_absolute_url}}" class="text-primary"><span class="bi bi-arrow-down-circle-fill p-2 "></span>{{post.file}}</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock main_content %}

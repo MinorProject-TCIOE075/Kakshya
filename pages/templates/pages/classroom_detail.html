@@ -1,0 +1,86 @@
+{% extends 'pages/index.html' %}
+{% block subtitle %} 
+    | {{classroom.course.name}}
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title">
+        Assignments for classroom - {{classroom.name}}
+    </h3>
+    {% if teacher %}
+    <div class="action-buttons">
+        <a href="{% url 'pages:add_assignment' classroom.pk %}"
+           class="button button-primary button-small m-0">Add
+            Assignment</a>
+    </div>
+    {% endif %}
+</div>
+{% if message %}
+    <div class="message danger-message">
+        {{ message }}
+    </div>
+{% endif %}
+
+<div class="row mt-2">
+    {% for assignment in assignments %}
+        <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+            <div class="tile">
+                <div class="tile-header bg-primary bordered text-white text-center">
+                    <span>{{ assignment.course.code }}</span>
+                </div>
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <a href="{% url 'pages:assignment_detail' assignment.id %}">
+                            <h3 class="tile-title ">
+                                {{ assignment.title }}-{{assignment.id}}
+                            </h3>
+                            <h3 class="tile-title m-0 ">
+                                {{ assignment.points }} points 
+                            </h3>
+                            <h3 class="tile-title m-0 text-danger tile-title-small">
+                               Due {{ assignment.due_date|date:"D, d M Y, h:i a" }}
+                            </h3>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="title-wrapper mt-5">
+    <h3 class="title">
+        Posts for classroom - {{classroom.name}}
+    </h3>
+    {% if teacher %}
+    <div class="action-buttons">
+        <a href="{% url 'pages:post_add' classroom.id %}"
+           class="button button-primary button-small m-0">Create
+            Post</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mt-2">
+    {% for post in posts %}
+        <div class="col-12 col-md-8 col-lg-12 mt-4 align-self-stretch">
+            <div class="tile">
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <a class="tile-title" href="{% url 'pages:post_detail' post.classroom.id post.id %}">{{post.user}} 
+                            <span class="text-muted mx-5">{{post.created_on}}</span>
+                        </a>
+                        <a href="" >
+                            {{ post.caption }}
+                        </a>
+                    </div>
+                </div>
+
+                <a href="{{post.get_absolute_url}}" class="text-primary"><span class="bi bi-arrow-down-circle-fill p-2 "></span>{{post.file}}</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

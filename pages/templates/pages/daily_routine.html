@@ -1,0 +1,38 @@
+{% extends 'pages/index.html' %}
+{% block subtitle %} 
+    | Routine
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title sub-title">
+        Routine
+    </h3>
+</div>
+{% if message %}
+    <div class="message danger-message">
+        {{ message }}
+    </div>
+{% endif %}
+<div class="row">
+    {% for routine in routines %}
+        <div class="col-6 col-md-4 col-lg-3 mt-2 align-self-stretch">
+            <div class="tile">
+                <div class="tile-header bg-primary bordered text-white text-center">
+                    <span>{{ routine.day }}</span>
+                </div>
+                <div class="tile-content d-flex align-items-center justify-content-between">
+                    <div>
+                        <a href="{% url 'pages:routine_course' routine.id %}">
+                            <h3 class="tile-title ">
+                                {{ routine.day }}-{{routine.program}}
+                            </h3>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

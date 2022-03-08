@@ -1,0 +1,51 @@
+{% extends 'pages/index.html' %}
+{% block subtitle %} 
+    | Dashboard
+{% endblock subtitle %}
+
+{% block main_content %}
+<div class="title-wrapper">
+    <h3 class="title">
+        Submission
+    </h3>
+</div>
+<div class=" mt-4 title-wrapper">
+    <div class="container">
+        <h1 class="title sub-title">Assignment</h1>
+        <hr>
+        <div>
+            <h2 class="h3">{{submission.assignment_id.title}}</h2>
+            <small>Due {{submission.assignment_id.due_date|date:"d M, h i a"}}</small>
+            <p class="h6">{{submission.submitted_by.username}} on {{submission.created_on}}</p>
+            <p>Status: <strong style="color: green;">{{submission.status}}</strong></p>
+            <p>Attachment: 
+                <a href="{{submission.file.url}}" target="_blank" value="{{submission.file.url}}">
+                    <span class="bi bi-arrow-down-circle-fill text-success mx-2">{{submission.file}}</span>
+                </a>
+            </p>
+            <p>Grade: {{submission.grade}} / {{submission.assignment_id.points}}</p>
+            
+    
+        </div>
+        {% if submission.assignment_id.created_by == user %}
+        <div class="grade">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{return_form}}
+                {% if return_form.errors %}
+                    {{return_form.errors}}
+                {% endif %}
+                <button type="submit" class="btn btn-success">Grade</button>
+            </form>
+        </div>
+
+    {% if message %}
+    <div class="message danger-message mt-2">
+        {{ message }}
+    </div>
+{% endif %}
+        {% endif %}
+    
+    </div>
+</div>
+{% endblock %}
