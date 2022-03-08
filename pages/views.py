@@ -1,24 +1,23 @@
 from django import views
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
-from django.shortcuts import get_list_or_404, render, get_object_or_404, redirect, reverse
-from assignment.views import AddAssignmentView
 
-from authentication.models import Student, Teacher
-from .forms import StudentProfileEditForm, TeacherProfileEditForm
-from classroom.models import Classroom, Post
-from assignment.models import Assignment, AssignmentSubmission
-from routine.models import DailyRoutine, RoutineCourse
-from classroom.forms import CreatePostForm, EditPostForm, CommentForm
 from assignment.forms import (AssignmentSubmitForm,
-                                AssignmentReturnForm, AssignmentForm
-                                )
+                              AssignmentReturnForm, AssignmentForm
+                              )
+from assignment.models import Assignment, AssignmentSubmission
+from authentication.models import Student, Teacher
+from classroom.forms import CreatePostForm, CommentForm
+from classroom.models import Classroom, Post
+from routine.models import DailyRoutine, RoutineCourse
+from .forms import StudentProfileEditForm, TeacherProfileEditForm
 
 USER = get_user_model()
 
 
-class ProfileView(views.View):
+class ProfileView(LoginRequiredMixin, views.View):
     template_name = 'pages/profile.html'
     model = USER
 
@@ -36,6 +35,10 @@ class ProfileEdit(views.View):
     template_name = 'pages/profile_edit.html'
 
     def get(self, request, username, *args, **kwargs):
+        if username is not request.user.username:
+            return redirect(reverse('pages:profile', kwargs={
+                'username': request.user.username,
+            }))
         user = get_object_or_404(USER, username=username)
         if not user.user_type:
             user.user_type = USER.UserType.student
@@ -120,8 +123,8 @@ class ProfileEdit(views.View):
             if user.user_type == USER.UserType.student:
                 year_joined = profile_edit_form.cleaned_data.get('year_joined',
                                                                  user.student.year_joined)
-                program = profile_edit_form.cleaned_data.get('program', 
-                                                                user.student.faculty) 
+                program = profile_edit_form.cleaned_data.get('program',
+                                                             user.student.faculty)
                 user.student.year_joined = year_joined
                 user.student.faculty = program
                 roll_number = profile_edit_form.cleaned_data.get(
@@ -188,12 +191,15 @@ class ClassRoom(views.View):
         user = request.user
         if user.user_type == USER.UserType.student:
             try:
-                classroom = Classroom.objects.filter(program=user.student.faculty.id)
+                classroom = Classroom.objects.filter(
+                    program=user.student.faculty.id)
             except ValueError:
+                classroom = None
+            except AttributeError:
                 classroom = None
 
         if user.user_type == USER.UserType.teacher:
-            classroom = Classroom.objects.filter(member=request.user) 
+            classroom = Classroom.objects.filter(member=request.user)
         context = {
             'classroom': classroom
         }
@@ -210,14 +216,14 @@ class ClassRoomView(views.View):
 
         if user.user_type == USER.UserType.teacher:
             teacher = True
-            assignments = Assignment.objects.filter(classroom=classroom, created_by=user)
+            assignments = Assignment.objects.filter(classroom=classroom,
+                                                    created_by=user)
             posts = Post.objects.filter(classroom=classroom, user=user)
 
         elif user.user_type == USER.UserType.student:
             teacher = False
             assignments = Assignment.objects.filter(classroom=classroom)
             posts = Post.objects.filter(classroom=classroom)
-
 
         print(teacher)
         context = {
@@ -235,10 +241,13 @@ class DailyRoutineView(views.View):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        routines = None
         if user.user_type == USER.UserType.student:
             user = user.student
+            if not user.faculty:
+                return redirect(reverse('pages:not_associated_page'))
             routines = DailyRoutine.objects.filter(program=user.faculty.id)
-        
+
         elif user.user_type == USER.UserType.teacher:
             routines = DailyRoutine.objects.all()
 
@@ -254,11 +263,13 @@ class RoutineCourseView(views.View):
 
     def get(self, request, pk, *args, **kwargs):
         daily_routine = get_object_or_404(DailyRoutine, id=pk)
-        routine_course = RoutineCourse.objects.filter(daily_routine=daily_routine)
+        routine_course = RoutineCourse.objects.filter(
+            daily_routine=daily_routine)
 
         user = request.user
         if user.user_type == USER.UserType.teacher:
-            routine_course = RoutineCourse.objects.filter(subject_teacher=request.user)
+            routine_course = RoutineCourse.objects.filter(
+                subject_teacher=request.user)
 
         context = {
             'routine_course': routine_course
@@ -272,12 +283,16 @@ class StudentAssignment(views.View):
     def get(self, request, *args, **kwargs):
         user = request.user
         if user.user_type == USER.UserType.student:
+            if not user.student.faculty:
+                return redirect(reverse('pages:not_associated_page'))
             user_program = user.student.faculty.id
+
             classroom = Classroom.objects.filter(program=user_program)
-            assignments = Assignment.objects.filter(classroom__in=classroom.all())
+            assignments = Assignment.objects.filter(
+                classroom__in=classroom.all())
 
         if user.user_type == USER.UserType.teacher:
-            assignments = Assignment.objects.filter(created_by = user)
+            assignments = Assignment.objects.filter(created_by=user)
         context = {
             'assignments': assignments
         }
@@ -300,7 +315,7 @@ def assignment_detail(request, pk):
         student = True
         user_program = user.student.faculty.id
         assignment_submit = assignment.assignmentsubmission_set.filter(
-                            assignment_id=assignment.id
+            assignment_id=assignment.id
         )
         new_submit = None
         if request.method == "POST":
@@ -317,16 +332,16 @@ def assignment_detail(request, pk):
             submit_form = AssignmentSubmitForm()
 
         context = {
-                'assignment': assignment,
-                'assignment_submit': assignment_submit,
-                'new_submit': new_submit,
-                'submit_form': submit_form,
-                'student': student
-            }
+            'assignment': assignment,
+            'assignment_submit': assignment_submit,
+            'new_submit': new_submit,
+            'submit_form': submit_form,
+            'student': student
+        }
     if user.user_type == USER.UserType.teacher:
         teacher = True
         assignment_submit = assignment.assignmentsubmission_set.filter(
-                            assignment_id=assignment.id
+            assignment_id=assignment.id
         )
         context = {
             'assignment': assignment,
@@ -346,19 +361,21 @@ def submission_detail(request, pk):
         if submission.assignment_id.created_by == user:
             if request.method == "POST":
                 return_form = AssignmentReturnForm(request.POST)
-                if return_form.is_valid():                    
+                if return_form.is_valid():
                     try:
-                        submission.grade = return_form.cleaned_data.get('grade', submission.grade)
+                        submission.grade = return_form.cleaned_data.get(
+                            'grade', submission.grade)
                         submission.status = "returned"
                         if submission.grade > submission.assignment_id.points:
                             message = "Grade cannot be greater than initial assignment points"
-                                
-                        else:    
+
+                        else:
                             submission.save()
                             return redirect("pages:dashboard")
                     except submission.grade > submission.assignment_id.points:
-                        raise ValueError("Grade cannot be greater than assignment points")
-            
+                        raise ValueError(
+                            "Grade cannot be greater than assignment points")
+
             else:
                 return_form = AssignmentReturnForm()
 
@@ -403,12 +420,12 @@ class AddAssignmentView(views.View):
                 assignment = assignment_form.save(commit=False)
                 assignment.classroom = classroom
                 assignment.created_by = user
-                assignment.course = classroom.course                                  # print(assignment)
+                assignment.course = classroom.course  # print(assignment)
                 assignment.save()
                 print(assignment)
                 return redirect(reverse_lazy("pages:classroom_detail", kwargs={
-                                                'pk': classroom.pk
-                                })) 
+                    'pk': classroom.pk
+                }))
         context = {
             'form': assignment_form,
             'classroom': classroom,
@@ -441,7 +458,7 @@ class AddPostView(views.View):
             post.user = request.user
             post.save()
             return redirect(reverse_lazy("pages:classroom_detail", kwargs={
-                                            'pk': classroom.pk
+                'pk': classroom.pk
             }))
 
         return render(request, self.template_name,
@@ -457,10 +474,11 @@ class PostDetail(views.View):
     form_class = CommentForm
 
     def get(self, request, classroom_pk, post_pk, *args, **kwargs):
-        post = get_object_or_404(self.model, classroom__pk=classroom_pk, pk=post_pk)
+        post = get_object_or_404(self.model, classroom__pk=classroom_pk,
+                                 pk=post_pk)
         comments = post.comment_set.filter(post=post)
         comment_form = self.form_class()
-        context={
+        context = {
             'post': post,
             'comment_form': comment_form,
             'comments': comments
@@ -468,22 +486,22 @@ class PostDetail(views.View):
         return render(request, self.template_name, context)
 
     def post(self, request, classroom_pk, post_pk, *args, **kwargs):
-        post = get_object_or_404(self.model, classroom__pk=classroom_pk, pk=post_pk)
+        post = get_object_or_404(self.model, classroom__pk=classroom_pk,
+                                 pk=post_pk)
         comment_form = self.form_class(request.POST)
         comments = post.comment_set.filter(post=post)
-        
+
         if request.user.user_type == USER.UserType.teacher:
             teacher = True
 
-
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
-            comment.commented_by = request.user 
-            comment.post = post 
+            comment.commented_by = request.user
+            comment.post = post
             comment.save()
             return redirect(reverse_lazy("pages:post_detail", kwargs={
-                                            'post_pk': post.pk,
-                                            'classroom_pk': post.classroom.pk
+                'post_pk': post.pk,
+                'classroom_pk': post.classroom.pk
             }))
 
         context = {
@@ -509,5 +527,12 @@ class SharedFiles(views.View):
         if user.user_type == USER.UserType.teacher:
             classroom = Classroom.objects.filter(member=user)
             posts = Post.objects.filter(classroom__in=classroom.all())
-        
+
         return render(request, self.template_name, context={'posts': posts})
+
+
+class NotAssociatedPage(LoginRequiredMixin, views.View):
+    template_name = 'not_associated_page.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})

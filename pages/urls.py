@@ -7,6 +7,8 @@ urlpatterns = [
     path("dashboard/", views.Dashboard.as_view(), name="dashboard"),
     path("routines/", views.DailyRoutineView.as_view(), name='daily_routine'),
     path("classroom/", views.ClassRoom.as_view(), name='classroom'),
+    path("not_associated/", views.NotAssociatedPage.as_view(),
+         name='not_associated_page'),
     path("<username>/", views.ProfileView.as_view(), name='profile'),
     path("<username>/edit/", views.ProfileEdit.as_view(), name='profile_edit'),
 
