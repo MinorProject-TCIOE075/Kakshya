@@ -20,7 +20,7 @@ class LoginView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             print("hello", request.user.username)
-            return redirect("/")
+            return redirect(reverse('pages:dashboard'))
         message = None
 
         signup_success = request.GET.get('signup_success', None)
@@ -50,7 +50,7 @@ class LoginView(View):
             if user:
                 login(request, user)
                 print("logged in")
-                return redirect("pages:home")
+                return redirect("pages:dashboard")
             print("credentials_invalid", user)
 
         return render(request, self.template_name,
@@ -61,7 +61,7 @@ class LoginView(View):
 def user_logout(request):
     # USING DJANGO'S BUILT-IN LOGOUT FUNCTIONALITY from django.contrib.auth
     logout(request)
-    return redirect('auth:home')
+    return redirect('auth:login')
     # # REDIRECTING THE LOGGED OUT USER TO LOGIN PAGE  
     # return redirect("auth:login")
 

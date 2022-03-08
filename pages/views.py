@@ -156,7 +156,9 @@ class Dashboard(views.View):
     template_name = "pages/dashboard.html"
 
     def get(self, request, *args, **kwargs):
+        print('here')
         user = request.user
+        posts = []
         if user.user_type == USER.UserType.student:
             try:
                 print('user')
