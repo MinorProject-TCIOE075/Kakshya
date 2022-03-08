@@ -138,7 +138,9 @@ class ProgramDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View)
     def get(self, request, department_pk, pk, *args, **kwargs):
         program = get_object_or_404(self.model, pk=pk,
                                     department__pk=department_pk)
+
         classrooms = Classroom.objects.filter(program=program)
+        users = User.objects.filter(student__faculty=program)
 
         message = ''
         is_archived = request.GET.get('archived', None)
@@ -152,7 +154,8 @@ class ProgramDetailView(LoginRequiredMixin, PermissionRequiredMixin, views.View)
             message = "Classroom deleted successfully!"
         return render(request, self.template_name, {'program': program,
                                                     'classrooms': classrooms,
-                                                    'message': message})
+                                                    'message': message,
+                                                    'users': users})
 
 
 # Add program

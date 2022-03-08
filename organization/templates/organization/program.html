@@ -21,41 +21,42 @@
                class="button button-primary me-2" title="Edit">
                 <i class="bi bi-pencil-square"></i>
             </a>
-            <a href="{% url 'myadmin:program_add_users' program.department.pk program.pk %}" class="button button-primary me-2">Add Users</a>
+            <a href="{% url 'myadmin:program_add_users' program.department.pk program.pk %}"
+               class="button button-primary me-2">Add Users</a>
         </div>
     </div>
-
-    <div class="title-wrapper">
-        <h3 class="title sub-title">
-            Classrooms
-        </h3>
-        <div class="action-buttons">
-            <a href="{% url 'myadmin:classroom_add' program.department.pk program.pk %}"
-               class="button button-primary button-small m-0">Add
-                Classroom</a>
+    <div>
+        <div class="title-wrapper">
+            <h3 class="title sub-title">
+                Classrooms
+            </h3>
+            <div class="action-buttons">
+                <a href="{% url 'myadmin:classroom_add' program.department.pk program.pk %}"
+                   class="button button-primary button-small m-0">Add
+                    Classroom</a>
+            </div>
         </div>
-    </div>
-    {% if message %}
-        <div class="message danger-message">
-            {{ message }}
-        </div>
-    {% endif %}
-    <div class="row">
+        {% if message %}
+            <div class="message danger-message">
+                {{ message }}
+            </div>
+        {% endif %}
+        <div class="row">
 
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Code</th>
-                    <th scope="col">Course</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for classroom in classrooms %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Course</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for classroom in classrooms %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ classroom.name }}</td>
@@ -191,16 +192,101 @@
                             </div>
                         </td>
                     </tr>
-                {% empty %}
-                    <p class="text-center text-muted"><small>No Classrooms yet.
-                        Create
-                        One.</small></p>
-                {% endfor %}
-                </tbody>
+                    {% empty %}
+                        <p class="text-center text-muted"><small>No Classrooms
+                            yet.
+                            Create
+                            One.</small></p>
+                    {% endfor %}
+                    </tbody>
 
-            </table>
+                </table>
+            </div>
+{#            <nav aria-label="Classrooms pagination">#}
+{#                <ul class="pagination d-flex align-items-center justify-content-between">#}
+{#                    <li class="page-item {% if not classrooms.has_previous %}disabled{% endif %}">#}
+{#                        <a class="page-link">Previous</a>#}
+{#                    </li>#}
+{#                    <li>#}
+{#                        {{ classrooms.number }} out#}
+{#                        of {{ classrooms.paginator.num_pages }}#}
+{#                        page{{ user.paginator.num_pages|pluralize }}#}
+{#                    </li>#}
+{#                    <li class="page-item  {% if not classrooms.has_next %}disabled{% endif %}">#}
+{#                        <a class="page-link" href="#">Next</a>#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </nav>#}
         </div>
+    </div>
+    <div>
+        <div class="title-wrapper">
+            <h3 class="title sub-title">
+                Users
+            </h3>
+            <div class="action-buttons">
+                <a href="{% url 'myadmin:program_add_users' program.department.pk program.pk %}"
+                   class="button button-primary button-small m-0">Add
+                    Users</a>
+            </div>
+        </div>
+        <div class="row">
 
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">User Type</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>
+                                <a href="{% url 'myadmin:user_detail' user.username %}">{{ user.username }}</a>
+                            </td>
 
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.get_full_name }}</td>
+                            <td>{{ user.user_type }}</td>
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge bg-primary">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Deactivated</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <p class="text-center text-muted"><small>No Users
+                            yet.</small></p>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+{#            <nav aria-label="Users user pagination">#}
+{#                <ul class="pagination d-flex align-items-center justify-content-between">#}
+{#                    <li class="page-item {% if not users.has_previous %}disabled{% endif %}">#}
+{#                        <a class="page-link">Previous</a>#}
+{#                    </li>#}
+{#                    <li>#}
+{#                        {{ users.number }} out#}
+{#                        of {{ users.paginator.num_pages }}#}
+{#                        page{{ user.paginator.num_pages|pluralize }}#}
+{#                    </li>#}
+{#                    <li class="page-item  {% if not users.has_next %}disabled{% endif %}">#}
+{#                        <a class="page-link" href="#">Next</a>#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </nav>#}
+
+        </div>
     </div>
 {% endblock main_content %}
