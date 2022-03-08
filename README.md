@@ -90,7 +90,7 @@ Now the environment variables need to be created. Just copy the `env.example` fi
 
 - On Windows powershell or on *nix OS you can use the following command to copy the file.
 ```shell
-$ cp env.example .env
+$ cp .env.example .env
 ```
 > The above command will copy the file and rename it as `.env` in the same working  directory.
 

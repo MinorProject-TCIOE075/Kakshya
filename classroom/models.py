@@ -19,6 +19,11 @@ class Classroom(models.Model):
     def __str__(self):
         return f'{self.name} - {self.code}'
 
+    class Meta:
+        permissions = [
+            ('can_archive_classroom', 'Can Archive Classroom'),
+        ]
+
 
 class Post(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)

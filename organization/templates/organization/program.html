@@ -17,7 +17,7 @@
             {{ program }}
         </h1>
         <div class="action-buttons d-flex">
-            <a href="#"
+            <a href="{% url 'myadmin:program_edit' program.department.pk program.pk %}"
                class="button button-primary me-2" title="Edit">
                 <i class="bi bi-pencil-square"></i>
             </a>
@@ -66,7 +66,7 @@
                             {% if classroom.is_archived %}
                                 <span class="badge bg-secondary">Archived</span>
                             {% else %}
-                                <span class="badge bg-secondary">Active</span>
+                                <span class="badge bg-success">Active</span>
                             {% endif %}
                         </td>
                         <td>
@@ -93,13 +93,20 @@
                                     <div class="modal-content">
                                         <div class="modal-header border-bottom-0">
                                             <h1 class="color-primary ">
-                                                Archive Classroom??
+                                                Archive Classroom
                                             </h1>
                                         </div>
                                         <div class="modal-content border-0 px-4">
-                                            <p>Are you sure you want to archive
-                                                this
-                                                Classroom?</p>
+                                            {% if not classroom.is_archived %}
+                                                <p>Are you sure you want to
+                                                    archive
+                                                    this
+                                                    Classroom?</p>
+                                            {% else %}
+                                                <p>Classroom already
+                                                    archived.</p>
+                                            {% endif %}
+
                                             <p>
                                                 <strong>Name:</strong>{{ classroom }}
                                             </p>
@@ -110,18 +117,25 @@
                                                     data-bs-dismiss="modal">
                                                 Close
                                             </button>
-                                            <form action="{% url 'myadmin:classroom_archive' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
-                                                  method="post"> {% csrf_token %}
-                                                <button type="submit"
-                                                        class="button {% if classroom.is_archived %}button-secondary {% else %} button-danger {% endif %}"
-                                                        {% if classroom.is_archived %}
-                                                        disabled
-                                                        {% endif %}
-                                                        title="{% if classroom.is_archived %} Already Archived {% else %} Delete Routine Course {% endif %}">
-                                                    Archive
-                                                </button>
-                                            </form>
-
+                                            {% if not classroom.is_archived %}
+                                                <form action="{% url 'myadmin:classroom_archive' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
+                                                      method="post"> {% csrf_token %}
+                                                    <button type="submit"
+                                                            class="button button-danger"
+                                                            title="{% if classroom.is_archived %} Already Archived {% endif %}">
+                                                        Archive
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <form action="{% url 'myadmin:classroom_restore' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
+                                                      method="post"> {% csrf_token %}
+                                                    <button type="submit"
+                                                            class="button button-primary"
+                                                            title="Restore classroom">
+                                                        Restore
+                                                    </button>
+                                                </form>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
