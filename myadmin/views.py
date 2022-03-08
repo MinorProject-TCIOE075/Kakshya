@@ -3,9 +3,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin, PermissionDenied)
 from django.shortcuts import render
+from django.core.paginator import Paginator
 
 from .forms import InvitationForm
 from .models import Invitation
+from .mixins import SuperuserOrStaffRequiredMixin
 
 USER = get_user_model()
 
@@ -85,3 +87,15 @@ class InvitationView(LoginRequiredMixin, PermissionRequiredMixin, views.View):
 
         return render(request, self.template_name,
                       {'invitation_form': invitation_form})
+
+
+class UserListView(LoginRequiredMixin, SuperuserOrStaffRequiredMixin, views.View):
+    template_name = 'myadmin/user_list.html'
+
+    def get(self, request, *args, **kwargs):
+        users = USER.objects.all()
+        paginated_users = Paginator(users, per_page=20)
+        page_number = request.GET.get('page', 1)
+        users = paginated_users.get_page(page_number)
+
+        return render(request, self.template_name, {'users': users})
