@@ -152,8 +152,6 @@ class ProfileEdit(views.View):
                       {'profile_edit_form': profile_edit_form})
 
 
-
-
 class Dashboard(views.View):
     template_name = "pages/dashboard.html"
 
@@ -170,7 +168,6 @@ class Dashboard(views.View):
                 user_program = None
                 classroom = None
                 posts = None
-
 
         if user.user_type == USER.UserType.teacher:
             classroom = Classroom.objects.filter(member=request.user)
@@ -228,7 +225,6 @@ class ClassRoomView(views.View):
             'posts': posts
         }
         return render(request, self.template_name, context)
-
 
 
 class DailyRoutineView(views.View):
@@ -293,7 +289,6 @@ class StudentAssignment(views.View):
                 assignment = assignment_form.save(commit=False)
 
 
-
 def assignment_detail(request, pk):
     template_name = 'pages/assignment_detail.html'
     user = request.user
@@ -318,8 +313,7 @@ def assignment_detail(request, pk):
 
         else:
             submit_form = AssignmentSubmitForm()
-        
-            
+
         context = {
                 'assignment': assignment,
                 'assignment_submit': assignment_submit,
@@ -338,7 +332,6 @@ def assignment_detail(request, pk):
             'assignment_submit': assignment_submit
         }
     return render(request, template_name, context)
-
 
 
 def submission_detail(request, pk):
@@ -375,7 +368,6 @@ def submission_detail(request, pk):
     }
 
     return render(request, template_name, context)
-
 
 
 class AddAssignmentView(views.View):
@@ -502,10 +494,9 @@ class PostDetail(views.View):
         return render(request, self.template_name, context)
 
 
-
-
 class SharedFiles(views.View):
     template_name = "pages/shared_files.html"
+
     def get(self, request, *args, **kwargs):
         user = request.user
         if user.user_type == USER.UserType.student:
