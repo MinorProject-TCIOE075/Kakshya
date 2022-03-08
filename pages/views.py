@@ -197,7 +197,7 @@ class ClassRoom(LoginRequiredMixin, views.View):
         if user.user_type == USER.UserType.student:
             try:
                 classroom = Classroom.objects.filter(
-                    program=user.student.faculty.id)
+                    program=user.student.faculty.id, is_archived=False)
             except ValueError:
                 classroom = None
             except AttributeError:

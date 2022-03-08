@@ -9,7 +9,8 @@ from django.views import generic as generic_views
 
 from classroom.models import Classroom
 from .forms import (DepartmentForm, EditDepartmentForm, ProgramForm,
-                    EditProgramForm, CourseForm, AddUsersToProgramForm)
+                    EditProgramForm, CourseForm, AddUsersToProgramForm,
+                    AddTeacherToClassroomForm)
 from .models import Department, Program, Course
 
 User = get_user_model()
@@ -400,5 +401,60 @@ class AddUserToProgramView(LoginRequiredMixin, PermissionRequiredMixin,
 
         return render(request, self.template_name, {
             'add_user_program_form': add_user_program_form,
+            'message': message
+        })
+
+
+class AddTeacherToClassroom(LoginRequiredMixin, PermissionRequiredMixin,
+                            views.View):
+    template_name = 'organization/add_teacher_to_classroom.html'
+    form_class = AddTeacherToClassroomForm
+    permission_required = 'classroom.change_classroom'
+    raise_exception = True
+
+    def get(self, request, department_pk, program_pk, classroom_pk, *args,
+            **kwargs):
+        classroom = get_object_or_404(Classroom, pk=classroom_pk)
+        add_teacher_to_classroom_form = self.form_class(initial={
+            'classroom': classroom
+        })
+        return render(request, self.template_name, {
+            'add_teacher_to_classroom_form': add_teacher_to_classroom_form
+        })
+
+    def post(self, request, department_pk, program_pk, classroom_pk, *args,
+            **kwargs):
+        classroom = get_object_or_404(Classroom, pk=classroom_pk)
+        add_teacher_to_classroom_form = self.form_class(initial={
+            'classroom': classroom
+        }, data=request.POST)
+        message = ''
+        if add_teacher_to_classroom_form.is_valid():
+            print(add_teacher_to_classroom_form.cleaned_data)
+            emails = add_teacher_to_classroom_form.cleaned_data.get('emails', [])
+            failed_emails = []
+            success_emails = []
+
+            for email in emails:
+                try:
+                    user = User.objects.get(email=email)
+                    if user.user_type == User.UserType.teacher:
+                        classroom.member.add(user)
+                        success_emails.append(email)
+
+                except User.DoesNotExist:
+                    failed_emails.append(email)
+                    continue
+
+            classroom.save()
+
+            if success_emails:
+                message = f'{", ".join(success_emails)} added to {classroom}.'
+
+            if failed_emails:
+                message += f' {", ".join(failed_emails)} users not found.'
+
+        return render(request, self.template_name, {
+            'add_teacher_to_classroom_form': add_teacher_to_classroom_form,
             'message': message
         })

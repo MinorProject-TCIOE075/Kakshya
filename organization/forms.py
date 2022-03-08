@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from .models import Department, Course, Program
+from classroom.models import Classroom
 
 
 class DepartmentForm(forms.Form):
@@ -110,9 +111,40 @@ class CourseForm(forms.ModelForm):
 
 
 class AddUsersToProgramForm(forms.Form):
-    emails = forms.CharField(widget=forms.Textarea(attrs={'rows': 1}),
+    emails = forms.CharField(widget=forms.Textarea(attrs={'rows': 2}),
                              help_text="Enter emails seperated by commas.")
     program = forms.ModelChoiceField(queryset=Program.objects.all())
+
+    # noinspection DuplicatedCode
+    def clean_emails(self):
+        emails = self.cleaned_data['emails']
+        invalid_emails = []
+
+        emails = [email.strip() for email in emails.split(',')]
+
+        for email in emails:
+            try:
+                validate = EmailValidator()
+                validate(email)
+            except ValidationError:
+                invalid_emails.append(email)
+
+        if invalid_emails:
+            raise ValidationError(
+                f'Emails "%(emails)s" are invalid.',
+                code='invalid',
+                params={
+                    'emails': ", ".join(invalid_emails)
+                }
+            )
+
+        return list(set(emails))
+
+
+class AddTeacherToClassroomForm(forms.Form):
+    emails = forms.CharField(widget=forms.Textarea(attrs={'rows': 1}),
+                             help_text="Enter emails seperated by commas.")
+    classroom = forms.ModelChoiceField(queryset=Classroom.objects.all())
 
     # noinspection DuplicatedCode
     def clean_emails(self):

@@ -141,6 +141,12 @@
                                 </div>
                             </div>
 
+                            <a href="{% url 'myadmin:add_teachers_to_classroom' classroom.program.department.pk classroom.program.pk  classroom.pk %}"
+                               class="button button-primary button-small m-0 mt-1 d-inline-block"
+                               title="Add Teachers"><i
+                                    class="bi bi-person-plus-fill"></i></a>
+
+
                             <!-- Button trigger modal -->
                             <button type="button"
                                     class="button button-danger button-small m-0 mt-1 d-inline-block"
@@ -149,6 +155,7 @@
                                     data-bs-target="#deleteClassroomModal{{ classroom.pk }}">
                                 <i class="bi bi-trash-fill"></i>
                             </button>
+
 
                             <!-- Modal -->
                             <div class="modal fade"
