@@ -38,7 +38,7 @@ class InvitationForm(forms.Form):
 class UserEditFormMyadmin(forms.ModelForm):
     class Meta:
         model = User
-        exclude = ['password', 'groups', 'user_permissions']
+        exclude = ['password', 'groups', 'user_permissions', 'date_joined', 'is_active']
 
 
 class UserPermissionsForm(forms.ModelForm):
