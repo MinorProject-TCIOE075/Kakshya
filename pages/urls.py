@@ -26,6 +26,7 @@ urlpatterns = [
     path("classroom/cr/<int:pk>/assignments/add",
          views.AddAssignmentView.as_view(), name='add_assignment'),
     path("classroom/cr/<int:classroom_pk>/post/add", views.AddPostView.as_view(), name='post_add'),
+    path("classroom/cr/<int:classroom_pk>/post/p/<post_id>/react/<int:react_status>/", views.ReactPostView.as_view(), name='post_react'),
     path("classroom/cr/<int:classroom_pk>/post/<int:post_pk>", views.PostDetail.as_view(), name='post_detail'),
     path("assignments/<int:pk>/submission", views.submission_detail, name='submission_detail')
 ]

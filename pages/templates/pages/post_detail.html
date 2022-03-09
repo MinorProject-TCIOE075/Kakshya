@@ -36,10 +36,15 @@
             <div class="">
                 <div class="tile-content d-flex align-items-center justify-content-between">
                     <div>
-                        <h5 class="mb-2 color-primary">{{ post.user }}
-                            <br><span
-                                    class="text-muted mb-2"><small>{{ post.created_on }}</small></span>
-                        </h5>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="mb-2 color-primary">{{ post.user }}
+                                <br><span
+                                        class="text-muted mb-2"><small>{{ post.created_on }}</small></span>
+                            </h5>
+
+
+                        </div>
+
                         <a href="#" class="mt-5 mb-2">
                             {{ post.caption }}
                         </a>
@@ -55,6 +60,32 @@
                         </a>
                     </div>
                 {% endif %}
+
+                <div class="mt-4">
+                    <div>
+                        {% if request.user not in post.reacted_by.all %}
+                            <form method="post"
+                                  action=" {% url 'pages:post_react' post.classroom.pk post.pk 1 %}">{% csrf_token %}
+                                <button type="submit"
+                                        class="text-center button button-primary bg-primary">
+                                    <span>{{ post.reacted_by.all.count }}</span> <br>
+                                    <i
+                                            class="bi bi-heart text-white"></i>
+                                    <span>React</span></button>
+                            </form>
+                        {% else %}
+                            <form method="post"
+                                  action=" {% url 'pages:post_react' post.classroom.pk post.pk 0 %}">{% csrf_token %}
+                                <button type="submit"
+                                        class="text-center button button-primary bg-primary">
+                                    <span>{{ post.reacted_by.all.count }}</span> <br>
+                                    <span>
+                                    <i class="bi bi-heart-fill text-white"></i>
+                                    <span>Reacted</span></span></button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
 
             </div>
         </div>

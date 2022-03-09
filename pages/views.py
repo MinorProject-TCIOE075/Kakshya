@@ -1,4 +1,5 @@
 from uuid import uuid4 as uuidv4
+
 from django import views
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -547,3 +548,36 @@ class NotAssociatedPage(LoginRequiredMixin, views.View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
+
+
+class ReactPostView(LoginRequiredMixin, views.View):
+
+    def get(self, request, classroom_pk, post_id, react_status, *args,
+            **kwargs):
+        return redirect(reverse('pages:post_detail', kwargs={
+            'classroom_pk': classroom_pk,
+            'post_pk': post_id
+        }))
+
+    def post(self, request, classroom_pk, post_id, react_status, *args,
+             **kwargs):
+        post = get_object_or_404(Post, pk=post_id)
+
+        print('here')
+        if react_status == 1:
+            if request.user not in post.reacted_by.all():
+                print('like')
+                post.reacted_by.add(request.user)
+                post.reacts += 1
+                post.save()
+        elif react_status == 0:
+            if request.user in post.reacted_by.all():
+                print('unlike')
+                post.reacted_by.remove(request.user)
+                post.reacts -= 1
+                post.save()
+
+        return redirect(reverse('pages:post_detail', kwargs={
+            'classroom_pk': classroom_pk,
+            'post_pk': post_id
+        }))
