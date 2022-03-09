@@ -36,65 +36,76 @@
             <div class="">
                 <div class="tile-content d-flex align-items-center justify-content-between">
                     <div>
-                        <h3 class="tile-title mb-2">{{post.user}} <span class="text-muted mx-5 mb-2">{{post.created_on}}</span></h3>
+                        <h5 class="mb-2 color-primary">{{ post.user }}
+                            <br><span
+                                    class="text-muted mb-2"><small>{{ post.created_on }}</small></span>
+                        </h5>
                         <a href="#" class="mt-5 mb-2">
                             {{ post.caption }}
                         </a>
                     </div>
                 </div>
-            <div class="mt-2">
-                    <a href="{{post.file.url}}" class="text-primary mt-5" value="{{post.file}}">
+                {% if post.file %}
+                    <div class="mt-2">
+                        <a href="{{ post.file.url }}" class="text-primary mt-5"
+                           value="{{ post.file }}">
                         <span class="bi bi-arrow-down-circle-fill mt-2 text-success">
                             Attachments
                         </span>
-                    </a>
-            </div>
-    
+                        </a>
+                    </div>
+                {% endif %}
+
             </div>
         </div>
     </div>
     <div class="title-wrapper mt-5">
-    <h3 class="title">
-        Comments
-    </h3>
+        <h6 class="title sub-title">
+            Comments
+        </h6>
     </div>
     <div class="row mt-4">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
-        
-    {% for comment in comments %}
-        <div class="content-wrapper mx-2 border p-2 rounded mb-2">
-            <p>{{comment.commented_by}} <span class="mx-2 text-muted mb-2">{{comment.created_on}}</span></p>
-            <p class="text-muted">{{comment.caption}}</p>
-            <p class="text-muted">Reacts: {{comment.reacts}}</p>
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+
+            {% for comment in comments %}
+                <div class="content-wrapper mx-2 border p-2 rounded mb-2">
+                    <p>{{ comment.commented_by }} <br><span
+                            class=" text-muted mb-2"><small>{{ comment.created_on }}</small></span>
+                    </p>
+                    <p class="text-muted">{{ comment.caption }}</p>
+                    <p class="text-muted">Reacts: {{ comment.reacts }}</p>
+                </div>
+            {% empty %}
+                <p class="color-primary font-bold text-center">No comments
+                    yet.</p>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-    </div>
-    
-    
-    
+
+
+
     <div class="title-wrapper mt-5">
-    <h3 class="title">
-        Add a comment
-    </h3>
+        <h6 class="title sub-title">
+            Add a comment
+        </h6>
     </div>
     <div class="row">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
-        <div class="content-wrapper">
-            <div class="form">
-                <form method="post" class="mb-5"
-                      enctype="multipart/form-data">
-                    {% if comment_form.non_field_errors %}
-                        <div class="error-message">
-                          {{ comment_form.non_field_errors }}
-                        </div>
-                    {% endif %}
-    
-                    {% csrf_token %}
-                    {% for field in comment_form %}
-                        <div class="form-field">
-    
-                            <div class="label">{{ field.label_tag }}</div>
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6 p-0">
+            <div class="content-wrapper">
+                <div class="form">
+                    <form method="post" class="mb-5"
+                          enctype="multipart/form-data">
+                        {% if comment_form.non_field_errors %}
+                            <div class="error-message">
+                                {{ comment_form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        {% csrf_token %}
+                        {% for field in comment_form %}
+                            <div class="form-field">
+
+                                <div class="label">{{ field.label_tag }}</div>
                             {% if field.errors %}
                                 <div class="error-message">
                                     <p>{{ field.errors }}</p>

@@ -1,3 +1,4 @@
+from uuid import uuid4 as uuidv4
 from django import views
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -464,6 +465,7 @@ class AddPostView(LoginRequiredMixin, views.View):
             post = create_post_form.save(commit=False)
             post.classroom = classroom
             post.user = request.user
+            post.post_id = uuidv4()
             post.save()
             return redirect(reverse_lazy("pages:classroom_detail", kwargs={
                 'pk': classroom.pk
@@ -506,6 +508,7 @@ class PostDetail(LoginRequiredMixin, views.View):
             comment = comment_form.save(commit=False)
             comment.commented_by = request.user
             comment.post = post
+            comment.comment_id = uuidv4()
             comment.save()
             return redirect(reverse_lazy("pages:post_detail", kwargs={
                 'post_pk': post.pk,

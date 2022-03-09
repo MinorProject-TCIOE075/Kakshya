@@ -10,6 +10,7 @@ class CreateClassroomForm(forms.ModelForm):
 
 
 class CreatePostForm(forms.ModelForm):
+    file = forms.FileField(required=False)
 
     class Meta:
         model = Post

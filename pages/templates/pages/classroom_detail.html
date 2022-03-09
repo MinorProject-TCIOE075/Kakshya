@@ -1,22 +1,22 @@
 {% extends 'pages/index.html' %}
-{% block subtitle %} 
-    | {{classroom.course.name}}
+{% block subtitle %}
+    | {{ classroom.course.name }}
 {% endblock subtitle %}
 
 {% block main_content %}
-<div class="title-wrapper">
-    <h3 class="title">
-        Assignments for classroom - {{classroom.name}}
-    </h3>
-    {% if teacher %}
-    <div class="action-buttons">
-        <a href="{% url 'pages:add_assignment' classroom.pk %}"
-           class="button button-primary button-small m-0">Add
-            Assignment</a>
+    <div class="title-wrapper">
+        <h3 class="title">
+            <small>Assignments for classroom</small><br> {{ classroom.name }}
+        </h3>
+        {% if teacher %}
+            <div class="action-buttons">
+                <a href="{% url 'pages:add_assignment' classroom.pk %}"
+                   class="button button-primary button-small m-0">Add
+                    Assignment</a>
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
-{% if message %}
+    {% if message %}
     <div class="message danger-message">
         {{ message }}
     </div>
@@ -50,18 +50,18 @@
         </div>
     {% endfor %}
 </div>
-<div class="title-wrapper mt-5">
-    <h3 class="title">
-        Posts for classroom - {{classroom.name}}
-    </h3>
-    {% if teacher %}
-    <div class="action-buttons">
-        <a href="{% url 'pages:post_add' classroom.id %}"
-           class="button button-primary button-small m-0">Create
-            Post</a>
+    <div class="title-wrapper mt-5">
+        <h3 class="title">
+            <small>Posts for classroom </small> <br>{{ classroom.name }}
+        </h3>
+        {% if teacher %}
+            <div class="action-buttons">
+                <a href="{% url 'pages:post_add' classroom.id %}"
+                   class="button button-primary button-small m-0">Create
+                    Post</a>
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 
 <div class="row mt-2">
     {% for post in posts %}
